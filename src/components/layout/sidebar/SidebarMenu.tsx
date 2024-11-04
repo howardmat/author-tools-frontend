@@ -4,15 +4,12 @@ import {
   HomeIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
+import { classNames } from '../../../util';
 
 const navigation = [
   { name: 'Home', href: '/', icon: HomeIcon, current: true },
   { name: 'Characters', href: '/characters', icon: UsersIcon, current: false },
 ];
-
-function classNames(...classes: string[]): string {
-  return classes.filter(Boolean).join(' ');
-}
 
 const SidebarMenu: React.FC = () => {
   return (
