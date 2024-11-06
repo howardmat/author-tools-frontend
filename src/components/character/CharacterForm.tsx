@@ -62,7 +62,7 @@ const CharacterForm: React.FC<{
       </div>
 
       <div className='col-span-2 flex flex-wrap justify-evenly'>
-        <Card title='Personal Information' className='w-full sm:w-64 mt-8'>
+        {/* <Card title='Personal Information' className='w-full sm:w-64 mt-8'>
           <p className='mt-1 text-sm/6 text-gray-600'>
             Use a permanent address where you can receive mail.
           </p>
@@ -188,7 +188,7 @@ const CharacterForm: React.FC<{
               </TextBox>
             </div>
           </div>
-        </Card>
+        </Card> */}
       </div>
 
       <div className='mt-6 flex items-center justify-end gap-x-6'>
