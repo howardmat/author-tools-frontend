@@ -3,22 +3,23 @@ import { useCharacterContext } from '../../store/character/useCharacterContext';
 import { SubmitHandler } from 'react-hook-form';
 import { ActionTypes, UpdateCharacterAction } from '../../actions';
 import PageHeading from '../../components/layout/PageHeading';
-import { CharacterFormData } from '../../types';
+import { Character, CharacterFormData } from '../../types';
 import CharacterForm from '../../components/character/CharacterForm';
+import API from '../../http';
 
 const UpdateCharacterPage: React.FC = () => {
   const { state, dispatch } = useCharacterContext();
   const navigate = useNavigate();
 
   const params = useParams();
-  const characterId = params['id'];
+  const characterId = params['id'] || '';
   const character = state.characters.find((c) => c.id === characterId);
   if (!character) {
     throw json({ message: 'Character Id parameter is invalid' });
   }
 
-  const onSubmit: SubmitHandler<CharacterFormData> = (data) => {
-    //todo: submit data to db here
+  const onSubmit: SubmitHandler<CharacterFormData> = async (data) => {
+    await API.put<Character>('characters/' + characterId, data);
 
     const updateCharacterAction: UpdateCharacterAction = {
       type: ActionTypes.UPDATE_CHARACTER,

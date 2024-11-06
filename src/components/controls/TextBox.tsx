@@ -13,13 +13,13 @@ const TextBox = forwardRef<Ref, TextBoxProps>(
   ({ id, error, children, ...props }, ref) => {
     return (
       <>
-        <label
-          htmlFor={id}
-          className='block text-sm/6 font-medium text-gray-900'
-        >
-          {children}
-        </label>
         <div className='relative mt-2 rounded-md shadow-sm'>
+          <label
+            htmlFor={id}
+            className='absolute -top-2 left-2 inline-block bg-white px-1 text-xs font-medium text-gray-900'
+          >
+            {children}
+          </label>
           <input
             type='text'
             ref={ref}

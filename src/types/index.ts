@@ -1,5 +1,5 @@
 export type Character = {
-  id: string;
+  id?: string;
   firstName: string;
   lastName: string;
 };

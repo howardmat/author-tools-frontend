@@ -10,7 +10,7 @@ const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
   addRoute,
 }) => {
   return (
-    <div>
+    <>
       <div>
         <nav aria-label='Back' className='sm:hidden'>
           <a
@@ -53,7 +53,7 @@ const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
           </ol>
         </nav>
       </div>
-      <div className='mt-2 md:flex md:items-center md:justify-between'>
+      <div className='my-2 md:flex md:items-center md:justify-between'>
         <div className='min-w-0 flex-1'>
           <h2 className='text-2xl/7 font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight'>
             {title}
@@ -71,7 +71,7 @@ const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 
