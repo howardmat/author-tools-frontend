@@ -8,10 +8,10 @@ import {
 } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
-import UserProfileMenu from './header/UserProfileMenu';
-import HeaderSearch from './header/HeaderSearch';
-import NotificationMenu from './header/NotificationMenu';
-import SidebarMenu from './sidebar/SidebarMenu';
+import UserProfileMenu from './header/user-profile-menu';
+import HeaderSearch from './header/header-search';
+import NotificationMenu from './header/notification-menu';
+import SidebarMenu from './sidebar/sidebar-menu';
 
 const RootLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

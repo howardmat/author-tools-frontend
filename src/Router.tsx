@@ -1,11 +1,11 @@
 import { createBrowserRouter } from 'react-router-dom';
-import RootLayout from './components/layout/RootLayout';
-import ErrorPage from './pages/ErrorPage';
-import HomePage from './pages/HomePage';
-import CharacterListPage from './pages/character/CharacterListPage';
-import AddCharacterPage from './pages/character/AddCharacterPage';
-import UpdateCharacterPage from './pages/character/UpdateCharacterPage';
-import CharacterRootPage from './pages/character/CharacterRootPage';
+import RootLayout from './components/layout/root-layout';
+import ErrorPage from './pages/error-page';
+import HomePage from './pages/home-page';
+import CharacterListPage from './pages/character/character-list-page';
+import AddCharacterPage from './pages/character/add-character-page';
+import UpdateCharacterPage from './pages/character/update-character-page';
+import CharacterRootPage from './pages/character/character-root-page';
 
 const router = createBrowserRouter([
   {

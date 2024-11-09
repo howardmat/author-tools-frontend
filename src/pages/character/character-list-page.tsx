@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import PageHeading from '../../components/layout/PageHeading';
+import PageHeading from '../../components/layout/page-heading';
 import { useCharacterContext } from '../../store/character/useCharacterContext';
 import { Character } from '../../types';
 import { ActionTypes, SetCharactersAction } from '../../actions';
-import CharacterList from '../../components/character/CharacterList';
+import CharacterList from '../../components/character/character-list';
 import API from '../../http';
 
 const CharacterListPage: React.FC = () => {

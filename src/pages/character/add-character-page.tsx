@@ -1,10 +1,10 @@
 import { SubmitHandler } from 'react-hook-form';
 import { ActionTypes, AddCharacterAction } from '../../actions';
-import PageHeading from '../../components/layout/PageHeading';
+import PageHeading from '../../components/layout/page-heading';
 import { useCharacterContext } from '../../store/character/useCharacterContext';
 import { useNavigate } from 'react-router-dom';
 import { Character, CharacterFormData } from '../../types';
-import CharacterForm from '../../components/character/CharacterForm';
+import CharacterForm from '../../components/character/character-form';
 import API from '../../http';
 
 const AddCharacterPage: React.FC = () => {
@@ -12,6 +12,8 @@ const AddCharacterPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleSave: SubmitHandler<CharacterFormData> = async (data) => {
+    console.log('Validated form data:');
+    console.log(data);
     const res = await API.post<Character>('characters', data);
 
     const addCharacterAction: AddCharacterAction = {
@@ -19,6 +21,7 @@ const AddCharacterPage: React.FC = () => {
       payload: {
         ...data,
         id: res.data.id,
+        birthDate: data.birthDate?.toISOString() ?? '',
       },
     };
     dispatch(addCharacterAction);
@@ -29,7 +32,7 @@ const AddCharacterPage: React.FC = () => {
   return (
     <>
       <PageHeading title='Add Character' />
-      <CharacterForm onSave={handleSave} />
+      <CharacterForm onSave={handleSave} character={new CharacterFormData()} />
     </>
   );
 };

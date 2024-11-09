@@ -71,6 +71,9 @@ const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
           </div>
         )}
       </div>
+      <div className='my-6'>
+        <div className='w-full border-t border-gray-300' />
+      </div>
     </>
   );
 };

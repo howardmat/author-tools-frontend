@@ -2,9 +2,9 @@ import { json, useNavigate, useParams } from 'react-router-dom';
 import { useCharacterContext } from '../../store/character/useCharacterContext';
 import { SubmitHandler } from 'react-hook-form';
 import { ActionTypes, UpdateCharacterAction } from '../../actions';
-import PageHeading from '../../components/layout/PageHeading';
+import PageHeading from '../../components/layout/page-heading';
 import { Character, CharacterFormData } from '../../types';
-import CharacterForm from '../../components/character/CharacterForm';
+import CharacterForm from '../../components/character/character-form';
 import API from '../../http';
 
 const UpdateCharacterPage: React.FC = () => {

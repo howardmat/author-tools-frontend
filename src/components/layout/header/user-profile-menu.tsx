@@ -1,7 +1,7 @@
 import { Menu, MenuButton, MenuItems } from '@headlessui/react';
 
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import UserProfileMenuItem from './UserProfileMenuItem';
+import UserProfileMenuItem from './user-profile-menu-item';
 
 const UserProfileMenu: React.FC = () => {
   return (
