@@ -1,1 +1,5 @@
-export const API_URL = 'https://localhost:7150/';
+export const API_URL: string = 'https://localhost:7150';
+
+export const QUERY_KEYS = {
+  CHARACTERS: 'characters',
+};

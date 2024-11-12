@@ -1,43 +1,92 @@
-import { json, useNavigate, useParams } from 'react-router-dom';
-import { useCharacterContext } from '../../store/character/useCharacterContext';
-import { SubmitHandler } from 'react-hook-form';
-import { ActionTypes, UpdateCharacterAction } from '../../actions';
-import PageHeading from '../../components/layout/page-heading';
-import { Character, CharacterFormData } from '../../types';
+import { useNavigate, useParams } from 'react-router-dom';
+import PageHeading from '../../components/page-heading';
 import CharacterForm from '../../components/character/character-form';
-import API from '../../http';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/util/constants';
+import { getCharacter, putCharacter, PutCharacterParams } from '@/http';
+import { CharacterFormData } from '@/types';
+import { SubmitHandler } from 'react-hook-form';
+import { queryClient } from '@/http/query-client';
 
 const UpdateCharacterPage: React.FC = () => {
-  const { state, dispatch } = useCharacterContext();
   const navigate = useNavigate();
 
   const params = useParams();
   const characterId = params['id'] || '';
-  const character = state.characters.find((c) => c.id === characterId);
-  if (!character) {
-    throw json({ message: 'Character Id parameter is invalid' });
-  }
 
-  const onSubmit: SubmitHandler<CharacterFormData> = async (data) => {
-    await API.put<Character>('characters/' + characterId, data);
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [QUERY_KEYS.CHARACTERS, characterId],
+    queryFn: ({ signal }) => getCharacter({ id: characterId, signal }),
+  });
 
-    const updateCharacterAction: UpdateCharacterAction = {
-      type: ActionTypes.UPDATE_CHARACTER,
-      payload: {
+  const { mutate } = useMutation({
+    mutationFn: putCharacter,
+    onMutate: async (data: PutCharacterParams) => {
+      const character = data.character;
+
+      await queryClient.cancelQueries({
+        queryKey: [QUERY_KEYS.CHARACTERS, characterId],
+      });
+      const previousData = queryClient.getQueryData([
+        QUERY_KEYS.CHARACTERS,
+        characterId,
+      ]);
+      queryClient.setQueryData([QUERY_KEYS.CHARACTERS, characterId], character);
+
+      return { previousData };
+    },
+    onError: (error, variables, context) => {
+      queryClient.setQueryData([QUERY_KEYS.CHARACTERS, characterId], context);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.CHARACTERS, characterId],
+      });
+    },
+  });
+
+  const handleSave: SubmitHandler<CharacterFormData> = async (data) => {
+    mutate({
+      id: characterId,
+      character: {
         ...data,
-        id: character.id,
+        birthDate: data.birthDate?.toISOString() ?? '',
       },
-    };
-
-    dispatch(updateCharacterAction);
+    });
 
     navigate('/characters');
   };
 
+  let content;
+
+  if (isPending) {
+    content = <p className='text-center'>Loading...</p>;
+  }
+
+  if (isError) {
+    content = (
+      <>
+        <p className='text-center text-red-500'>
+          Error! {error.message || 'An error has occurred'}
+        </p>
+      </>
+    );
+  }
+
+  if (data) {
+    const characterFormData: CharacterFormData = {
+      ...data,
+      birthDate: data.birthDate ? new Date(data.birthDate) : undefined,
+    };
+    content = (
+      <CharacterForm character={characterFormData} onSave={handleSave} />
+    );
+  }
+
   return (
     <>
       <PageHeading title='Edit Character' />
-      <CharacterForm character={character} onSave={onSubmit} />
+      {content}
     </>
   );
 };

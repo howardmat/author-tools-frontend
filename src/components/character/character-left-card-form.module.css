@@ -1,8 +1,10 @@
-.static-left-card {
-  max-height: 700px;
-}
-.scrollable {
-  max-height: 500px;
-  overflow: scroll;
-  scrollbar-width: none;
+@media (min-width: 640px) {
+  .static-left-card {
+    max-height: 675px;
+  }
+  .scrollable {
+    max-height: 475px;
+    overflow: scroll;
+    scrollbar-width: none;
+  }
 }

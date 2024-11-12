@@ -1,30 +1,29 @@
 import { SubmitHandler } from 'react-hook-form';
-import { ActionTypes, AddCharacterAction } from '../../actions';
-import PageHeading from '../../components/layout/page-heading';
-import { useCharacterContext } from '../../store/character/useCharacterContext';
+import PageHeading from '../../components/page-heading';
 import { useNavigate } from 'react-router-dom';
-import { Character, CharacterFormData } from '../../types';
+import { CharacterFormData } from '../../types';
 import CharacterForm from '../../components/character/character-form';
-import API from '../../http';
+import { useMutation } from '@tanstack/react-query';
+import { postCharacter } from '@/http';
+import { queryClient } from '@/http/query-client';
+import { QUERY_KEYS } from '@/util/constants';
 
 const AddCharacterPage: React.FC = () => {
-  const { dispatch } = useCharacterContext();
   const navigate = useNavigate();
 
-  const handleSave: SubmitHandler<CharacterFormData> = async (data) => {
-    console.log('Validated form data:');
-    console.log(data);
-    const res = await API.post<Character>('characters', data);
+  const { mutate, isError } = useMutation({
+    mutationFn: postCharacter,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CHARACTERS] });
+      navigate('/characters');
+    },
+  });
 
-    const addCharacterAction: AddCharacterAction = {
-      type: ActionTypes.ADD_CHARACTER,
-      payload: {
-        ...data,
-        id: res.data.id,
-        birthDate: data.birthDate?.toISOString() ?? '',
-      },
-    };
-    dispatch(addCharacterAction);
+  const handleSave: SubmitHandler<CharacterFormData> = async (data) => {
+    mutate({
+      ...data,
+      birthDate: data.birthDate?.toISOString() ?? '',
+    });
 
     navigate('/characters');
   };
@@ -32,6 +31,7 @@ const AddCharacterPage: React.FC = () => {
   return (
     <>
       <PageHeading title='Add Character' />
+      {isError && <p>Failed to create character</p>}
       <CharacterForm onSave={handleSave} character={new CharacterFormData()} />
     </>
   );

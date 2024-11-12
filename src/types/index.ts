@@ -8,7 +8,7 @@ export interface Character {
   name: string;
   alias: string;
   archetype: string;
-  imageUrl: string;
+  imageFileId: string;
   birthDate: string;
   age?: number;
   profession: string;
@@ -33,7 +33,7 @@ export class CharacterFormData {
   name: string;
   alias: string;
   archetype: string;
-  imageUrl: string;
+  imageFileId: string;
   birthDate?: Date;
   age?: number;
   profession: string;
@@ -57,7 +57,7 @@ export class CharacterFormData {
     this.name = '';
     this.alias = '';
     this.archetype = '';
-    this.imageUrl = '';
+    this.imageFileId = '';
     this.age = 0;
     this.profession = '';
     this.loveInterest = '';
@@ -76,4 +76,9 @@ export class CharacterFormData {
     this.history = '';
     this.familyHistory = '';
   }
+}
+
+export interface ComboBoxOption {
+  label: string;
+  value: string;
 }

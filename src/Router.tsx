@@ -27,6 +27,7 @@ const router = createBrowserRouter([
             element: <AddCharacterPage />,
           },
           {
+            id: 'update-character',
             path: ':id/edit',
             element: <UpdateCharacterPage />,
           },

@@ -11,8 +11,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '../ui/textarea';
-import Card from '../card';
 import CharacterLeftCardForm from './character-left-card-form';
+import Card from '../card';
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -37,12 +37,14 @@ const formSchema = z.object({
   history: z.string(),
   familyHistory: z.string(),
   friendsAndFamily: z.string(),
+  imageFileId: z.string(),
 });
 
 const CharacterForm: React.FC<{
   character: CharacterFormData | null;
   onSave: (data: CharacterFormData) => void;
 }> = ({ character, onSave }) => {
+  console.log(character);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,7 +60,7 @@ const CharacterForm: React.FC<{
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
         <CharacterLeftCardForm />
-        <div className='col-span-2 flex flex-wrap gap-x-6 gap-y-6'>
+        <div className='col-span-2 flex flex-wrap justify-center gap-x-6 gap-y-6'>
           <Card title='Personal Traits' className='w-full sm:w-64'>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>

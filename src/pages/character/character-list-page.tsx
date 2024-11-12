@@ -1,34 +1,37 @@
-import { useEffect } from 'react';
-import PageHeading from '../../components/layout/page-heading';
-import { useCharacterContext } from '../../store/character/useCharacterContext';
-import { Character } from '../../types';
-import { ActionTypes, SetCharactersAction } from '../../actions';
+import PageHeading from '../../components/page-heading';
 import CharacterList from '../../components/character/character-list';
-import API from '../../http';
+import { useQuery } from '@tanstack/react-query';
+import { getCharacters } from '@/http';
+import { QUERY_KEYS } from '@/util/constants';
 
 const CharacterListPage: React.FC = () => {
-  const { state, dispatch } = useCharacterContext();
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [QUERY_KEYS.CHARACTERS],
+    queryFn: getCharacters,
+  });
 
-  useEffect(() => {
-    const initializeData = async () => {
-      const res = await API.get<Character[]>('characters');
+  let content;
 
-      // call set characters action with the results from the http call
-      const setCharactersAction: SetCharactersAction = {
-        type: ActionTypes.SET_CHARACTERS,
-        payload: res.data,
-      };
-
-      dispatch(setCharactersAction);
-    };
-
-    initializeData();
-  }, [dispatch]);
+  if (isPending) {
+    content = <p className='text-center'>Loading...</p>;
+  }
+  if (isError) {
+    content = (
+      <>
+        <p className='text-center text-red-500'>
+          Error! {error.message || 'An error has occurred'}
+        </p>
+      </>
+    );
+  }
+  if (data) {
+    content = <CharacterList characters={data} />;
+  }
 
   return (
     <>
       <PageHeading title='Characters' addRoute='/characters/add' />
-      <CharacterList characters={state.characters} />
+      {content}
     </>
   );
 };
