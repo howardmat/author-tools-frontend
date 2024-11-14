@@ -13,20 +13,69 @@ import { useFormContext } from 'react-hook-form';
 import ComboBox from '../ui/combobox';
 import { ArchetypeOptions, GenderOptions } from '@/data/combobox-data';
 import AvatarUpload from '../avatar-upload';
+import Divider from '../divider';
+import { useState } from 'react';
+
+interface CharacterLeftCardFormState {
+  isScrollTop: boolean;
+  isScrollBottom: boolean;
+}
+
+const initialState: CharacterLeftCardFormState = {
+  isScrollTop: true,
+  isScrollBottom: false,
+};
 
 const CharacterLeftCardForm: React.FC = () => {
   const form = useFormContext();
+  const [state, setState] = useState<CharacterLeftCardFormState>(initialState);
+
+  const handleScroll = (event: React.UIEvent<HTMLElement>) => {
+    const top = event.currentTarget.scrollTop === 0;
+    if (top) {
+      setState((prevState) => ({
+        ...prevState,
+        isScrollTop: true,
+      }));
+    } else {
+      setState((prevState) => ({
+        ...prevState,
+        isScrollTop: false,
+      }));
+    }
+
+    const bottom =
+      event.currentTarget.scrollHeight - event.currentTarget.scrollTop ===
+      event.currentTarget.clientHeight;
+    if (bottom) {
+      setState((prevState) => ({
+        ...prevState,
+        isScrollBottom: true,
+      }));
+    } else {
+      setState((prevState) => ({
+        ...prevState,
+        isScrollBottom: false,
+      }));
+    }
+  };
 
   return (
     <div
-      className={'sm:float-left mb-6 mr-6 ' + cssClasses['static-left-card']}
+      className={'sm:float-left mb-6 sm:mr-6 ' + cssClasses['static-left-card']}
     >
-      <Card className='w-full sm:w-72'>
+      <Card className='w-full sm:w-72 relative'>
         <AvatarUpload name='imageFileId' />
         <div className='my-6'>
           <div className='w-full border-t border-gray-300' />
         </div>
-        <div className={cssClasses['scrollable']}>
+        {!state.isScrollTop && (
+          <Divider
+            className='absolute w-5/6 bg-white z-50 hidden sm:block'
+            orientation='up'
+          />
+        )}
+        <div className={cssClasses['scrollable']} onScroll={handleScroll}>
           <div className='px-1 pb-1 grid gap-y-4'>
             <div className='col-span-3'>
               <FormField
@@ -222,6 +271,12 @@ const CharacterLeftCardForm: React.FC = () => {
             </div>
           </div>
         </div>
+        {!state.isScrollBottom && (
+          <Divider
+            className='absolute w-5/6 hidden sm:block'
+            orientation='down'
+          />
+        )}
       </Card>
     </div>
   );

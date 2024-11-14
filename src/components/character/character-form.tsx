@@ -43,8 +43,8 @@ const formSchema = z.object({
 const CharacterForm: React.FC<{
   character: CharacterFormData | null;
   onSave: (data: CharacterFormData) => void;
-}> = ({ character, onSave }) => {
-  console.log(character);
+  onCancel: () => void;
+}> = ({ character, onSave, onCancel }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -227,7 +227,9 @@ const CharacterForm: React.FC<{
           <div className='w-full border-t border-gray-300' />
         </div>
         <div className='mt-6 flex items-center justify-end gap-x-6'>
-          <Button variant='outline'>Cancel</Button>
+          <Button type='button' variant='outline' onClick={onCancel}>
+            Cancel
+          </Button>
           <Button type='submit'>Save</Button>
         </div>
       </form>

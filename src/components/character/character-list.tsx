@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { Character } from '../../types';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { API_URL } from '@/util/constants';
@@ -38,9 +39,14 @@ const CharacterList: React.FC<{ characters: Character[] }> = ({
             </div>
             <div className='flex shrink-0 items-center gap-x-4'>
               <div className='hidden sm:flex sm:flex-col sm:items-end'>
-                <p className='text-sm/6 text-gray-900'>{c.archetype}</p>
+                {c.archetype.value.length > 0 && (
+                  <p className='text-sm/6 text-gray-900'>{c.archetype.value}</p>
+                )}
                 <p className='mt-1 text-xs/5 text-gray-500'>
-                  {c.birthDate} ({c.age})
+                  {c.birthDate && (
+                    <span>Born: {format(c.birthDate, 'MMMM d')}</span>
+                  )}
+                  {c.age && <span> | Age: {c.age}</span>}
                 </p>
               </div>
               <ChevronRightIcon

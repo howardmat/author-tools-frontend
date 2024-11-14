@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import { UserCircleIcon } from 'lucide-react';
+import { LoaderCircle, UserCircleIcon } from 'lucide-react';
 import { API_URL } from '@/util/constants';
-import { postFile } from '@/http';
+import { usePostFileMutation } from '@/http';
 
 import { useFormContext } from 'react-hook-form';
 import { FormField } from './ui/form';
@@ -18,6 +18,15 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ name }) => {
     form.getValues(name)
   );
 
+  const { mutate, isPending } = usePostFileMutation({
+    onSettled: async (fileId: string | undefined) => {
+      if (fileId) {
+        setFileId(fileId);
+        form.setValue(name, fileId);
+      }
+    },
+  });
+
   const handleClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
@@ -27,32 +36,35 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ name }) => {
       const formData = new FormData();
       formData.append('file', event.target.files[0]);
 
-      const fileId = await postFile(formData);
-
-      if (fileId) {
-        setFileId(fileId);
-        form.setValue(name, fileId);
-      }
+      mutate(formData);
     }
   };
 
+  let avatarPreviewContent = (
+    <UserCircleIcon aria-hidden='true' className='w-48 h-24 text-gray-300' />
+  );
+
+  if (isPending) {
+    avatarPreviewContent = (
+      <LoaderCircle className='loader-icon w-48 h-24 text-gray-300' />
+    );
+  }
+
+  if (fileId) {
+    avatarPreviewContent = (
+      <span className='relative inline-block'>
+        <img
+          alt=''
+          src={`${API_URL}/file/${fileId}`}
+          className='h-24 w-24 rounded-full'
+        />
+      </span>
+    );
+  }
+
   return (
     <div className='flex justify-center items-center gap-x-3'>
-      {fileId && (
-        <span className='relative inline-block'>
-          <img
-            alt=''
-            src={`${API_URL}/file/${fileId}`}
-            className='h-24 w-24 rounded-full'
-          />
-        </span>
-      )}
-      {!fileId && (
-        <UserCircleIcon
-          aria-hidden='true'
-          className='w-48 h-24 text-gray-300'
-        />
-      )}
+      {avatarPreviewContent}
       <button
         onClick={handleClick}
         type='button'

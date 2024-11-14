@@ -1,31 +1,31 @@
-import { ComboBoxOption } from '@/types';
+import { CodeValue } from '@/types';
 
-export const ArchetypeOptions: ComboBoxOption[] = [
-  { label: 'The Hero', value: 'hero' },
-  { label: 'The Villain', value: 'villain' },
-  { label: 'The Caregiver', value: 'caregiver' },
-  { label: 'The Jester', value: 'jester' },
-  { label: 'The Lover', value: 'lover' },
-  { label: 'The Mentor', value: 'mentor' },
-  { label: 'The Innocent', value: 'innocent' },
-  { label: 'The Magician', value: 'magician' },
-  { label: 'Everyman', value: 'everman' },
-  { label: 'Ruler', value: 'ruler' },
-  { label: 'Sage', value: 'sage' },
-  { label: 'The Creator', value: 'creator' },
-  { label: 'The Orphan', value: 'orphan' },
-  { label: 'Outlaw', value: 'outlaw' },
-  { label: 'The Sidekick', value: 'sidekick' },
-  { label: 'Anti-Hero', value: 'antihero' },
-  { label: 'Explorer', value: 'explorer' },
-  { label: 'The Rebel', value: 'rebel' },
-  { label: 'The Warrior', value: 'warrior' },
-  { label: 'Bully', value: 'bully' },
-  { label: 'Adventurer', value: 'adventurer' },
-  { label: 'Child Saviour', value: 'childsaviour' },
+export const ArchetypeOptions: CodeValue[] = [
+  { value: 'The Hero', code: 'hero' },
+  { value: 'The Villain', code: 'villain' },
+  { value: 'The Caregiver', code: 'caregiver' },
+  { value: 'The Jester', code: 'jester' },
+  { value: 'The Lover', code: 'lover' },
+  { value: 'The Mentor', code: 'mentor' },
+  { value: 'The Innocent', code: 'innocent' },
+  { value: 'The Magician', code: 'magician' },
+  { value: 'Everyman', code: 'everyman' },
+  { value: 'Ruler', code: 'ruler' },
+  { value: 'Sage', code: 'sage' },
+  { value: 'The Creator', code: 'creator' },
+  { value: 'The Orphan', code: 'orphan' },
+  { value: 'Outlaw', code: 'outlaw' },
+  { value: 'The Sidekick', code: 'sidekick' },
+  { value: 'Anti-Hero', code: 'antihero' },
+  { value: 'Explorer', code: 'explorer' },
+  { value: 'The Rebel', code: 'rebel' },
+  { value: 'The Warrior', code: 'warrior' },
+  { value: 'Bully', code: 'bully' },
+  { value: 'Adventurer', code: 'adventurer' },
+  { value: 'Child Saviour', code: 'childsaviour' },
 ];
 
-export const GenderOptions: ComboBoxOption[] = [
-  { label: 'Female', value: 'female' },
-  { label: 'Male', value: 'male' },
+export const GenderOptions: CodeValue[] = [
+  { value: 'Female', code: 'female' },
+  { value: 'Male', code: 'male' },
 ];

@@ -28,12 +28,12 @@ const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
           <ol role='list' className='flex items-center space-x-4'>
             <li>
               <div className='flex'>
-                <a
-                  href='#'
+                <Link
+                  to='/'
                   className='text-sm font-medium text-gray-500 hover:text-gray-700'
                 >
                   Home
-                </a>
+                </Link>
               </div>
             </li>
             <li>
@@ -42,12 +42,12 @@ const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
                   aria-hidden='true'
                   className='h-5 w-5 flex-shrink-0 text-gray-400'
                 />
-                <a
-                  href='#'
+                <Link
+                  to='/characters'
                   className='ml-4 text-sm font-medium text-gray-500 hover:text-gray-700'
                 >
                   Characters
-                </a>
+                </Link>
               </div>
             </li>
           </ol>

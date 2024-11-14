@@ -24,12 +24,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { ComboBoxOption } from '@/types';
+import { CodeValue } from '@/types';
 
 interface ComboBoxProps {
   label: string;
   name: string;
-  options: ComboBoxOption[];
+  options: CodeValue[];
   placeholder?: string;
   searchLabel?: string;
   noMatchLabel?: string;
@@ -66,8 +66,8 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                   )}
                 >
                   {field.value
-                    ? options.find((option) => option.value === field.value)
-                        ?.label
+                    ? options.find((option) => option.code === field.value)
+                        ?.value
                     : placeholder}
                   <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
                 </Button>
@@ -86,17 +86,17 @@ const ComboBox: React.FC<ComboBoxProps> = ({
                   <CommandGroup>
                     {options.map((option) => (
                       <CommandItem
-                        value={option.label}
-                        key={option.value}
+                        value={option.value}
+                        key={option.code}
                         onSelect={() => {
-                          form.setValue(name, option.value);
+                          form.setValue(name, option.code);
                         }}
                       >
-                        {option.label}
+                        {option.value}
                         <Check
                           className={cn(
                             'ml-auto',
-                            option.value === field.value
+                            option.code === field.value
                               ? 'opacity-100'
                               : 'opacity-0'
                           )}

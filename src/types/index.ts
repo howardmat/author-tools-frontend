@@ -3,17 +3,22 @@ interface CharacterRelationship {
   relationship: string;
 }
 
+export interface CodeValue {
+  code: string;
+  value: string;
+}
+
 export interface Character {
   id?: string;
   name: string;
   alias: string;
-  archetype: string;
+  archetype: CodeValue;
   imageFileId: string;
   birthDate: string;
   age?: number;
   profession: string;
   loveInterest: string;
-  gender: string;
+  gender: CodeValue;
   eyeColor: string;
   hairType: string;
   hairColor: string;
@@ -76,9 +81,4 @@ export class CharacterFormData {
     this.history = '';
     this.familyHistory = '';
   }
-}
-
-export interface ComboBoxOption {
-  label: string;
-  value: string;
 }

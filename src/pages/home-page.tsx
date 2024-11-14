@@ -1,5 +1,11 @@
+import PageHeading from '@/components/page-heading';
+
 const HomePage: React.FC = () => {
-  return <h2>Home</h2>;
+  return (
+    <>
+      <PageHeading title='Home' />
+    </>
+  );
 };
 
 export default HomePage;

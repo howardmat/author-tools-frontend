@@ -3,28 +3,33 @@ import PageHeading from '../../components/page-heading';
 import { useNavigate } from 'react-router-dom';
 import { CharacterFormData } from '../../types';
 import CharacterForm from '../../components/character/character-form';
-import { useMutation } from '@tanstack/react-query';
-import { postCharacter } from '@/http';
-import { queryClient } from '@/http/query-client';
-import { QUERY_KEYS } from '@/util/constants';
+import { usePostCharacterMutation } from '@/http';
+import { ArchetypeOptions, GenderOptions } from '@/data/combobox-data';
 
 const AddCharacterPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const { mutate, isError } = useMutation({
-    mutationFn: postCharacter,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CHARACTERS] });
-      navigate('/characters');
-    },
-  });
+  const { mutate, isError } = usePostCharacterMutation();
 
   const handleSave: SubmitHandler<CharacterFormData> = async (data) => {
     mutate({
       ...data,
       birthDate: data.birthDate?.toISOString() ?? '',
+      gender: {
+        code: data.gender,
+        value: GenderOptions.find((g) => g.code === data.gender)?.value ?? '',
+      },
+      archetype: {
+        code: data.archetype,
+        value:
+          ArchetypeOptions.find((g) => g.code === data.archetype)?.value ?? '',
+      },
     });
 
+    navigate('/characters');
+  };
+
+  const handleCancel = () => {
     navigate('/characters');
   };
 
@@ -32,7 +37,11 @@ const AddCharacterPage: React.FC = () => {
     <>
       <PageHeading title='Add Character' />
       {isError && <p>Failed to create character</p>}
-      <CharacterForm onSave={handleSave} character={new CharacterFormData()} />
+      <CharacterForm
+        character={new CharacterFormData()}
+        onSave={handleSave}
+        onCancel={handleCancel}
+      />
     </>
   );
 };

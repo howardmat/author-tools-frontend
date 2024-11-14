@@ -1,12 +1,11 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import PageHeading from '../../components/page-heading';
 import CharacterForm from '../../components/character/character-form';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { QUERY_KEYS } from '@/util/constants';
-import { getCharacter, putCharacter, PutCharacterParams } from '@/http';
+import { useGetCharacterQuery, usePutCharacterMutation } from '@/http';
 import { CharacterFormData } from '@/types';
 import { SubmitHandler } from 'react-hook-form';
-import { queryClient } from '@/http/query-client';
+import LoadingIndicator from '@/components/loading-indicator';
+import { ArchetypeOptions, GenderOptions } from '@/data/combobox-data';
 
 const UpdateCharacterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,36 +13,9 @@ const UpdateCharacterPage: React.FC = () => {
   const params = useParams();
   const characterId = params['id'] || '';
 
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: [QUERY_KEYS.CHARACTERS, characterId],
-    queryFn: ({ signal }) => getCharacter({ id: characterId, signal }),
-  });
+  const { data, isPending, isError, error } = useGetCharacterQuery(characterId);
 
-  const { mutate } = useMutation({
-    mutationFn: putCharacter,
-    onMutate: async (data: PutCharacterParams) => {
-      const character = data.character;
-
-      await queryClient.cancelQueries({
-        queryKey: [QUERY_KEYS.CHARACTERS, characterId],
-      });
-      const previousData = queryClient.getQueryData([
-        QUERY_KEYS.CHARACTERS,
-        characterId,
-      ]);
-      queryClient.setQueryData([QUERY_KEYS.CHARACTERS, characterId], character);
-
-      return { previousData };
-    },
-    onError: (error, variables, context) => {
-      queryClient.setQueryData([QUERY_KEYS.CHARACTERS, characterId], context);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.CHARACTERS, characterId],
-      });
-    },
-  });
+  const { mutate } = usePutCharacterMutation();
 
   const handleSave: SubmitHandler<CharacterFormData> = async (data) => {
     mutate({
@@ -51,16 +23,30 @@ const UpdateCharacterPage: React.FC = () => {
       character: {
         ...data,
         birthDate: data.birthDate?.toISOString() ?? '',
+        gender: {
+          code: data.gender,
+          value: GenderOptions.find((g) => g.code === data.gender)?.value ?? '',
+        },
+        archetype: {
+          code: data.archetype,
+          value:
+            ArchetypeOptions.find((g) => g.code === data.archetype)?.value ??
+            '',
+        },
       },
     });
 
     navigate('/characters');
   };
 
+  const handleCancel = () => {
+    navigate('/characters');
+  };
+
   let content;
 
   if (isPending) {
-    content = <p className='text-center'>Loading...</p>;
+    content = <LoadingIndicator />;
   }
 
   if (isError) {
@@ -77,9 +63,15 @@ const UpdateCharacterPage: React.FC = () => {
     const characterFormData: CharacterFormData = {
       ...data,
       birthDate: data.birthDate ? new Date(data.birthDate) : undefined,
+      gender: data.gender?.code,
+      archetype: data.archetype?.code,
     };
     content = (
-      <CharacterForm character={characterFormData} onSave={handleSave} />
+      <CharacterForm
+        character={characterFormData}
+        onSave={handleSave}
+        onCancel={handleCancel}
+      />
     );
   }
 

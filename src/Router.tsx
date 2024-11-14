@@ -2,6 +2,9 @@ import { createBrowserRouter } from 'react-router-dom';
 import RootLayout from './components/layout/root-layout';
 import ErrorPage from './pages/error-page';
 import HomePage from './pages/home-page';
+import ContactPage from './pages/contact-page';
+import SignInPage from './pages/sign-in-page';
+import SignUpPage from './pages/sign-up-page';
 import CharacterListPage from './pages/character/character-list-page';
 import AddCharacterPage from './pages/character/add-character-page';
 import UpdateCharacterPage from './pages/character/update-character-page';
@@ -9,11 +12,14 @@ import CharacterRootPage from './pages/character/character-root-page';
 
 const router = createBrowserRouter([
   {
-    path: '/',
     element: <RootLayout />,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <HomePage /> },
+      // { index: true, element: <HomePage /> },
+      { path: '/', element: <HomePage /> },
+      { path: '/contact', element: <ContactPage /> },
+      { path: '/sign-in/*', element: <SignInPage /> },
+      { path: '/sign-up/*', element: <SignUpPage /> },
       {
         path: 'characters',
         element: <CharacterRootPage />,

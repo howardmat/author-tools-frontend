@@ -1,20 +1,30 @@
 import PageHeading from '../../components/page-heading';
 import CharacterList from '../../components/character/character-list';
-import { useQuery } from '@tanstack/react-query';
-import { getCharacters } from '@/http';
-import { QUERY_KEYS } from '@/util/constants';
+import { useGetCharactersQuery } from '@/http';
+import EmptyPageContent from '@/components/empty-page-content';
+import LoadingIndicator from '@/components/loading-indicator';
 
 const CharacterListPage: React.FC = () => {
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: [QUERY_KEYS.CHARACTERS],
-    queryFn: getCharacters,
-  });
+  const { data, isPending, isError, error } = useGetCharactersQuery();
 
-  let content;
+  let content = (
+    <EmptyPageContent
+      title='Nothing&lsquo;s here yet!'
+      description='Get started by creating a new character.'
+      actionLabel='New Character'
+      actionRoute='/characters/add'
+      className='mt-8'
+    />
+  );
+
+  if (data && data.length > 0) {
+    content = <CharacterList characters={data} />;
+  }
 
   if (isPending) {
-    content = <p className='text-center'>Loading...</p>;
+    content = <LoadingIndicator />;
   }
+
   if (isError) {
     content = (
       <>
@@ -23,9 +33,6 @@ const CharacterListPage: React.FC = () => {
         </p>
       </>
     );
-  }
-  if (data) {
-    content = <CharacterList characters={data} />;
   }
 
   return (
