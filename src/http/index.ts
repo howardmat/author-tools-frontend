@@ -1,32 +1,18 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/clerk-react';
-import { Character } from '@/types';
+import {
+  Character,
+  GetCharacterParams,
+  GetCharactersParams,
+  PostCharacterParams,
+  PutCharacterParams,
+} from '@/types';
 import { API_URL, QUERY_KEYS } from '../util/constants';
 import { queryClient } from '@/http/query-client';
 
 const CHARACTER_ENDPOINT = `${API_URL}/characters`;
 const FILE_ENDPOINT = `${API_URL}/file`;
-
 const JWT_TEMPLATE = 'author-tools-jwt';
-
-interface AuthenticatedParams {
-  token?: string;
-}
-/* Characters */
-interface GetCharactersParams extends AuthenticatedParams {
-  signal: AbortSignal;
-}
-interface GetCharacterParams extends AuthenticatedParams {
-  id: string;
-  signal: AbortSignal;
-}
-interface PostCharacterParams extends AuthenticatedParams {
-  character: Character;
-}
-interface PutCharacterParams extends AuthenticatedParams {
-  id: string;
-  character: Character;
-}
 
 export function useGetCharactersQuery() {
   const { getToken } = useAuth();
@@ -202,7 +188,7 @@ export function usePostFileMutation({
   });
 }
 
-export async function postFile({
+async function postFile({
   formData,
   token,
 }: {

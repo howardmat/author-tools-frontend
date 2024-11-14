@@ -82,3 +82,21 @@ export class CharacterFormData {
     this.familyHistory = '';
   }
 }
+
+interface AuthenticatedParams {
+  token?: string;
+}
+export interface GetCharactersParams extends AuthenticatedParams {
+  signal: AbortSignal;
+}
+export interface GetCharacterParams extends AuthenticatedParams {
+  id: string;
+  signal: AbortSignal;
+}
+export interface PostCharacterParams extends AuthenticatedParams {
+  character: Character;
+}
+export interface PutCharacterParams extends AuthenticatedParams {
+  id: string;
+  character: Character;
+}

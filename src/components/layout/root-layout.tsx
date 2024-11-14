@@ -7,12 +7,9 @@ import {
   TransitionChild,
 } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-
-import UserProfileMenu from './header/user-profile-menu';
 import HeaderSearch from './header/header-search';
 import NotificationMenu from './header/notification-menu';
 import SidebarMenu from './sidebar/sidebar-menu';
-
 import {
   SignedIn,
   SignedOut,
@@ -83,7 +80,6 @@ const RootLayout: React.FC = () => {
                 aria-hidden='true'
                 className='hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10'
               />
-              {/* <UserProfileMenu /> */}
               <SignedOut>
                 <SignInButton />
               </SignedOut>
