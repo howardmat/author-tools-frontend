@@ -46,8 +46,8 @@ jobs:
           github_id_token: ${{ steps.idtoken.outputs.result }}
           ###### End of Repository/Build Configurations ######
         env:
-          VITE_CLERK_PUBLISHABLE_KEY: 'pk_test_aG90LXRpdG1vdXNlLTM1LmNsZXJrLmFjY291bnRzLmRldiQ'
-          VITE_API_URL: 'https://localhost:7150'
+          VITE_CLERK_PUBLISHABLE_KEY: 'pk_live_Y2xlcmsuYXV0aG9ydG9vbHMucHJvdG8tbm9ydGguY2Ek'
+          VITE_API_URL: 'https://author-tools-backend-app.azurewebsites.net'
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
