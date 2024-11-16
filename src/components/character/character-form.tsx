@@ -10,8 +10,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '../ui/textarea';
-import CharacterLeftCardForm from './character-left-card-form';
 import Card from '../card';
+import CharacterLeftCardForm from './character-left-card-form';
 
 const formSchema = z.object({
   name: z.string().min(2, {

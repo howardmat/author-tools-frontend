@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import {
   FormControl,
   FormField,
@@ -9,12 +11,10 @@ import { Input } from '../ui/input';
 import DatePicker from '../ui/datepicker';
 import cssClasses from './character-left-card-form.module.css';
 import Card from '../card';
-import { useFormContext } from 'react-hook-form';
 import ComboBox from '../ui/combobox';
 import { ArchetypeOptions, GenderOptions } from '@/data/combobox-data';
 import AvatarUpload from '../avatar-upload';
 import Divider from '../divider';
-import { useState } from 'react';
 
 interface CharacterLeftCardFormState {
   isScrollTop: boolean;

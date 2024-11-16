@@ -1,8 +1,8 @@
-import { format } from 'date-fns';
-import { Character } from '../../types';
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
-import { API_URL } from '@/util/constants';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
+import { ChevronRightIcon } from '@heroicons/react/20/solid';
+import { Character } from '../../types';
+import { API_URL } from '@/util/constants';
 
 const CharacterList: React.FC<{ characters: Character[] }> = ({
   characters,

@@ -8,8 +8,8 @@ import {
   PutCharacterParams,
   UseMutationCallbacks,
 } from '@/types';
-import { API_URL, QUERY_KEYS } from '../util/constants';
 import { queryClient } from '@/http/query-client';
+import { API_URL, QUERY_KEYS } from '../util/constants';
 
 const CHARACTER_ENDPOINT = `${API_URL}/characters`;
 const FILE_ENDPOINT = `${API_URL}/file`;
