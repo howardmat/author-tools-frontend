@@ -6,16 +6,34 @@ import { CharacterFormData } from '@/types';
 import { SubmitHandler } from 'react-hook-form';
 import LoadingIndicator from '@/components/loading-indicator';
 import { ArchetypeOptions, GenderOptions } from '@/data/combobox-data';
+import { useToast } from '@/hooks/use-toast';
 
 const UpdateCharacterPage: React.FC = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const params = useParams();
   const characterId = params['id'] || '';
 
   const { data, isPending, isError, error } = useGetCharacterQuery(characterId);
 
-  const { mutate } = usePutCharacterMutation();
+  const { mutate } = usePutCharacterMutation({
+    onSuccess: () => {
+      toast({
+        title: 'Success!',
+        description: 'Successfully updated the character',
+        variant: 'success',
+      });
+      navigate('/characters');
+    },
+    onError: (error?: Error) => {
+      toast({
+        title: 'Error!',
+        description: error?.message ?? 'An unexpected error occurred.',
+        variant: 'destructive',
+      });
+    },
+  });
 
   const handleSave: SubmitHandler<CharacterFormData> = async (data) => {
     mutate({
@@ -35,8 +53,6 @@ const UpdateCharacterPage: React.FC = () => {
         },
       },
     });
-
-    navigate('/characters');
   };
 
   const handleCancel = () => {

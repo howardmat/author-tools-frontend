@@ -6,6 +6,7 @@ import {
   GetCharactersParams,
   PostCharacterParams,
   PutCharacterParams,
+  UseMutationCallbacks,
 } from '@/types';
 import { API_URL, QUERY_KEYS } from '../util/constants';
 import { queryClient } from '@/http/query-client';
@@ -73,7 +74,10 @@ async function getCharacter({
   return (await response.json()) as Character;
 }
 
-export function usePostCharacterMutation() {
+export function usePostCharacterMutation({
+  onSuccess,
+  onError,
+}: UseMutationCallbacks) {
   const { getToken } = useAuth();
 
   return useMutation({
@@ -81,8 +85,12 @@ export function usePostCharacterMutation() {
       const token = (await getToken({ template: JWT_TEMPLATE })) || '';
       return await postCharacter({ character, token });
     },
+    onError: (error) => {
+      if (onError) onError(error);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CHARACTERS] });
+      if (onSuccess) onSuccess();
     },
   });
 }
@@ -108,7 +116,10 @@ async function postCharacter({
   return await response.json();
 }
 
-export function usePutCharacterMutation() {
+export function usePutCharacterMutation({
+  onSuccess,
+  onError,
+}: UseMutationCallbacks) {
   const { getToken } = useAuth();
 
   return useMutation({
@@ -138,13 +149,16 @@ export function usePutCharacterMutation() {
       return { previousData };
     },
     onError: (error, variables, context) => {
-      console.log(error);
       queryClient.setQueryData([QUERY_KEYS.CHARACTERS, variables.id], context);
+
+      if (onError) onError(error);
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.CHARACTERS],
       });
+
+      if (onSuccess) onSuccess();
     },
   });
 }

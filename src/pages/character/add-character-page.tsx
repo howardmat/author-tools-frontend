@@ -5,11 +5,29 @@ import { CharacterFormData } from '../../types';
 import CharacterForm from '../../components/character/character-form';
 import { usePostCharacterMutation } from '@/http';
 import { ArchetypeOptions, GenderOptions } from '@/data/combobox-data';
+import { useToast } from '@/hooks/use-toast';
 
 const AddCharacterPage: React.FC = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const { mutate, isError } = usePostCharacterMutation();
+  const { mutate, isError } = usePostCharacterMutation({
+    onSuccess: () => {
+      toast({
+        title: 'Success!',
+        description: 'Successfully added a new character',
+        variant: 'success',
+      });
+      navigate('/characters');
+    },
+    onError: (error?: Error) => {
+      toast({
+        title: 'Error!',
+        description: error?.message ?? 'An unexpected error occurred',
+        variant: 'destructive',
+      });
+    },
+  });
 
   const handleSave: SubmitHandler<CharacterFormData> = async (data) => {
     mutate({
@@ -25,8 +43,6 @@ const AddCharacterPage: React.FC = () => {
           ArchetypeOptions.find((g) => g.code === data.archetype)?.value ?? '',
       },
     });
-
-    navigate('/characters');
   };
 
   const handleCancel = () => {
