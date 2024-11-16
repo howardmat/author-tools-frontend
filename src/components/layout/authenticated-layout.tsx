@@ -17,6 +17,7 @@ import {
   UserButton,
   useAuth,
 } from '@clerk/clerk-react';
+import { Toaster } from '@/components/ui/toaster';
 
 const AuthenticatedLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -108,6 +109,7 @@ const AuthenticatedLayout: React.FC = () => {
           </div>
         </main>
       </div>
+      <Toaster />
     </>
   );
 };
