@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 import { Character } from '../../types';
-import { API_URL } from '@/util/constants';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const CharacterList: React.FC<{ characters: Character[] }> = ({
   characters,

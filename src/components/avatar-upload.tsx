@@ -2,9 +2,10 @@ import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { LoaderCircle, UserCircleIcon } from 'lucide-react';
 import { usePostFileMutation } from '@/http';
-import { API_URL } from '@/util/constants';
 import { FormField } from './ui/form';
 import { Input } from './ui/input';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface AvatarUploadProps {
   name: string;

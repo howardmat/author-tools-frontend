@@ -10,6 +10,7 @@
       "@/*": ["./src/*"]
     },
     "module": "NodeNext",
-    "moduleResolution": "nodenext"
+    "moduleResolution": "nodenext",
+    "forceConsistentCasingInFileNames": true
   }
 }

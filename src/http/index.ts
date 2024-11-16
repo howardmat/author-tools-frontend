@@ -9,7 +9,9 @@ import {
   UseMutationCallbacks,
 } from '@/types';
 import { queryClient } from '@/http/query-client';
-import { API_URL, QUERY_KEYS } from '../util/constants';
+import { QUERY_KEYS } from '../util/constants';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const CHARACTER_ENDPOINT = `${API_URL}/characters`;
 const FILE_ENDPOINT = `${API_URL}/file`;
