@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-  # pull_request:
-  #   types: [opened, synchronize, reopened, closed]
-  #   branches:
-  #     - main
 
 jobs:
   build_and_deploy_job:
@@ -48,14 +44,3 @@ jobs:
         env:
           VITE_CLERK_PUBLISHABLE_KEY: 'pk_live_Y2xlcmsuYXV0aG9ydG9vbHMucHJvdG8tbm9ydGguY2Ek'
           VITE_API_URL: 'https://author-tools-backend-app.azurewebsites.net'
-
-  close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Close Pull Request Job
-    steps:
-      - name: Close Pull Request
-        id: closepullrequest
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          action: 'close'
