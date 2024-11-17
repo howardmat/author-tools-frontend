@@ -15,7 +15,7 @@ const UpdateCharacterPage: React.FC = () => {
   const params = useParams();
   const characterId = params['id'] || '';
 
-  const { data, isPending, isError, error } = useGetCharacterQuery(characterId);
+  const { data, isPending } = useGetCharacterQuery(characterId);
 
   const { mutate } = usePutCharacterMutation({
     onSuccess: () => {
@@ -40,7 +40,7 @@ const UpdateCharacterPage: React.FC = () => {
       id: characterId,
       character: {
         ...data,
-        birthDate: data.birthDate?.toISOString() ?? '',
+        birthDate: data.birthDate?.toISOString() ?? null,
         gender: {
           code: data.gender,
           value: GenderOptions.find((g) => g.code === data.gender)?.value ?? '',
@@ -63,16 +63,6 @@ const UpdateCharacterPage: React.FC = () => {
 
   if (isPending) {
     content = <LoadingIndicator />;
-  }
-
-  if (isError) {
-    content = (
-      <>
-        <p className='text-center text-red-500'>
-          Error! {error.message || 'An error has occurred'}
-        </p>
-      </>
-    );
   }
 
   if (data) {

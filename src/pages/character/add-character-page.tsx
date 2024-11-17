@@ -11,7 +11,7 @@ const AddCharacterPage: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const { mutate, isError } = usePostCharacterMutation({
+  const { mutate } = usePostCharacterMutation({
     onSuccess: () => {
       toast({
         title: 'Success!',
@@ -32,7 +32,7 @@ const AddCharacterPage: React.FC = () => {
   const handleSave: SubmitHandler<CharacterFormData> = async (data) => {
     mutate({
       ...data,
-      birthDate: data.birthDate?.toISOString() ?? '',
+      birthDate: data.birthDate?.toISOString() ?? null,
       gender: {
         code: data.gender,
         value: GenderOptions.find((g) => g.code === data.gender)?.value ?? '',
@@ -52,7 +52,6 @@ const AddCharacterPage: React.FC = () => {
   return (
     <>
       <PageHeading title='Add Character' />
-      {isError && <p>Failed to create character</p>}
       <CharacterForm
         character={new CharacterFormData()}
         onSave={handleSave}

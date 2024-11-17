@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
+import { ChevronRightIcon, UserCircleIcon } from '@heroicons/react/20/solid';
 import { Character } from '../../types';
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -23,11 +23,19 @@ const CharacterList: React.FC<{ characters: Character[] }> = ({
             className='relative flex justify-between gap-x-6 py-5 cursor-pointer'
           >
             <div className='flex min-w-0 gap-x-4'>
-              <img
-                alt=''
-                src={`${API_URL}/file/${c.imageFileId}`}
-                className='h-12 w-12 flex-none rounded-full bg-gray-50'
-              />
+              {c.imageFileId && (
+                <img
+                  alt=''
+                  src={`${API_URL}/file/${c.imageFileId}`}
+                  className='h-12 w-12 flex-none rounded-full bg-gray-50'
+                />
+              )}
+              {!c.imageFileId && (
+                <UserCircleIcon
+                  aria-hidden='true'
+                  className='w-12 h-12 text-gray-300'
+                />
+              )}
               <div className='min-w-0 flex-auto'>
                 <p className='text-sm/6 font-semibold text-gray-900'>
                   {c.name}

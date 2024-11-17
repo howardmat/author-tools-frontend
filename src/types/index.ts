@@ -14,7 +14,7 @@ export interface Character {
   alias: string;
   archetype: CodeValue;
   imageFileId: string;
-  birthDate: string;
+  birthDate?: string | null;
   age?: number;
   profession: string;
   loveInterest: string;

@@ -1,12 +1,11 @@
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
+import LoadingIndicator from '@/components/loading-indicator';
 
 const CharacterRootPage: React.FC = () => {
   const { userId, isLoaded } = useAuth();
   const navigate = useNavigate();
-
-  console.log('test', userId);
 
   React.useEffect(() => {
     if (isLoaded && !userId) {
@@ -14,7 +13,7 @@ const CharacterRootPage: React.FC = () => {
     }
   }, [isLoaded]);
 
-  if (!isLoaded) return 'Loading...';
+  if (!isLoaded) return <LoadingIndicator />;
 
   return <Outlet />;
 };
