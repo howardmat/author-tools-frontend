@@ -9,7 +9,7 @@ import {
   UseMutationCallbacks,
 } from '@/types';
 import { queryClient } from '@/http/query-client';
-import { QUERY_KEYS } from '../util/constants';
+import { QUERY_KEYS } from '../lib/constants';
 
 const API_URL = import.meta.env.VITE_API_URL;
 

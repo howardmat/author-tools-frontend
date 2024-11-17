@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { UsersIcon } from '@heroicons/react/24/outline';
-import { classNames } from '../../../util';
+import { cn } from '@/lib/utils';
 
 const navigation = [
   { name: 'Characters', href: '/characters', icon: UsersIcon, current: false },
@@ -26,7 +26,7 @@ const SidebarMenu: React.FC = () => {
                     <NavLink
                       to={item.href}
                       className={({ isActive }) =>
-                        classNames(
+                        cn(
                           isActive
                             ? 'bg-gray-800 text-white'
                             : 'text-gray-400 hover:bg-gray-800 hover:text-white',

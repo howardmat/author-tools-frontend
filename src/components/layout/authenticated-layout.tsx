@@ -18,13 +18,12 @@ import {
   useAuth,
 } from '@clerk/clerk-react';
 import { Toaster } from '@/components/ui/toaster';
+import LoadingIndicator from '../loading-indicator';
 
 const AuthenticatedLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { userId, isLoaded } = useAuth();
   const navigate = useNavigate();
-
-  console.log('test', userId);
 
   useEffect(() => {
     if (isLoaded && !userId) {
@@ -32,7 +31,7 @@ const AuthenticatedLayout: React.FC = () => {
     }
   }, [isLoaded]);
 
-  if (!isLoaded) return 'Loading...';
+  if (!isLoaded) return <LoadingIndicator />;
 
   return (
     <>
