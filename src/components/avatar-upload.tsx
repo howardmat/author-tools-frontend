@@ -4,6 +4,7 @@ import { LoaderCircle, UserCircleIcon } from 'lucide-react';
 import { usePostFileMutation } from '@/http';
 import { FormField } from './ui/form';
 import { Input } from './ui/input';
+import { useToast } from '@/hooks/use-toast';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -12,6 +13,7 @@ interface AvatarUploadProps {
 }
 
 const AvatarUpload: React.FC<AvatarUploadProps> = ({ name }) => {
+  const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const form = useFormContext();
   const [fileId, setFileId] = useState<string | undefined>(
@@ -19,11 +21,18 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ name }) => {
   );
 
   const { mutate, isPending } = usePostFileMutation({
-    onSettled: async (fileId: string | undefined) => {
+    onSuccess: async (fileId: string | undefined) => {
       if (fileId) {
         setFileId(fileId);
         form.setValue(name, fileId);
       }
+    },
+    onError: (error: Error) => {
+      toast({
+        title: 'Error!',
+        description: error?.message ?? 'An unexpected error occurred',
+        variant: 'destructive',
+      });
     },
   });
 

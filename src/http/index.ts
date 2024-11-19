@@ -189,9 +189,11 @@ async function putCharacter({
 
 /* Files */
 export function usePostFileMutation({
-  onSettled,
+  onSuccess,
+  onError,
 }: {
-  onSettled: (fileId: string | undefined) => void;
+  onSuccess: (fileId: string | undefined) => void;
+  onError: (error: Error) => void;
 }) {
   const { getToken } = useAuth();
 
@@ -200,7 +202,8 @@ export function usePostFileMutation({
       const token = (await getToken({ template: JWT_TEMPLATE })) || '';
       return await postFile({ formData, token });
     },
-    onSettled: onSettled,
+    onSuccess: onSuccess,
+    onError: onError,
   });
 }
 
