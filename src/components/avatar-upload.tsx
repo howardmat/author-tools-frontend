@@ -5,6 +5,7 @@ import { usePostFileMutation } from '@/http';
 import { FormField } from './ui/form';
 import { Input } from './ui/input';
 import { useToast } from '@/hooks/use-toast';
+import styles from './avatar-upload.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -55,7 +56,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ name }) => {
 
   if (isPending) {
     avatarPreviewContent = (
-      <LoaderCircle className='loader-icon w-48 h-24 text-gray-300' />
+      <LoaderCircle className={`${styles.spin} w-48 h-24 text-gray-300`} />
     );
   }
 
