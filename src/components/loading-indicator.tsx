@@ -6,9 +6,7 @@ const LoadingIndicator: React.FC = () => {
     <div className='flex justify-center'>
       <div className='w-full flex items-center md:w-3/4 md:mt-6'>
         <div className='mr-4 shrink-0 self-center'>
-          <LoaderCircle
-            className={`${styles.loadericon} w-48 h-24 text-gray-300`}
-          />
+          <LoaderCircle className={`${styles.spin} w-48 h-24 text-gray-300`} />
         </div>
         <div>
           <h4 className='text-lg font-bold'>Loading...</h4>
