@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { UsersIcon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
+import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 
 const navigation = [
   { name: 'Characters', href: '/characters', icon: UsersIcon, current: false },
@@ -44,9 +45,9 @@ const SidebarMenu: React.FC = () => {
                 ))}
               </ul>
             </li>
-            {/* <li className='mt-auto'>
+            <li className='mt-auto'>
               <NavLink
-                to='/characters'
+                to='/settings'
                 className='group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-400 hover:bg-gray-800 hover:text-white'
               >
                 <Cog6ToothIcon
@@ -55,7 +56,7 @@ const SidebarMenu: React.FC = () => {
                 />
                 Settings
               </NavLink>
-            </li> */}
+            </li>
           </ul>
         </nav>
       </div>
