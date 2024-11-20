@@ -1,8 +1,4 @@
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  PlusCircleIcon,
-} from '@heroicons/react/20/solid';
+import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router-dom';
 
 const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
@@ -11,48 +7,6 @@ const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
 }) => {
   return (
     <>
-      <div>
-        <nav aria-label='Back' className='sm:hidden'>
-          <a
-            href='#'
-            className='flex items-center text-sm font-medium text-gray-500 hover:text-gray-700'
-          >
-            <ChevronLeftIcon
-              aria-hidden='true'
-              className='-ml-1 mr-1 h-5 w-5 flex-shrink-0 text-gray-400'
-            />
-            Back
-          </a>
-        </nav>
-        <nav aria-label='Breadcrumb' className='hidden sm:flex'>
-          <ol role='list' className='flex items-center space-x-4'>
-            <li>
-              <div className='flex'>
-                <Link
-                  to='/'
-                  className='text-sm font-medium text-gray-500 hover:text-gray-700'
-                >
-                  Home
-                </Link>
-              </div>
-            </li>
-            <li>
-              <div className='flex items-center'>
-                <ChevronRightIcon
-                  aria-hidden='true'
-                  className='h-5 w-5 flex-shrink-0 text-gray-400'
-                />
-                <Link
-                  to='/characters'
-                  className='ml-4 text-sm font-medium text-gray-500 hover:text-gray-700'
-                >
-                  Characters
-                </Link>
-              </div>
-            </li>
-          </ol>
-        </nav>
-      </div>
       <div className='my-2 md:flex md:items-center md:justify-between'>
         <div className='min-w-0 flex-1'>
           <h2 className='text-2xl/7 font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight'>
