@@ -10,6 +10,7 @@ import AddCharacterPage from './pages/character/add-character-page';
 import UpdateCharacterPage from './pages/character/update-character-page';
 import CharacterRootPage from './pages/character/character-root-page';
 import AuthenticatedLayout from './components/layout/authenticated-layout';
+import SettingsPage from './pages/settings-page';
 
 //todo commenting after rename. remove later
 const router = createBrowserRouter([
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
     element: <AuthenticatedLayout />,
     errorElement: <ErrorPage />,
     children: [
+      { path: '/settings', element: <SettingsPage /> },
       {
         path: 'characters',
         element: <CharacterRootPage />,
