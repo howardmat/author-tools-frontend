@@ -9,6 +9,8 @@ import { SignedIn, SignedOut } from '@clerk/clerk-react';
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
+  const year = new Date().getFullYear();
+
   return (
     <>
       <section className={styles.parallaxcontainer}>
@@ -61,6 +63,14 @@ const HomePage: React.FC = () => {
           </SignedOut>
         </div>
       </section>
+      <div className={styles.placeholder}></div>
+      <footer className='w-full'>
+        <div className='flex justify-center items-center h-full'>
+          <p className='text-zinc-600 text-sm'>
+            Tools for Authors &copy; {year}
+          </p>
+        </div>
+      </footer>
     </>
   );
 };

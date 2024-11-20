@@ -33,3 +33,28 @@
   align-items: center;
   justify-content: center;
 }
+
+/* CSS */
+
+section,
+.placeholder {
+  position: relative; /* crucial for z-index to work */
+}
+
+section {
+  z-index: 10;
+}
+
+.placeholder {
+  z-index: 1;
+  height: 177px; /* same as footer height */
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  z-index: 5;
+  height: 177px;
+  background-color: #222;
+  border-top: 1px solid #444;
+}
