@@ -12,7 +12,6 @@ import CharacterRootPage from './pages/character/character-root-page';
 import AuthenticatedLayout from './components/layout/authenticated-layout';
 import SettingsPage from './pages/settings-page';
 
-//todo commenting after rename. remove later
 const router = createBrowserRouter([
   {
     element: <RootLayout />,

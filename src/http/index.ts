@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/clerk-react';
 import {
   Character,
+  DeleteCharacterParams,
   GetCharacterParams,
   GetCharactersParams,
   PostCharacterParams,
@@ -185,6 +186,41 @@ async function putCharacter({
   }
 
   return await response.json();
+}
+
+export function useDeleteCharacterMutation({
+  onSuccess,
+  onError,
+}: UseMutationCallbacks) {
+  const { getToken } = useAuth();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
+      await deleteCharacter({ id, token });
+    },
+    onError: (error) => {
+      if (onError) onError(error);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CHARACTERS] });
+      if (onSuccess) onSuccess();
+    },
+  });
+}
+
+async function deleteCharacter({ id, token }: DeleteCharacterParams) {
+  const response = await fetch(CHARACTER_ENDPOINT + `/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while deleting the character');
+    throw error;
+  }
 }
 
 /* Files */

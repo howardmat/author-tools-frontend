@@ -1,7 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { ChevronRightIcon, UserCircleIcon } from '@heroicons/react/20/solid';
+import {
+  ChevronRightIcon,
+  TrashIcon,
+  UserCircleIcon,
+} from '@heroicons/react/20/solid';
 import { Character } from '../../types';
+import ConfirmAlert, { IConfirmAlert } from '../confirm-alert';
+import { MouseEvent, useRef } from 'react';
+import { Button } from '../ui/button';
+import { toast } from '@/hooks/use-toast';
+import { useDeleteCharacterMutation } from '@/http';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const CharacterList: React.FC<{ characters: Character[] }> = ({
@@ -11,6 +20,43 @@ const CharacterList: React.FC<{ characters: Character[] }> = ({
 
   const handleListClick = (id: string | undefined) => {
     navigate(`${id}/edit`);
+  };
+
+  const { mutate } = useDeleteCharacterMutation({
+    onSuccess: () => {
+      toast({
+        title: 'Success!',
+        description: 'Successfully deleted the character',
+        variant: 'success',
+      });
+    },
+    onError: (error?: Error) => {
+      toast({
+        title: 'Error!',
+        description: error?.message ?? 'An unexpected error occurred',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const alertRef = useRef<IConfirmAlert>(null);
+  const handleDeleteClick = (
+    event: MouseEvent<HTMLButtonElement>,
+    id: string
+  ) => {
+    event.stopPropagation();
+
+    if (alertRef.current) {
+      alertRef.current.show({
+        title: 'Are you sure?',
+        description: 'This will permanently delete the character.',
+        confirmLabel: 'Continue',
+        declineLabel: 'Cancel',
+        icon: 'question',
+        variant: 'destructive',
+        onConfirm: () => mutate(id),
+      });
+    }
   };
 
   return (
@@ -57,6 +103,12 @@ const CharacterList: React.FC<{ characters: Character[] }> = ({
                   {c.age && <span> | Age: {c.age}</span>}
                 </p>
               </div>
+              <Button
+                variant='destructive'
+                onClick={(event) => handleDeleteClick(event, c.id || '')}
+              >
+                <TrashIcon />
+              </Button>
               <ChevronRightIcon
                 aria-hidden='true'
                 className='h-5 w-5 flex-none text-gray-400'
@@ -65,6 +117,7 @@ const CharacterList: React.FC<{ characters: Character[] }> = ({
           </li>
         ))}
       </ul>
+      <ConfirmAlert ref={alertRef} />
     </>
   );
 };
