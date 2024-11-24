@@ -100,6 +100,9 @@ export interface PutCharacterParams extends AuthenticatedParams {
   id: string;
   character: Character;
 }
+export interface DeleteCharacterParams extends AuthenticatedParams {
+  id: string;
+}
 
 export interface UseMutationCallbacks {
   onSuccess?: () => void;

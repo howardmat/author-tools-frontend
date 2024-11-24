@@ -1,12 +1,20 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import PageHeading from '../../components/page-heading';
 import CharacterForm from '../../components/character/character-form';
-import { useGetCharacterQuery, usePutCharacterMutation } from '@/http';
+import {
+  useDeleteCharacterMutation,
+  useGetCharacterQuery,
+  usePutCharacterMutation,
+} from '@/http';
 import { CharacterFormData } from '@/types';
 import { SubmitHandler } from 'react-hook-form';
 import LoadingIndicator from '@/components/loading-indicator';
 import { ArchetypeOptions, GenderOptions } from '@/data/combobox-data';
 import { useToast } from '@/hooks/use-toast';
+import ConfirmAlert, { IConfirmAlert } from '@/components/confirm-alert';
+import { useRef } from 'react';
+import { TrashIcon } from '@heroicons/react/20/solid';
+import { Button } from '@/components/ui/button';
 
 const UpdateCharacterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -55,6 +63,29 @@ const UpdateCharacterPage: React.FC = () => {
     });
   };
 
+  const { mutate: mutateDelete } = useDeleteCharacterMutation({
+    onSuccess: () => {
+      toast({
+        title: 'Success!',
+        description: 'Successfully deleted the character',
+        variant: 'success',
+      });
+      navigate('/characters');
+    },
+    onError: (error?: Error) => {
+      toast({
+        title: 'Error!',
+        description: error?.message ?? 'An unexpected error occurred',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const alertRef = useRef<IConfirmAlert>(null);
+  const handleDelete = () => {
+    if (alertRef.current) alertRef.current.show();
+  };
+
   const handleCancel = () => {
     navigate('/characters');
   };
@@ -72,12 +103,32 @@ const UpdateCharacterPage: React.FC = () => {
       gender: data.gender?.code,
       archetype: data.archetype?.code,
     };
+
     content = (
-      <CharacterForm
-        character={characterFormData}
-        onSave={handleSave}
-        onCancel={handleCancel}
-      />
+      <>
+        <CharacterForm
+          character={characterFormData}
+          onSave={handleSave}
+          onCancel={handleCancel}
+        />
+        <Button
+          variant='destructive'
+          className='relative -top-9'
+          onClick={handleDelete}
+        >
+          <TrashIcon />
+        </Button>
+        <ConfirmAlert
+          ref={alertRef}
+          title='Are you sure?'
+          description='This will permanently delete the character.'
+          confirmLabel='Continue'
+          declineLabel='Cancel'
+          icon='question'
+          variant='destructive'
+          onConfirm={() => mutateDelete(data.id || '')}
+        />
+      </>
     );
   }
 
