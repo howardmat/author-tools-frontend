@@ -61,7 +61,7 @@ const CharacterForm: React.FC<{
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
         <CharacterLeftCardForm />
         <div className='col-span-2 flex flex-wrap justify-center gap-x-6 gap-y-6'>
-          <Card title='Personal Traits' className='w-full sm:w-64'>
+          <Card title='Personal Traits' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -84,7 +84,7 @@ const CharacterForm: React.FC<{
               </div>
             </div>
           </Card>
-          <Card title='Abilities' className='w-full sm:w-64'>
+          <Card title='Abilities' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -107,7 +107,7 @@ const CharacterForm: React.FC<{
               </div>
             </div>
           </Card>
-          <Card title='Strengths' className='w-full sm:w-64'>
+          <Card title='Strengths' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -130,7 +130,7 @@ const CharacterForm: React.FC<{
               </div>
             </div>
           </Card>
-          <Card title='Weaknesses' className='w-full sm:w-64'>
+          <Card title='Weaknesses' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -153,7 +153,7 @@ const CharacterForm: React.FC<{
               </div>
             </div>
           </Card>
-          <Card title='History' className='w-full sm:w-64'>
+          <Card title='History' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -176,7 +176,7 @@ const CharacterForm: React.FC<{
               </div>
             </div>
           </Card>
-          <Card title='Family History' className='w-full sm:w-64'>
+          <Card title='Family History' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -199,7 +199,7 @@ const CharacterForm: React.FC<{
               </div>
             </div>
           </Card>
-          <Card title='Friends and Family' className='w-full sm:w-64'>
+          <Card title='Friends and Family' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
