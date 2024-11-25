@@ -1,10 +1,17 @@
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Button } from './ui/button';
 
 const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
   title,
   addRoute,
 }) => {
+  const navigate = useNavigate();
+
+  const handleAddClick = () => {
+    if (addRoute) navigate(addRoute);
+  };
+
   return (
     <>
       <div className='my-2 md:flex md:items-center md:justify-between'>
@@ -15,13 +22,10 @@ const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
         </div>
         {addRoute && (
           <div className='mt-4 flex flex-shrink-0 md:ml-4 md:mt-0'>
-            <Link
-              to={addRoute}
-              className='inline-flex items-center gap-x-1.5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-            >
+            <Button onClick={handleAddClick}>
               <PlusCircleIcon aria-hidden='true' className='-ml-0.5 h-5 w-5' />
               Add
-            </Link>
+            </Button>
           </div>
         )}
       </div>

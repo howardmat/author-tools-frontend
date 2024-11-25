@@ -5,6 +5,7 @@ import {
   PencilSquareIcon,
 } from '@heroicons/react/20/solid';
 import { SignedIn, SignedOut } from '@clerk/clerk-react';
+import { Button } from '@/components/ui/button';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -22,9 +23,9 @@ const HomePage: React.FC = () => {
           </p>
           <SignedIn>
             <div>
-              <button
+              <Button
+                variant='outline'
                 type='button'
-                className='mx-3 my-3 inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                 onClick={() => navigate('/characters')}
               >
                 <PencilSquareIcon
@@ -32,14 +33,14 @@ const HomePage: React.FC = () => {
                   className='-ml-0.5 size-5'
                 />
                 Enter
-              </button>
+              </Button>
             </div>
           </SignedIn>
           <SignedOut>
             <div>
-              <button
+              <Button
+                variant='outline'
                 type='button'
-                className='mx-3 my-3 inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                 onClick={() => navigate('/sign-in')}
               >
                 <ArrowLeftEndOnRectangleIcon
@@ -47,10 +48,10 @@ const HomePage: React.FC = () => {
                   className='-ml-0.5 size-5'
                 />
                 Sign In
-              </button>
-              <button
+              </Button>
+              <Button
+                variant='outline'
                 type='button'
-                className='mx-3 my-3 inline-flex items-center gap-x-2 rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                 onClick={() => navigate('/sign-up')}
               >
                 <PencilSquareIcon
@@ -58,7 +59,7 @@ const HomePage: React.FC = () => {
                   className='-ml-0.5 size-5'
                 />
                 Sign Up
-              </button>
+              </Button>
             </div>
           </SignedOut>
         </div>
