@@ -32,6 +32,7 @@ export interface Character {
   relationships: CharacterRelationship[];
   history: string;
   familyHistory: string;
+  order?: number;
 }
 
 export class CharacterFormData {
@@ -83,6 +84,12 @@ export class CharacterFormData {
   }
 }
 
+export interface PatchRequest {
+  operation: 'update';
+  path: string;
+  value: unknown;
+}
+
 interface AuthenticatedParams {
   token?: string;
 }
@@ -99,6 +106,10 @@ export interface PostCharacterParams extends AuthenticatedParams {
 export interface PutCharacterParams extends AuthenticatedParams {
   id: string;
   character: Character;
+}
+export interface PatchCharacterParams extends AuthenticatedParams {
+  id: string;
+  patchRequests: PatchRequest[];
 }
 export interface DeleteCharacterParams extends AuthenticatedParams {
   id: string;

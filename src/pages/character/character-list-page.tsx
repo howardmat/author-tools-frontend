@@ -18,7 +18,7 @@ const CharacterListPage: React.FC = () => {
   );
 
   if (data && data.length > 0) {
-    content = <CharacterList characters={data} />;
+    content = <CharacterList characters={data} key={data.length} />;
   }
 
   if (isPending) {
