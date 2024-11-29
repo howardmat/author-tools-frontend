@@ -7,7 +7,9 @@ import {
   GetCharactersParams,
   PostCharacterParams,
   PutCharacterParams,
+  PatchCharacterParams,
   UseMutationCallbacks,
+  PatchRequest,
 } from '@/types';
 import { queryClient } from '@/http/query-client';
 import { QUERY_KEYS } from '../lib/constants';
@@ -182,6 +184,56 @@ async function putCharacter({
 
   if (!response.ok) {
     const error = new Error('An error occurred while creating the character');
+    throw error;
+  }
+
+  return await response.json();
+}
+
+export function usePatchCharacterMutation({
+  onSuccess,
+  onError,
+}: UseMutationCallbacks) {
+  const { getToken } = useAuth();
+
+  return useMutation({
+    mutationFn: async ({
+      patchRequests,
+      id,
+    }: {
+      patchRequests: PatchRequest[];
+      id: string;
+    }) => {
+      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
+      return await patchCharacter({ id, patchRequests, token });
+    },
+    onError: (error) => {
+      if (onError) onError(error);
+    },
+    onSuccess: () => {
+      if (onSuccess) onSuccess();
+    },
+  });
+}
+
+async function patchCharacter({
+  id,
+  patchRequests,
+  token,
+}: PatchCharacterParams): Promise<Character> {
+  const response = await fetch(CHARACTER_ENDPOINT + `/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(patchRequests),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const error = new Error(
+      'An error occurred while partially updating the character'
+    );
     throw error;
   }
 
