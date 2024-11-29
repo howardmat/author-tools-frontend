@@ -211,10 +211,6 @@ export function usePatchCharacterMutation({
       if (onError) onError(error);
     },
     onSuccess: () => {
-      // queryClient.invalidateQueries({
-      //   queryKey: [QUERY_KEYS.CHARACTERS],
-      // });
-
       if (onSuccess) onSuccess();
     },
   });

@@ -80,8 +80,8 @@ const CharacterList: React.FC<{ characters: Character[] }> = ({
   };
 
   const handleDragEnd = () => {
-    // implement patch call to update the order of each character that changed
     const charactersCopy = [...charactersState];
+
     charactersCopy.forEach((c, i) => {
       const updatedOrder = i + 1;
       if (c.order !== updatedOrder) {
