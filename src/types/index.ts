@@ -84,6 +84,20 @@ export class CharacterFormData {
   }
 }
 
+export interface BreadcrumbTrail {
+  workspaceName: string;
+  trail: Breadcrumb[];
+}
+export interface Breadcrumb {
+  name: string;
+  url?: string;
+}
+export interface Workspace {
+  name: string;
+  logo: React.ElementType;
+  description: string;
+}
+
 export interface PatchRequest {
   operation: 'update';
   path: string;

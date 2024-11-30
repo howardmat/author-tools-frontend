@@ -6,10 +6,24 @@ import CharacterForm from '../../components/character/character-form';
 import { usePostCharacterMutation } from '@/http';
 import { ArchetypeOptions, GenderOptions } from '@/data/combobox-data';
 import { useToast } from '@/hooks/use-toast';
+import { useEffect } from 'react';
+import { ActionTypes, AddBreadcrumbTrailAction } from '@/actions';
+import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 
 const AddCharacterPage: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { dispatch } = useBreadcrumbContext();
+
+  useEffect(() => {
+    const addBreadcrumbTrailAction: AddBreadcrumbTrailAction = {
+      type: ActionTypes.ADD_BREADCRUMB_TRAIL,
+      payload: {
+        name: 'Add',
+      },
+    };
+    dispatch(addBreadcrumbTrailAction);
+  }, []);
 
   const { mutate } = usePostCharacterMutation({
     onSuccess: () => {

@@ -12,13 +12,27 @@ import LoadingIndicator from '@/components/loading-indicator';
 import { ArchetypeOptions, GenderOptions } from '@/data/combobox-data';
 import { useToast } from '@/hooks/use-toast';
 import ConfirmAlert, { IConfirmAlert } from '@/components/confirm-alert';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { TrashIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/components/ui/button';
+import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
+import { ActionTypes, AddBreadcrumbTrailAction } from '@/actions';
 
 const UpdateCharacterPage: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const { dispatch } = useBreadcrumbContext();
+
+  useEffect(() => {
+    const addBreadcrumbTrailAction: AddBreadcrumbTrailAction = {
+      type: ActionTypes.ADD_BREADCRUMB_TRAIL,
+      payload: {
+        name: 'Edit',
+      },
+    };
+    dispatch(addBreadcrumbTrailAction);
+  }, []);
 
   const params = useParams();
   const characterId = params['id'] || '';

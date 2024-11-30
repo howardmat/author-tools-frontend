@@ -1,27 +1,27 @@
-import { Character } from '../types';
+import { Breadcrumb } from '../types';
 
 export enum ActionTypes {
-  SET_CHARACTERS = 'SET_CHARACTERS',
-  ADD_CHARACTER = 'ADD_CHARACTER',
-  UPDATE_CHARACTER = 'UPDATE_CHARACTER',
+  SET_BREADCRUMB_WORKSPACE = 'SET_BREADCRUMB_WORKSPACE',
+  SET_BREADCRUMB_TRAIL = 'SET_BREADCRUMB_TRAIL',
+  ADD_BREADCRUMB_TRAIL = 'ADD_BREADCRUMB_TRAIL',
 }
 
-export type SetCharactersAction = {
-  type: ActionTypes.SET_CHARACTERS;
-  payload: Character[];
+export type SetBreadcrumbWorkspaceAction = {
+  type: ActionTypes.SET_BREADCRUMB_WORKSPACE;
+  payload: string;
 };
 
-export type AddCharacterAction = {
-  type: ActionTypes.ADD_CHARACTER;
-  payload: Character;
+export type SetBreadcrumbTrailAction = {
+  type: ActionTypes.SET_BREADCRUMB_TRAIL;
+  payload: Breadcrumb[];
 };
 
-export type UpdateCharacterAction = {
-  type: ActionTypes.UPDATE_CHARACTER;
-  payload: Character;
+export type AddBreadcrumbTrailAction = {
+  type: ActionTypes.ADD_BREADCRUMB_TRAIL;
+  payload: Breadcrumb;
 };
 
 export type Actions =
-  | SetCharactersAction
-  | AddCharacterAction
-  | UpdateCharacterAction;
+  | SetBreadcrumbWorkspaceAction
+  | SetBreadcrumbTrailAction
+  | AddBreadcrumbTrailAction;
