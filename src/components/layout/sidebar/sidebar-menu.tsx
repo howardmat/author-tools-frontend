@@ -1,67 +1,61 @@
-import { NavLink } from 'react-router-dom';
-import { UsersIcon } from '@heroicons/react/24/outline';
-import { cn } from '@/lib/utils';
-import { Cog6ToothIcon } from '@heroicons/react/20/solid';
+'use client';
 
-const navigation = [
-  { name: 'Characters', href: '/characters', icon: UsersIcon, current: false },
-];
+import * as React from 'react';
+import { Bot, GalleryVerticalEnd, Settings2 } from 'lucide-react';
 
-const SidebarMenu: React.FC = () => {
-  return (
-    <>
-      <div className='flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4'>
-        <div className='flex h-16 shrink-0 items-center'>
-          <img
-            alt='Your Company'
-            src='https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500'
-            className='h-8 w-auto'
-          />
-        </div>
-        <nav className='flex flex-1 flex-col'>
-          <ul role='list' className='flex flex-1 flex-col gap-y-7'>
-            <li>
-              <ul role='list' className='-mx-2 space-y-1'>
-                {navigation.map((item) => (
-                  <li key={item.name}>
-                    <NavLink
-                      to={item.href}
-                      className={({ isActive }) =>
-                        cn(
-                          isActive
-                            ? 'bg-gray-800 text-white'
-                            : 'text-gray-400 hover:bg-gray-800 hover:text-white',
-                          'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold'
-                        )
-                      }
-                    >
-                      <item.icon
-                        aria-hidden='true'
-                        className='h-6 w-6 shrink-0'
-                      />
-                      {item.name}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            </li>
-            <li className='mt-auto'>
-              <NavLink
-                to='/settings'
-                className='group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-400 hover:bg-gray-800 hover:text-white'
-              >
-                <Cog6ToothIcon
-                  aria-hidden='true'
-                  className='h-6 w-6 shrink-0'
-                />
-                Settings
-              </NavLink>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </>
-  );
+import { NavMain } from './nav-main';
+import { NavUser } from './nav-user';
+import { WorkspaceSwitcher } from './workspace-switcher';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+} from '@/components/ui/sidebar';
+import { useUser } from '@clerk/clerk-react';
+
+const data = {
+  workspaces: [
+    {
+      name: 'Default Workspace',
+      logo: GalleryVerticalEnd,
+      description: 'Enterprise',
+    },
+  ],
+  navMain: [
+    {
+      title: 'Characters',
+      url: '/characters',
+      icon: Bot,
+    },
+    {
+      title: 'Settings',
+      url: '/settings',
+      icon: Settings2,
+    },
+  ],
 };
 
-export default SidebarMenu;
+export function SidebarMenu({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useUser();
+  const userFullName = user?.fullName ?? '';
+  const userEmail = user?.emailAddresses[0]?.emailAddress ?? '';
+
+  return (
+    <Sidebar collapsible='icon' {...props}>
+      <SidebarHeader>
+        <WorkspaceSwitcher workspaces={data.workspaces} />
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMain} />
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser fullName={userFullName} email={userEmail} />
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  );
+}

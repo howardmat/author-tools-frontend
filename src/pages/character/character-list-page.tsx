@@ -3,9 +3,26 @@ import CharacterList from '../../components/character/character-list';
 import { useGetCharactersQuery } from '@/http';
 import EmptyPageContent from '@/components/empty-page-content';
 import LoadingIndicator from '@/components/loading-indicator';
+import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
+import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
+import { useEffect } from 'react';
 
 const CharacterListPage: React.FC = () => {
   const { data, isPending, isError, error } = useGetCharactersQuery();
+  const { dispatch } = useBreadcrumbContext();
+
+  useEffect(() => {
+    const setBreadcrumbTrailAction: SetBreadcrumbTrailAction = {
+      type: ActionTypes.SET_BREADCRUMB_TRAIL,
+      payload: [
+        {
+          name: 'Characters',
+          url: '/characters',
+        },
+      ],
+    };
+    dispatch(setBreadcrumbTrailAction);
+  }, [dispatch]);
 
   let content = (
     <EmptyPageContent

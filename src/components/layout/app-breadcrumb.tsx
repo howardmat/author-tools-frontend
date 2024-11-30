@@ -1,0 +1,45 @@
+import { Fragment } from 'react/jsx-runtime';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
+import { Link } from 'react-router-dom';
+
+const AppBreadcrumb: React.FC = () => {
+  const breadcrumbContext = useBreadcrumbContext();
+  const workspaceName = breadcrumbContext.state.breadcrumbTrail.workspaceName;
+  const breadcrumbTrail = breadcrumbContext.state.breadcrumbTrail.trail;
+
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem className='hidden md:block'>
+          <BreadcrumbPage>{workspaceName}</BreadcrumbPage>
+        </BreadcrumbItem>
+
+        {breadcrumbTrail.map((breadcrumb) => (
+          <Fragment key={breadcrumb.name}>
+            <BreadcrumbSeparator className='hidden md:block' />
+            <BreadcrumbItem>
+              {breadcrumb.url && (
+                <BreadcrumbLink asChild>
+                  <Link to={breadcrumb.url}>{breadcrumb.name}</Link>
+                </BreadcrumbLink>
+              )}
+              {!breadcrumb.url && (
+                <BreadcrumbPage>{breadcrumb.name}</BreadcrumbPage>
+              )}
+            </BreadcrumbItem>
+          </Fragment>
+        ))}
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+};
+
+export default AppBreadcrumb;
