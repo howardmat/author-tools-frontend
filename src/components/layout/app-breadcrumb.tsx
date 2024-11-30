@@ -11,9 +11,9 @@ import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context'
 import { Link } from 'react-router-dom';
 
 const AppBreadcrumb: React.FC = () => {
-  const breadcrumbContext = useBreadcrumbContext();
-  const workspaceName = breadcrumbContext.state.breadcrumbTrail.workspaceName;
-  const breadcrumbTrail = breadcrumbContext.state.breadcrumbTrail.trail;
+  const { state } = useBreadcrumbContext();
+  const workspaceName = state.breadcrumbTrail.workspaceName;
+  const breadcrumbTrail = state.breadcrumbTrail.trail;
 
   return (
     <Breadcrumb>
