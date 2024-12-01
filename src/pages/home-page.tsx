@@ -67,7 +67,7 @@ const HomePage: React.FC = () => {
       <footer className='w-full'>
         <div className='flex justify-center items-center h-full'>
           <p className='text-zinc-600 text-sm'>
-            Tools for Authors &copy; {year}
+            <span className=''>WECREATE</span> &copy; {year}
           </p>
         </div>
       </footer>
