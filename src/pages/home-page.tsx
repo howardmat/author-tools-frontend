@@ -25,6 +25,7 @@ const HomePage: React.FC = () => {
           <div className='grid grid-cols-2 gap-x-6 my-16'>
             <SignedIn>
               <Button
+                className='col-span-2'
                 variant='outline'
                 type='button'
                 onClick={() => navigate('/characters')}
