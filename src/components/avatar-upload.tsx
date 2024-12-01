@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { LoaderCircle, UserCircleIcon } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
+import { UserCircleIcon } from '@heroicons/react/20/solid';
 import { usePostFileMutation } from '@/http';
 import { FormField } from './ui/form';
 import { Input } from './ui/input';
@@ -51,12 +52,12 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ name }) => {
   };
 
   let avatarPreviewContent = (
-    <UserCircleIcon aria-hidden='true' className='w-48 h-24 text-gray-300' />
+    <UserCircleIcon aria-hidden='true' className='w-24' />
   );
 
   if (isPending) {
     avatarPreviewContent = (
-      <LoaderCircle className={`${styles.spin} w-48 h-24 text-gray-300`} />
+      <LoaderCircle className={`${styles.spin} w-24 text-gray-300`} />
     );
   }
 
@@ -66,7 +67,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ name }) => {
         <img
           alt=''
           src={`${API_URL}/file/${fileId}`}
-          className='h-24 w-24 rounded-full'
+          className='w-24 rounded-full'
         />
       </span>
     );

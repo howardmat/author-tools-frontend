@@ -10,11 +10,12 @@ import {
 import { Input } from '../ui/input';
 import DatePicker from '../ui/datepicker';
 import cssClasses from './character-left-card-form.module.css';
-import Card from '../card';
+import Card from '../app-card';
 import ComboBox from '../ui/combobox';
 import { ArchetypeOptions, GenderOptions } from '@/data/combobox-data';
 import AvatarUpload from '../avatar-upload';
 import Divider from '../divider';
+import { Separator } from '../ui/separator';
 
 interface CharacterLeftCardFormState {
   isScrollTop: boolean;
@@ -67,11 +68,11 @@ const CharacterLeftCardForm: React.FC = () => {
       <Card className='w-full sm:w-72 relative'>
         <AvatarUpload name='imageFileId' />
         <div className='my-6'>
-          <div className='w-full border-t border-gray-300' />
+          <Separator />
         </div>
         {!state.isScrollTop && (
           <Divider
-            className='absolute w-5/6 bg-white z-50 hidden sm:block'
+            className='absolute w-5/6 bg-background z-50 hidden sm:block'
             orientation='up'
           />
         )}

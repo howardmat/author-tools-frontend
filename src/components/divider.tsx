@@ -13,27 +13,19 @@ const Divider: React.FC<DividerProps> = ({ orientation, className }) => {
 
   if (orientation === 'down') {
     iconContent = (
-      <ChevronDoubleDownIcon
-        aria-hidden='true'
-        className='size-5 text-gray-500'
-      />
+      <ChevronDoubleDownIcon aria-hidden='true' className='size-5' />
     );
   } else {
-    iconContent = (
-      <ChevronDoubleUpIcon
-        aria-hidden='true'
-        className='size-5 text-gray-500'
-      />
-    );
+    iconContent = <ChevronDoubleUpIcon aria-hidden='true' className='size-5' />;
   }
   return (
     <div className={className}>
       <div className='relative'>
         <div aria-hidden='true' className='absolute inset-0 flex items-center'>
-          <div className='w-full border-t border-gray-300' />
+          <div className='w-full border-t border-primary-background' />
         </div>
         <div className='relative flex justify-center'>
-          <span className='bg-white px-2 text-gray-500'>{iconContent}</span>
+          <span className='bg-background px-2 text-primary'>{iconContent}</span>
         </div>
       </div>
     </div>

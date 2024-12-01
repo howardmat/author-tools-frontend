@@ -10,9 +10,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '../ui/textarea';
-import Card from '../card';
+import AppCard from '../app-card';
 import CharacterLeftCardForm from './character-left-card-form';
 import { Button } from '../ui/button';
+import { Separator } from '../ui/separator';
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -61,7 +62,7 @@ const CharacterForm: React.FC<{
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
         <CharacterLeftCardForm />
         <div className='col-span-2 flex flex-wrap justify-center gap-x-6 gap-y-6'>
-          <Card title='Personal Traits' className='w-full sm:w-64' noPad>
+          <AppCard title='Personal Traits' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -83,8 +84,8 @@ const CharacterForm: React.FC<{
                 />
               </div>
             </div>
-          </Card>
-          <Card title='Abilities' className='w-full sm:w-64' noPad>
+          </AppCard>
+          <AppCard title='Abilities' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -106,8 +107,8 @@ const CharacterForm: React.FC<{
                 />
               </div>
             </div>
-          </Card>
-          <Card title='Strengths' className='w-full sm:w-64' noPad>
+          </AppCard>
+          <AppCard title='Strengths' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -129,8 +130,8 @@ const CharacterForm: React.FC<{
                 />
               </div>
             </div>
-          </Card>
-          <Card title='Weaknesses' className='w-full sm:w-64' noPad>
+          </AppCard>
+          <AppCard title='Weaknesses' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -152,8 +153,8 @@ const CharacterForm: React.FC<{
                 />
               </div>
             </div>
-          </Card>
-          <Card title='History' className='w-full sm:w-64' noPad>
+          </AppCard>
+          <AppCard title='History' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -175,8 +176,8 @@ const CharacterForm: React.FC<{
                 />
               </div>
             </div>
-          </Card>
-          <Card title='Family History' className='w-full sm:w-64' noPad>
+          </AppCard>
+          <AppCard title='Family History' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -198,8 +199,8 @@ const CharacterForm: React.FC<{
                 />
               </div>
             </div>
-          </Card>
-          <Card title='Friends and Family' className='w-full sm:w-64' noPad>
+          </AppCard>
+          <AppCard title='Friends and Family' className='w-full sm:w-64' noPad>
             <div className='grid grid-cols-3 gap-x-6 gap-y-8'>
               <div className='col-span-3'>
                 <FormField
@@ -221,10 +222,10 @@ const CharacterForm: React.FC<{
                 />
               </div>
             </div>
-          </Card>
+          </AppCard>
         </div>
         <div className='mt-6 clear-both'>
-          <div className='w-full border-t border-gray-300' />
+          <Separator />
         </div>
         <div className='mt-6 flex items-center justify-end gap-x-6'>
           <Button type='button' variant='outline' onClick={onCancel}>
