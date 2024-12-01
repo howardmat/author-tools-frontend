@@ -8,7 +8,7 @@
   /*  this is where the magic happens:  */
   background-attachment: fixed;
 
-  background-image: url(https://images.unsplash.com/photo-1530608031805-8e170c1b793a?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+  background-image: url(./assets/wecreate-background.png);
   background-position: center;
   background-size: cover;
   color: var(--color);
@@ -17,7 +17,7 @@
   text-align: center;
   position: relative;
 
-  font-family: 'Ubuntu', sans-serif;
+  font-family: 'Kurale', serif;
 }
 
 .overlay {
@@ -33,8 +33,6 @@
   align-items: center;
   justify-content: center;
 }
-
-/* CSS */
 
 section,
 .placeholder {

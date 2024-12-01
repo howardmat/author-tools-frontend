@@ -16,11 +16,8 @@ const HomePage: React.FC = () => {
     <>
       <section className={styles.parallaxcontainer}>
         <div className={styles.overlay}>
-          <h1 className='text-zinc-300 text-9xl'>Tools for Authors</h1>
-          <p className='text-slate-200 text-xlg my-6'>
-            Tools for Authors offers a suite of tools to manage and maintain
-            characters and other story related items.
-          </p>
+          <h1 className='text-zinc-300 text-9xl'>WECREATE</h1>
+          <p className='text-slate-200 text-3xl my-6'>Character Creation</p>
           <SignedIn>
             <div>
               <Button

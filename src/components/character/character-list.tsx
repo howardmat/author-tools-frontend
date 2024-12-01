@@ -7,10 +7,10 @@ import {
 } from '@heroicons/react/20/solid';
 import { Character } from '../../types';
 import ConfirmAlert, { IConfirmAlert } from '../confirm-alert';
-import { DragEvent, MouseEvent, useRef, useState } from 'react';
+import { DragEvent, MouseEvent, useRef } from 'react';
 import { Button } from '../ui/button';
 import { toast } from '@/hooks/use-toast';
-import { useDeleteCharacterMutation, usePatchCharacterMutation } from '@/http';
+import { useDeleteCharacterMutation } from '@/http';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,14 +19,13 @@ import {
 } from '../ui/dropdown-menu';
 const API_URL = import.meta.env.VITE_API_URL;
 
-const CharacterList: React.FC<{ characters: Character[] }> = ({
-  characters,
-}) => {
+const CharacterList: React.FC<{
+  characters: Character[];
+  onDragStart: (event: DragEvent<HTMLLIElement>) => void;
+  onDragOver: (event: DragEvent<HTMLLIElement>) => void;
+  onDragEnd: () => void;
+}> = ({ characters, onDragStart, onDragOver, onDragEnd }) => {
   const navigate = useNavigate();
-  const [charactersState, setCharactersState] =
-    useState<Character[]>(characters);
-  const dragItemId = useRef<string | undefined>();
-  const dragOverItemId = useRef<string | undefined>();
 
   const handleListClick = (id: string | undefined) => {
     navigate(`${id}/edit`);
@@ -49,62 +48,6 @@ const CharacterList: React.FC<{ characters: Character[] }> = ({
     },
   });
 
-  const { mutate: patchMutate } = usePatchCharacterMutation({
-    onError: (error?: Error) => {
-      toast({
-        title: 'Error!',
-        description:
-          error?.message ??
-          'An unexpected error occurred while updating the order',
-        variant: 'destructive',
-      });
-    },
-  });
-
-  const handleDragStart = (event: DragEvent<HTMLLIElement>) => {
-    dragItemId.current = event.currentTarget.id;
-  };
-
-  const handleDragEnter = (event: DragEvent<HTMLLIElement>) => {
-    dragOverItemId.current = event.currentTarget.id;
-
-    const charactersCopy = [...charactersState];
-
-    const dragCharacterIndex = charactersCopy.findIndex(
-      (c) => c?.id === dragItemId.current
-    );
-    const dragCharacter = charactersCopy[dragCharacterIndex];
-
-    const dragOverCharacterIndex = charactersCopy.findIndex(
-      (c) => c?.id === dragOverItemId.current
-    );
-
-    charactersCopy.splice(dragCharacterIndex, 1);
-    charactersCopy.splice(dragOverCharacterIndex, 0, dragCharacter);
-
-    setCharactersState(charactersCopy);
-  };
-
-  const handleDragEnd = () => {
-    const charactersCopy = [...charactersState];
-
-    charactersCopy.forEach((c, i) => {
-      const updatedOrder = i + 1;
-      if (c.order !== updatedOrder) {
-        patchMutate({
-          id: c.id || '',
-          patchRequests: [
-            {
-              operation: 'update',
-              path: '/order',
-              value: updatedOrder,
-            },
-          ],
-        });
-      }
-    });
-  };
-
   const alertRef = useRef<IConfirmAlert>(null);
   const handleDeleteClick = (event: MouseEvent<HTMLDivElement>, id: string) => {
     event.stopPropagation();
@@ -125,12 +68,12 @@ const CharacterList: React.FC<{ characters: Character[] }> = ({
   return (
     <>
       <ul role='list' className='divide-y divide-accent-background'>
-        {charactersState.map((c) => (
+        {characters.map((c) => (
           <li
             draggable
-            onDragStart={handleDragStart}
-            onDragEnter={handleDragEnter}
-            onDragEnd={handleDragEnd}
+            onDragStart={onDragStart}
+            onDragOver={onDragOver}
+            onDragEnd={onDragEnd}
             onClick={() => handleListClick(c.id)}
             key={c.id}
             id={c.id}
@@ -141,11 +84,11 @@ const CharacterList: React.FC<{ characters: Character[] }> = ({
                 <img
                   alt=''
                   src={`${API_URL}/file/${c.imageFileId}`}
-                  className='h-16 flex-none rounded-full'
+                  className='w-16 flex-none rounded-full'
                 />
               )}
               {!c.imageFileId && (
-                <UserCircleIcon aria-hidden='true' className='h-16' />
+                <UserCircleIcon aria-hidden='true' className='w-16' />
               )}
               <div className='min-w-0 flex-auto'>
                 <p className=' font-semibold text-primary'>{c.name}</p>

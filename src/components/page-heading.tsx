@@ -17,7 +17,7 @@ const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
     <>
       <div className='my-4 md:flex md:items-center md:justify-between'>
         <div className='min-w-0 flex-1'>
-          <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl'>
+          <h1 className='scroll-m-20 text-4xl font-bold tracking-tight'>
             {title}
           </h1>
         </div>

@@ -1,15 +1,26 @@
 import PageHeading from '../../components/page-heading';
 import CharacterList from '../../components/character/character-list';
-import { useGetCharactersQuery } from '@/http';
+import { useGetCharactersQuery, usePatchCharacterMutation } from '@/http';
 import EmptyPageContent from '@/components/empty-page-content';
 import LoadingIndicator from '@/components/loading-indicator';
 import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
-import { useEffect } from 'react';
+import { DragEvent, useEffect, useRef, useState } from 'react';
+import { Character } from '@/types';
+import { toast } from '@/hooks/use-toast';
 
 const CharacterListPage: React.FC = () => {
   const { data, isPending, isError, error } = useGetCharactersQuery();
   const { dispatch } = useBreadcrumbContext();
+  const [state, setState] = useState<Character[]>([]);
+  const dragItemId = useRef<string | undefined>();
+  const dragOverItemId = useRef<string | undefined>();
+
+  useEffect(() => {
+    if (data) {
+      setState(data);
+    }
+  }, [data]);
 
   useEffect(() => {
     const setBreadcrumbTrailAction: SetBreadcrumbTrailAction = {
@@ -22,7 +33,66 @@ const CharacterListPage: React.FC = () => {
       ],
     };
     dispatch(setBreadcrumbTrailAction);
-  }, [dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const { mutate: patchMutate } = usePatchCharacterMutation({
+    onError: (error?: Error) => {
+      toast({
+        title: 'Error!',
+        description:
+          error?.message ??
+          'An unexpected error occurred while updating the order',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const handleDragStart = (event: DragEvent<HTMLLIElement>) => {
+    dragItemId.current = event.currentTarget.id;
+  };
+
+  const handleDragOver = (event: DragEvent<HTMLLIElement>) => {
+    if (dragOverItemId.current !== event.currentTarget.id) {
+      dragOverItemId.current = event.currentTarget.id;
+
+      const charactersCopy = [...state];
+
+      const dragCharacterIndex = charactersCopy.findIndex(
+        (c) => c?.id === dragItemId.current
+      );
+      const dragCharacter = charactersCopy[dragCharacterIndex];
+
+      const dragOverCharacterIndex = charactersCopy.findIndex(
+        (c) => c?.id === dragOverItemId.current
+      );
+
+      charactersCopy.splice(dragCharacterIndex, 1);
+      charactersCopy.splice(dragOverCharacterIndex, 0, dragCharacter);
+
+      setState(charactersCopy);
+    }
+  };
+
+  const handleDragEnd = () => {
+    const charactersCopy = [...state];
+
+    charactersCopy.forEach((c, i) => {
+      const updatedOrder = i + 1;
+      if (c.order !== updatedOrder) {
+        patchMutate({
+          id: c.id || '',
+          patchRequests: [
+            {
+              operation: 'update',
+              path: '/order',
+              value: updatedOrder,
+            },
+          ],
+        });
+      }
+    });
+  };
 
   let content = (
     <EmptyPageContent
@@ -34,8 +104,15 @@ const CharacterListPage: React.FC = () => {
     />
   );
 
-  if (data && data.length > 0) {
-    content = <CharacterList characters={data} key={data.length} />;
+  if (state && state.length > 0) {
+    content = (
+      <CharacterList
+        characters={state}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      />
+    );
   }
 
   if (isPending) {

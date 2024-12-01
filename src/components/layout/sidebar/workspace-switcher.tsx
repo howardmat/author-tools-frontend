@@ -39,6 +39,7 @@ export function WorkspaceSwitcher({ workspaces }: { workspaces: Workspace[] }) {
 
   React.useEffect(() => {
     setBreadcrumbWorkspace(workspaces[0].name);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

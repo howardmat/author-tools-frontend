@@ -12,6 +12,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import { Button } from './ui/button';
 
 interface ConfirmAlertProps {
   title?: string;
@@ -66,10 +67,10 @@ const ConfirmAlert = forwardRef<IConfirmAlert, ConfirmAlertProps>(
     }));
 
     let iconStyle = 'size-16 flex-none';
-    let confirmActionStyle = '';
+    let buttonVariant: 'destructive' | 'default' = 'default';
     if (stateProps.variant === 'destructive') {
       iconStyle += ' text-destructive';
-      confirmActionStyle = 'bg-destructive text-destructive-foreground';
+      buttonVariant = stateProps.variant;
     }
 
     let iconContent;
@@ -96,12 +97,11 @@ const ConfirmAlert = forwardRef<IConfirmAlert, ConfirmAlertProps>(
                 {stateProps.declineLabel}
               </AlertDialogCancel>
             )}
-            <AlertDialogAction
-              className={confirmActionStyle}
-              onClick={stateProps.onConfirm}
-            >
-              {stateProps.confirmLabel}
-            </AlertDialogAction>
+            <Button variant={buttonVariant} asChild>
+              <AlertDialogAction onClick={stateProps.onConfirm}>
+                {stateProps.confirmLabel}
+              </AlertDialogAction>
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
