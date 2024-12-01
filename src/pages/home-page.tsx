@@ -16,12 +16,14 @@ const HomePage: React.FC = () => {
     <>
       <section className={styles.content}>
         <div className={styles.overlay}>
-          <h1 className='text-zinc-300 text-6xl md:text-7xl lg:text-9xl'>
+          <h1 className='text-zinc-300 text-5xl md:text-7xl lg:text-9xl my-12'>
             WECREATE
           </h1>
-          <p className='text-slate-200 text-3xl my-6'>Character Creation</p>
-          <SignedIn>
-            <div>
+          <p className='text-slate-200 text-xl md:text-3xl'>
+            Character Creation
+          </p>
+          <div className='grid grid-cols-2 gap-x-6 my-16'>
+            <SignedIn>
               <Button
                 variant='outline'
                 type='button'
@@ -33,10 +35,8 @@ const HomePage: React.FC = () => {
                 />
                 Enter
               </Button>
-            </div>
-          </SignedIn>
-          <SignedOut>
-            <div>
+            </SignedIn>
+            <SignedOut>
               <Button
                 variant='outline'
                 type='button'
@@ -59,8 +59,8 @@ const HomePage: React.FC = () => {
                 />
                 Sign Up
               </Button>
-            </div>
-          </SignedOut>
+            </SignedOut>
+          </div>
         </div>
       </section>
       <div className={styles.placeholder}></div>
