@@ -14,9 +14,11 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <section className={styles.parallaxcontainer}>
+      <section className={styles.content}>
         <div className={styles.overlay}>
-          <h1 className='text-zinc-300 text-9xl'>WECREATE</h1>
+          <h1 className='text-zinc-300 text-6xl md:text-7xl lg:text-9xl'>
+            WECREATE
+          </h1>
           <p className='text-slate-200 text-3xl my-6'>Character Creation</p>
           <SignedIn>
             <div>

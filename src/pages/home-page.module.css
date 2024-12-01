@@ -1,4 +1,4 @@
-.parallaxcontainer {
+.content {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
@@ -16,8 +16,14 @@
 
   text-align: center;
   position: relative;
+}
 
+.content h1 {
   font-family: 'Kurale', serif;
+}
+.content p,
+.content button {
+  font-family: 'Thasadith', sans-serif;
 }
 
 .overlay {
