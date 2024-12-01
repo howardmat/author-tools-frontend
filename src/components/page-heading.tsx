@@ -1,6 +1,7 @@
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
+import { Separator } from './ui/separator';
 
 const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
   title,
@@ -14,11 +15,11 @@ const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
 
   return (
     <>
-      <div className='my-2 md:flex md:items-center md:justify-between'>
+      <div className='my-4 md:flex md:items-center md:justify-between'>
         <div className='min-w-0 flex-1'>
-          <h2 className='text-2xl/7 font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight'>
+          <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl'>
             {title}
-          </h2>
+          </h1>
         </div>
         {addRoute && (
           <div className='mt-4 flex flex-shrink-0 md:ml-4 md:mt-0'>
@@ -30,7 +31,7 @@ const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
         )}
       </div>
       <div className='my-6'>
-        <div className='w-full border-t border-gray-300' />
+        <Separator />
       </div>
     </>
   );

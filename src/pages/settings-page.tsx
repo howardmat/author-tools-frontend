@@ -23,11 +23,11 @@ const SettingsPage: React.FC = () => {
     <>
       <PageHeading title='Settings' />
       <div className='space-y-12'>
-        <div className='border-b border-gray-900/10 pb-12'>
-          <h2 className='text-base/7 font-semibold text-gray-900'>
+        <div className='border-b pb-12'>
+          <h4 className='scroll-m-20 text-xl font-semibold tracking-tight'>
             Options &amp; Configuration
-          </h2>
-          <p className='mt-1 text-sm/6 text-gray-600'>
+          </h4>
+          <p className='leading-7 [&:not(:first-child)]:mt-6'>
             Once we have settings you'll be able to change them here!
           </p>
         </div>
