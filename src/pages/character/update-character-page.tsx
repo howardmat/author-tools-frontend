@@ -16,7 +16,7 @@ import { useEffect, useRef } from 'react';
 import { TrashIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/components/ui/button';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
-import { ActionTypes, AddBreadcrumbTrailAction } from '@/actions';
+import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 
 const UpdateCharacterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -25,13 +25,11 @@ const UpdateCharacterPage: React.FC = () => {
   const { dispatch } = useBreadcrumbContext();
 
   useEffect(() => {
-    const addBreadcrumbTrailAction: AddBreadcrumbTrailAction = {
-      type: ActionTypes.ADD_BREADCRUMB_TRAIL,
-      payload: {
-        name: 'Edit',
-      },
+    const setBreadcrumbTrailAction: SetBreadcrumbTrailAction = {
+      type: ActionTypes.SET_BREADCRUMB_TRAIL,
+      payload: [{ name: 'Characters', url: '/characters' }, { name: 'Add' }],
     };
-    dispatch(addBreadcrumbTrailAction);
+    dispatch(setBreadcrumbTrailAction);
   }, []);
 
   const params = useParams();

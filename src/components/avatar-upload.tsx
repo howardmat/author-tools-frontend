@@ -7,6 +7,7 @@ import { FormField } from './ui/form';
 import { Input } from './ui/input';
 import { useToast } from '@/hooks/use-toast';
 import styles from './avatar-upload.module.css';
+import EditOverlay from './edit-overlay';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -51,38 +52,34 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ name }) => {
     }
   };
 
-  let avatarPreviewContent = (
-    <UserCircleIcon aria-hidden='true' className='w-24' />
-  );
+  let avatarContent = <UserCircleIcon aria-hidden='true' viewBox='2 2 16 16' />;
 
-  if (isPending) {
-    avatarPreviewContent = (
-      <LoaderCircle className={`${styles.spin} w-24 text-gray-300`} />
+  if (fileId) {
+    avatarContent = (
+      <img
+        alt=''
+        src={`${API_URL}/file/${fileId}`}
+        className='w-24 rounded-full'
+      />
     );
   }
 
-  if (fileId) {
-    avatarPreviewContent = (
-      <span className='relative inline-block'>
-        <img
-          alt=''
-          src={`${API_URL}/file/${fileId}`}
-          className='w-24 rounded-full'
-        />
-      </span>
+  let finalAvatarPreviewContent = (
+    <div className='relative inline-block w-24' onClick={handleClick}>
+      {avatarContent}
+      <EditOverlay className='rounded-full' />
+    </div>
+  );
+
+  if (isPending) {
+    finalAvatarPreviewContent = (
+      <LoaderCircle className={`${styles.spin} w-24 text-gray-300`} />
     );
   }
 
   return (
     <div className='flex justify-center items-center gap-x-3'>
-      {avatarPreviewContent}
-      <button
-        onClick={handleClick}
-        type='button'
-        className='rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
-      >
-        Change
-      </button>
+      {finalAvatarPreviewContent}
       <input
         className='hidden'
         type='file'

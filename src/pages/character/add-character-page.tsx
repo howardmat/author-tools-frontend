@@ -1,14 +1,13 @@
 import { SubmitHandler } from 'react-hook-form';
-import PageHeading from '../../components/page-heading';
 import { useNavigate } from 'react-router-dom';
 import { CharacterFormData } from '../../types';
-import CharacterForm from '../../components/character/character-form';
 import { usePostCharacterMutation } from '@/http';
 import { ArchetypeOptions, GenderOptions } from '@/data/combobox-data';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
-import { ActionTypes, AddBreadcrumbTrailAction } from '@/actions';
+import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
+import CharacterFormV2 from '@/components/character/character-form-v2';
 
 const AddCharacterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -16,13 +15,11 @@ const AddCharacterPage: React.FC = () => {
   const { dispatch } = useBreadcrumbContext();
 
   useEffect(() => {
-    const addBreadcrumbTrailAction: AddBreadcrumbTrailAction = {
-      type: ActionTypes.ADD_BREADCRUMB_TRAIL,
-      payload: {
-        name: 'Add',
-      },
+    const setBreadcrumbTrailAction: SetBreadcrumbTrailAction = {
+      type: ActionTypes.SET_BREADCRUMB_TRAIL,
+      payload: [{ name: 'Characters', url: '/characters' }, { name: 'Add' }],
     };
-    dispatch(addBreadcrumbTrailAction);
+    dispatch(setBreadcrumbTrailAction);
   }, []);
 
   const { mutate } = usePostCharacterMutation({
@@ -65,8 +62,7 @@ const AddCharacterPage: React.FC = () => {
 
   return (
     <>
-      <PageHeading title='Add Character' />
-      <CharacterForm
+      <CharacterFormV2
         character={new CharacterFormData()}
         onSave={handleSave}
         onCancel={handleCancel}
