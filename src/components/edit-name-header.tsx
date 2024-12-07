@@ -1,20 +1,24 @@
-import { ReactElement, useEffect, useRef, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import EditOverlay from './edit-overlay';
 import { useFormContext } from 'react-hook-form';
 import { Button } from './ui/button';
+import { FormControl, FormField, FormItem, FormMessage } from './ui/form';
+import { LoaderCircle } from 'lucide-react';
+import loaderStyles from './loading-indicator.module.css';
 
 interface EditNameHeaderProps {
   name: string;
   onNameSave?: () => void;
+  isSaving?: boolean;
 }
 
 const EditNameHeader: React.FC<EditNameHeaderProps> = ({
   name,
   onNameSave,
+  isSaving,
 }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const form = useFormContext();
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
     if (!isEditing) {
@@ -23,8 +27,12 @@ const EditNameHeader: React.FC<EditNameHeaderProps> = ({
   };
 
   const handleSaveClick = () => {
-    setIsEditing(false);
     if (onNameSave) onNameSave();
+    setIsEditing(false);
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
   };
 
   const nameValue = form.getValues(name);
@@ -37,21 +45,45 @@ const EditNameHeader: React.FC<EditNameHeaderProps> = ({
   let content: ReactElement;
   if (isEditing) {
     content = (
-      <div className='relative  w-full'>
-        <input
-          ref={inputRef}
-          type='text'
-          className='border-0 border-b-primary focus:border-b-primary border-b h-full w-full 
-            focus:ring-0 font-bold text-4xl dark:bg-primary-foreground'
-          placeholder='Type a name and click save'
+      <div className='relative w-full'>
+        <FormField
+          control={form.control}
+          name={name}
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <input
+                  {...field}
+                  type='text'
+                  className='border-0 border-b-primary focus:border-b-primary border-b h-full w-full focus:ring-0 font-bold text-4xl dark:bg-primary-foreground'
+                  placeholder='Type a name and click save'
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        <Button
-          type='button'
-          className='absolute right-0 bottom-2 h-12'
-          onClick={handleSaveClick}
-        >
-          Save
-        </Button>
+        <div className='absolute right-0 bottom-2 flex gap-1'>
+          <Button
+            type='button'
+            className='h-12'
+            onClick={handleSaveClick}
+            disabled={isSaving}
+          >
+            {isSaving && <LoaderCircle className={`${loaderStyles.spin}`} />}
+            {!isSaving && <>Save</>}
+          </Button>
+          <Button
+            type='button'
+            className='h-12'
+            onClick={handleCancelClick}
+            disabled={isSaving}
+            variant='outline'
+          >
+            {isSaving && <LoaderCircle className={`${loaderStyles.spin}`} />}
+            {!isSaving && <>Cancel</>}
+          </Button>
+        </div>
       </div>
     );
   } else {
@@ -64,9 +96,8 @@ const EditNameHeader: React.FC<EditNameHeaderProps> = ({
   }
 
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    if (isEditing) form.setFocus(name);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
 
   return (

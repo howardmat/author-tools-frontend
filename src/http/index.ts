@@ -10,6 +10,7 @@ import {
   PatchCharacterParams,
   UseMutationCallbacks,
   PatchRequest,
+  UseMutationCallbacksWithParams,
 } from '@/types';
 import { queryClient } from '@/http/query-client';
 import { QUERY_KEYS } from '../lib/constants';
@@ -82,7 +83,7 @@ async function getCharacter({
 export function usePostCharacterMutation({
   onSuccess,
   onError,
-}: UseMutationCallbacks) {
+}: UseMutationCallbacksWithParams<Character>) {
   const { getToken } = useAuth();
 
   return useMutation({
@@ -93,9 +94,9 @@ export function usePostCharacterMutation({
     onError: (error) => {
       if (onError) onError(error);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CHARACTERS] });
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess(data);
     },
   });
 }

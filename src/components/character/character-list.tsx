@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
 import {
   TrashIcon,
   UserCircleIcon,
@@ -92,13 +91,13 @@ const CharacterList: React.FC<{
               )}
               <div className='min-w-0 flex-auto'>
                 <p className=' font-semibold text-primary'>{c.name}</p>
-                <p className='mt-1 flex text-sm/6 text-secondary-foreground'>
+                {/* <p className='mt-1 flex text-sm/6 text-secondary-foreground'>
                   {c.alias ?? <span>{c.alias}</span>}
-                </p>
+                </p> */}
               </div>
             </div>
             <div className='flex shrink-0 items-center gap-x-4'>
-              <div className='hidden sm:flex sm:flex-col sm:items-end'>
+              {/* <div className='hidden sm:flex sm:flex-col sm:items-end'>
                 {c.archetype.value.length > 0 && (
                   <p className=' text-primary'>{c.archetype.value}</p>
                 )}
@@ -108,7 +107,7 @@ const CharacterList: React.FC<{
                   )}
                   {(c.age ?? 0) > 0 && <span> | Age: {c.age}</span>}
                 </p>
-              </div>
+              </div> */}
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
