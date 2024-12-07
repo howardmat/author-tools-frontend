@@ -1,14 +1,14 @@
 import { useParams } from 'react-router-dom';
 import { useGetCharacterQuery, usePutCharacterMutation } from '@/http';
 import { SubmitHandler } from 'react-hook-form';
-import LoadingIndicator from '@/components/loading-indicator';
+import LoadingIndicator from '@/components/common/loading-indicator';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect, useState } from 'react';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import HeaderDetailForm, {
   HeaderFormData,
-} from '@/components/header-detail-form';
+} from '@/components/form/header-detail-form';
 import { Button } from '@/components/ui/button';
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import { Character } from '@/types';
@@ -117,7 +117,7 @@ const UpdateCharacterPage: React.FC = () => {
       detailContent = (
         <>
           {characterState.detailSections.map((section) => (
-            <div className='rounded-xl bg-muted/50 p-3'>
+            <div key={section.title} className='rounded-xl bg-muted/50 p-3'>
               <h4 className='scroll-m-20 text-xl font-semibold tracking-tight text-center md:text-left'>
                 {section.title}
               </h4>

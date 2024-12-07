@@ -1,5 +1,5 @@
 import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
-import PageHeading from '@/components/page-heading';
+import PageHeading from '@/components/common/page-heading';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import { useEffect } from 'react';
 

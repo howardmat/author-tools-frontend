@@ -5,7 +5,7 @@ import {
   EllipsisVerticalIcon,
 } from '@heroicons/react/20/solid';
 import { Character } from '../../types';
-import ConfirmAlert, { IConfirmAlert } from '../confirm-alert';
+import ConfirmAlert, { IConfirmAlert } from '../common/confirm-alert';
 import { DragEvent, MouseEvent, useRef } from 'react';
 import { Button } from '../ui/button';
 import { toast } from '@/hooks/use-toast';

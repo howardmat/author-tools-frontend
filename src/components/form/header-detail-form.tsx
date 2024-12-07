@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { Form } from './ui/form';
+import { Form } from '../ui/form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import AvatarUpload from './avatar-upload';

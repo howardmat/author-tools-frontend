@@ -1,8 +1,8 @@
-import PageHeading from '../../components/page-heading';
+import PageHeading from '../../components/common/page-heading';
 import CharacterList from '../../components/character/character-list';
 import { useGetCharactersQuery, usePatchCharacterMutation } from '@/http';
-import EmptyPageContent from '@/components/empty-page-content';
-import LoadingIndicator from '@/components/loading-indicator';
+import EmptyPageContent from '@/components/common/empty-page-content';
+import LoadingIndicator from '@/components/common/loading-indicator';
 import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import { DragEvent, useEffect, useRef, useState } from 'react';

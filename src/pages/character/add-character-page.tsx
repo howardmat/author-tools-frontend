@@ -7,8 +7,8 @@ import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import HeaderDetailForm, {
   HeaderFormData,
-} from '@/components/header-detail-form';
-import EmptyPageContent from '@/components/empty-page-content';
+} from '@/components/form/header-detail-form';
+import EmptyPageContent from '@/components/common/empty-page-content';
 
 const AddCharacterPage: React.FC = () => {
   const navigate = useNavigate();

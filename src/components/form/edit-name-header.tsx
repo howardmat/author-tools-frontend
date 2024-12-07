@@ -1,10 +1,10 @@
 import { ReactElement, useEffect, useState } from 'react';
-import EditOverlay from './edit-overlay';
+import EditOverlay from '../common/edit-overlay';
 import { useFormContext } from 'react-hook-form';
-import { Button } from './ui/button';
-import { FormControl, FormField, FormItem, FormMessage } from './ui/form';
 import { LoaderCircle } from 'lucide-react';
-import loaderStyles from './loading-indicator.module.css';
+import loaderStyles from './loading-styles.module.css';
+import { FormControl, FormField, FormItem, FormMessage } from '../ui/form';
+import { Button } from '../ui/button';
 
 interface EditNameHeaderProps {
   name: string;

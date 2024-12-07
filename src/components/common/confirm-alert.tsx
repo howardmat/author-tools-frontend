@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 
 interface ConfirmAlertProps {
   title?: string;

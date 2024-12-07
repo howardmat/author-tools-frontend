@@ -3,11 +3,11 @@ import { useFormContext } from 'react-hook-form';
 import { LoaderCircle } from 'lucide-react';
 import { UserCircleIcon } from '@heroicons/react/20/solid';
 import { usePostFileMutation } from '@/http';
-import { FormField } from './ui/form';
-import { Input } from './ui/input';
+import { FormField } from '../ui/form';
+import { Input } from '../ui/input';
 import { useToast } from '@/hooks/use-toast';
 import styles from './avatar-upload.module.css';
-import EditOverlay from './edit-overlay';
+import EditOverlay from '../common/edit-overlay';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
