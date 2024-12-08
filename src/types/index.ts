@@ -4,11 +4,13 @@ export interface ICodeValue {
 }
 
 export interface IAttribute {
+  id: string;
   label: string | null;
   value: string | null;
 }
 
 export interface IDetailSection {
+  id: string;
   title: string | null;
   type: 'attribute' | 'note' | null;
   noteContent: string | null;

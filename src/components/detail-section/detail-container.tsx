@@ -7,7 +7,11 @@ import EditSectionDialog from '../dialog/edit-section-dialog';
 interface IDetailContainerProps {
   data: IDetailSection[];
   onSectionAdded: (section: IDetailSection) => void;
+  onSectionChange: (section: IDetailSection) => void;
+  onSectionDelete: (id: string) => void;
   onAttributeAdded: (attribute: IAttribute, section: IDetailSection) => void;
+  onAttributeChange: (attribute: IAttribute, section: IDetailSection) => void;
+  onAttributeDelete: (id: string, section: IDetailSection) => void;
   onNoteChange: (noteContent: string, section: IDetailSection) => void;
 }
 
@@ -15,7 +19,11 @@ const DetailContainer: React.FC<IDetailContainerProps> = ({
   data,
   onSectionAdded,
   onAttributeAdded,
+  onAttributeChange,
+  onAttributeDelete,
   onNoteChange,
+  onSectionChange,
+  onSectionDelete,
 }) => {
   let detailContent = (
     <DetailSection
@@ -33,7 +41,11 @@ const DetailContainer: React.FC<IDetailContainerProps> = ({
             return (
               <AttributeDetailSection
                 onAttributeAdded={onAttributeAdded}
-                key={section.title}
+                onAttributeChange={onAttributeChange}
+                onAttributeDelete={onAttributeDelete}
+                onSectionChange={onSectionChange}
+                onSectionDelete={onSectionDelete}
+                key={section.id}
                 section={section}
                 emptyAttributesPlaceholder='A new section! You can edit the Title or add attributes below.'
               />
@@ -44,7 +56,9 @@ const DetailContainer: React.FC<IDetailContainerProps> = ({
             return (
               <NoteDetailSection
                 onNoteChange={onNoteChange}
-                key={section.title}
+                onSectionChange={onSectionChange}
+                onSectionDelete={onSectionDelete}
+                key={section.id}
                 section={section}
                 emptyNotePlaceholder='Click here to add some details'
               />

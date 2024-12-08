@@ -69,18 +69,36 @@ const UpdateCharacterPage: React.FC = () => {
     }
   };
 
+  const handleNoteChange = (noteContent: string, section: IDetailSection) => {
+    if (characterState) {
+      const characterStateCopy = JSON.parse(
+        JSON.stringify(characterState)
+      ) as ICharacter;
+
+      const sectionCopy = characterStateCopy.detailSections.find(
+        (s) => s.id === section.id
+      );
+      if (!sectionCopy) throw new Error('Section was not found to update');
+
+      sectionCopy.noteContent = noteContent;
+
+      mutate({
+        id: characterId,
+        character: {
+          ...characterStateCopy,
+        },
+      });
+    }
+  };
+
   const handleAddSection = (section: IDetailSection) => {
     if (characterState) {
-      const characterStateCopy = {
-        ...characterState,
-        detailSections: [...characterState.detailSections],
-      };
-      characterStateCopy.detailSections.push({
-        title: section.title,
-        type: section.type,
-        noteContent: section.noteContent,
-        attributes: section.attributes,
-      });
+      const characterStateCopy = JSON.parse(
+        JSON.stringify(characterState)
+      ) as ICharacter;
+
+      characterStateCopy.detailSections.push({ ...section });
+
       mutate({
         id: characterId,
         character: {
@@ -91,16 +109,19 @@ const UpdateCharacterPage: React.FC = () => {
     }
   };
 
-  const handleAddAttribute = (
-    attribute: IAttribute,
-    section: IDetailSection
-  ) => {
-    section.attributes.push(attribute);
+  const handleSectionChange = (section: IDetailSection) => {
     if (characterState) {
-      const characterStateCopy = {
-        ...characterState,
-        detailSections: [...characterState.detailSections],
-      };
+      const characterStateCopy = JSON.parse(
+        JSON.stringify(characterState)
+      ) as ICharacter;
+
+      const sectionCopy = characterStateCopy.detailSections.find(
+        (s) => s.id === section.id
+      );
+      if (!sectionCopy) throw new Error('Section was not found to update');
+
+      sectionCopy.title = section.title;
+
       mutate({
         id: characterId,
         character: {
@@ -110,13 +131,95 @@ const UpdateCharacterPage: React.FC = () => {
     }
   };
 
-  const handleNoteChange = (noteContent: string, section: IDetailSection) => {
-    section.noteContent = noteContent;
+  const handleDeleteSection = (id: string) => {
     if (characterState) {
-      const characterStateCopy = {
-        ...characterState,
-        detailSections: [...characterState.detailSections],
-      };
+      const characterStateCopy = JSON.parse(
+        JSON.stringify(characterState)
+      ) as ICharacter;
+
+      characterStateCopy.detailSections =
+        characterStateCopy.detailSections.filter((s) => s.id !== id);
+
+      mutate({
+        id: characterId,
+        character: {
+          ...characterStateCopy,
+        },
+      });
+    }
+  };
+
+  const handleAddAttribute = (
+    attribute: IAttribute,
+    section: IDetailSection
+  ) => {
+    if (characterState) {
+      const characterStateCopy = JSON.parse(
+        JSON.stringify(characterState)
+      ) as ICharacter;
+
+      const sectionCopy = characterStateCopy.detailSections.find(
+        (s) => s.id === section.id
+      );
+      if (!sectionCopy) throw new Error('Section was not found to update');
+
+      sectionCopy.attributes.push(attribute);
+
+      mutate({
+        id: characterId,
+        character: {
+          ...characterStateCopy,
+        },
+      });
+    }
+  };
+
+  const handleAttributeChange = (
+    attribute: IAttribute,
+    section: IDetailSection
+  ) => {
+    if (characterState) {
+      const characterStateCopy = JSON.parse(
+        JSON.stringify(characterState)
+      ) as ICharacter;
+
+      const sectionCopy = characterStateCopy.detailSections.find(
+        (s) => s.id === section.id
+      );
+      if (!sectionCopy) throw new Error('Section was not found to update');
+
+      const attributeCopy = sectionCopy.attributes.find(
+        (a) => a.id === attribute.id
+      );
+      if (!attributeCopy) throw new Error('Attribute was not found to update');
+
+      attributeCopy.label = attribute.label;
+      attributeCopy.value = attribute.value;
+
+      mutate({
+        id: characterId,
+        character: {
+          ...characterStateCopy,
+        },
+      });
+    }
+  };
+
+  const handleDeleteAttribute = (id: string, section: IDetailSection) => {
+    if (characterState) {
+      const characterStateCopy = JSON.parse(
+        JSON.stringify(characterState)
+      ) as ICharacter;
+
+      const sectionCopy = characterStateCopy.detailSections.find(
+        (s) => s.id === section.id
+      );
+      if (!sectionCopy) throw new Error('Section was not found to update');
+
+      sectionCopy.attributes = sectionCopy.attributes.filter(
+        (a) => a.id !== id
+      );
+
       mutate({
         id: characterId,
         character: {
@@ -148,7 +251,11 @@ const UpdateCharacterPage: React.FC = () => {
           <DetailContainer
             data={characterState.detailSections}
             onSectionAdded={handleAddSection}
+            onSectionChange={handleSectionChange}
+            onSectionDelete={handleDeleteSection}
             onAttributeAdded={handleAddAttribute}
+            onAttributeDelete={handleDeleteAttribute}
+            onAttributeChange={handleAttributeChange}
             onNoteChange={handleNoteChange}
           />
         </div>

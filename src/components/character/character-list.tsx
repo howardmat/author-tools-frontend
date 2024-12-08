@@ -91,24 +91,9 @@ const CharacterList: React.FC<{
               )}
               <div className='min-w-0 flex-auto'>
                 <p className=' font-semibold text-primary'>{c.name}</p>
-                {/* <p className='mt-1 flex text-sm/6 text-secondary-foreground'>
-                  {c.alias ?? <span>{c.alias}</span>}
-                </p> */}
               </div>
             </div>
             <div className='flex shrink-0 items-center gap-x-4'>
-              {/* <div className='hidden sm:flex sm:flex-col sm:items-end'>
-                {c.archetype.value.length > 0 && (
-                  <p className=' text-primary'>{c.archetype.value}</p>
-                )}
-                <p className='mt-1 text-sm/6 text-secondary-foreground'>
-                  {c.birthDate && (
-                    <span>Born: {format(c.birthDate, 'MMMM d')}</span>
-                  )}
-                  {(c.age ?? 0) > 0 && <span> | Age: {c.age}</span>}
-                </p>
-              </div> */}
-
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant='ghost'>

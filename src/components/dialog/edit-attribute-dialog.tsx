@@ -17,17 +17,19 @@ import {
   FormLabel,
   FormMessage,
 } from '../ui/form';
-import { PlusCircleIcon } from '@heroicons/react/20/solid';
+import { PlusCircleIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Input } from '../ui/input';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IAttribute } from '@/types';
-import { useRef } from 'react';
+import { PropsWithChildren, useRef } from 'react';
+import { newId } from '@/lib/utils';
+import ConfirmAlert, { IConfirmAlert } from '../common/confirm-alert';
 
-interface IEditAttributeDialogProps {
+interface IEditAttributeDialogProps extends PropsWithChildren {
   addMode?: boolean;
-  onSave: (attribute: IAttribute) => void;
+  attribute?: IAttribute;
   buttonVariant?:
     | 'default'
     | 'destructive'
@@ -35,6 +37,8 @@ interface IEditAttributeDialogProps {
     | 'link'
     | 'outline'
     | 'secondary';
+  onSave: (attribute: IAttribute) => void;
+  onDelete?: (id: string) => void;
 }
 
 const FormSchema = z.object({
@@ -44,21 +48,40 @@ const FormSchema = z.object({
 
 const EditAttributeDialog: React.FC<IEditAttributeDialogProps> = ({
   addMode,
-  onSave,
+  attribute,
   buttonVariant,
+  children,
+  onSave,
+  onDelete,
 }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      label: '',
-      value: '',
+      label: attribute?.label || '',
+      value: attribute?.value || '',
     },
   });
 
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
+  const alertRef = useRef<IConfirmAlert>(null);
+  const handleDeleteClick = (id: string) => {
+    if (alertRef.current) {
+      alertRef.current.show({
+        title: 'Are you sure?',
+        description: 'This will permanently delete the attribute.',
+        confirmLabel: 'Continue',
+        declineLabel: 'Cancel',
+        icon: 'question',
+        variant: 'destructive',
+        onConfirm: () => (onDelete ? onDelete(id) : {}),
+      });
+    }
+  };
+
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    onSave({ ...data });
+    if (attribute) onSave({ ...attribute, ...data });
+    else onSave({ ...data, id: newId() });
 
     form.setValue('label', '');
     form.setValue('value', '');
@@ -73,13 +96,17 @@ const EditAttributeDialog: React.FC<IEditAttributeDialogProps> = ({
       : 'Update your attribute here.') + " Click save when you're done.";
   const buttonText = addMode ? 'Add Attribute' : 'Update Attribute';
 
+  const buttonContent = children ? (
+    children
+  ) : (
+    <Button type='button' variant={buttonVariant || 'default'}>
+      <PlusCircleIcon /> {buttonText}
+    </Button>
+  );
+
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button type='button' variant={buttonVariant || 'default'}>
-          <PlusCircleIcon /> {buttonText}
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{buttonContent}</DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -121,19 +148,35 @@ const EditAttributeDialog: React.FC<IEditAttributeDialogProps> = ({
                 </div>
               </div>
               <DialogFooter>
-                <Button type='submit'>Save</Button>
-                <DialogClose asChild>
-                  <Button
-                    ref={closeButtonRef}
-                    type='button'
-                    variant='secondary'
-                  >
-                    Cancel
-                  </Button>
-                </DialogClose>
+                <div className='flex flex-1 justify-between gap-2'>
+                  <div>
+                    {!addMode && (
+                      <Button
+                        type='button'
+                        variant='destructive'
+                        onClick={() => handleDeleteClick(attribute?.id || '')}
+                      >
+                        <TrashIcon />
+                      </Button>
+                    )}
+                  </div>
+                  <div>
+                    <Button type='submit'>Save</Button>
+                    <DialogClose asChild>
+                      <Button
+                        ref={closeButtonRef}
+                        type='button'
+                        variant='secondary'
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </div>
               </DialogFooter>
             </form>
           </Form>
+          <ConfirmAlert ref={alertRef} />
         </div>
       </DialogContent>
     </Dialog>

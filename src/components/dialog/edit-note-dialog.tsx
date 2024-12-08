@@ -24,6 +24,7 @@ import { forwardRef, PropsWithChildren, useRef } from 'react';
 import { Textarea } from '../ui/textarea';
 
 interface IEditNoteDialogProps extends PropsWithChildren {
+  currentNoteContent?: string | null;
   onSave: (noteContent: string) => void;
 }
 
@@ -32,11 +33,11 @@ const FormSchema = z.object({
 });
 
 const EditNoteDialog = forwardRef<HTMLButtonElement, IEditNoteDialogProps>(
-  ({ onSave, children }, ref) => {
+  ({ currentNoteContent, onSave, children }, ref) => {
     const form = useForm<z.infer<typeof FormSchema>>({
       resolver: zodResolver(FormSchema),
       defaultValues: {
-        noteContent: '',
+        noteContent: currentNoteContent || '',
       },
     });
 
@@ -44,8 +45,6 @@ const EditNoteDialog = forwardRef<HTMLButtonElement, IEditNoteDialogProps>(
 
     const onSubmit = (data: z.infer<typeof FormSchema>) => {
       onSave(data.noteContent);
-
-      form.setValue('noteContent', '');
 
       if (closeButtonRef.current) closeButtonRef.current.click();
     };

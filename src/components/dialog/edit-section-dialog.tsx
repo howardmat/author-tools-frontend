@@ -23,8 +23,10 @@ import {
   FormMessage,
 } from '../ui/form';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
-import { PlusCircleIcon } from '@heroicons/react/20/solid';
+import { PlusCircleIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { IDetailSection } from '@/types';
+import { newId } from '@/lib/utils';
+import ConfirmAlert, { IConfirmAlert } from '../common/confirm-alert';
 
 const FormSchema = z.object({
   title: z.string().min(1, 'Title is a required field'),
@@ -35,7 +37,9 @@ const FormSchema = z.object({
 
 interface IEditSectionDialogProps extends PropsWithChildren {
   addMode?: boolean;
+  section?: IDetailSection;
   onSave: (section: IDetailSection) => void;
+  onDelete?: (id: string) => void;
   buttonVariant?:
     | 'default'
     | 'destructive'
@@ -47,21 +51,41 @@ interface IEditSectionDialogProps extends PropsWithChildren {
 
 const EditSectionDialog: React.FC<IEditSectionDialogProps> = ({
   addMode,
+  section,
   onSave,
+  onDelete,
   buttonVariant,
+  children,
 }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      title: '',
-      type: 'attribute',
+      title: section?.title || '',
+      type: section?.type || 'attribute',
     },
   });
 
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
+  const alertRef = useRef<IConfirmAlert>(null);
+  const handleDeleteClick = (id: string) => {
+    if (alertRef.current) {
+      alertRef.current.show({
+        title: 'Are you sure?',
+        description:
+          "This will permanently delete the section and all of it's attributes.",
+        confirmLabel: 'Continue',
+        declineLabel: 'Cancel',
+        icon: 'question',
+        variant: 'destructive',
+        onConfirm: () => (onDelete ? onDelete(id) : {}),
+      });
+    }
+  };
+
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    onSave({ ...data, noteContent: '', attributes: [] });
+    if (section) onSave({ ...section, ...data });
+    else onSave({ ...data, id: newId(), noteContent: '', attributes: [] });
 
     form.setValue('title', '');
     form.setValue('type', 'attribute');
@@ -75,13 +99,17 @@ const EditSectionDialog: React.FC<IEditSectionDialogProps> = ({
     " Click save when you're done.";
   const buttonText = addMode ? 'Create Section' : 'Update Section';
 
+  const triggerContent = children ? (
+    children
+  ) : (
+    <Button type='button' variant={buttonVariant || 'default'}>
+      <PlusCircleIcon /> {buttonText}
+    </Button>
+  );
+
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button type='button' variant={buttonVariant || 'default'}>
-          <PlusCircleIcon /> {buttonText}
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{triggerContent}</DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -95,6 +123,7 @@ const EditSectionDialog: React.FC<IEditSectionDialogProps> = ({
                   <FormField
                     control={form.control}
                     name='title'
+                    defaultValue={section?.title || ''}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Title</FormLabel>
@@ -119,22 +148,26 @@ const EditSectionDialog: React.FC<IEditSectionDialogProps> = ({
                             defaultValue={field.value}
                             className='flex flex-col space-y-1'
                           >
-                            <FormItem className='flex items-center space-x-3 space-y-0'>
-                              <FormControl>
-                                <RadioGroupItem value='attribute' />
-                              </FormControl>
-                              <FormLabel className='font-normal'>
-                                Attribute List
-                              </FormLabel>
-                            </FormItem>
-                            <FormItem className='flex items-center space-x-3 space-y-0'>
-                              <FormControl>
-                                <RadioGroupItem value='note' />
-                              </FormControl>
-                              <FormLabel className='font-normal'>
-                                Open Text / Note area
-                              </FormLabel>
-                            </FormItem>
+                            {(addMode || section?.type === 'attribute') && (
+                              <FormItem className='flex items-center space-x-3 space-y-0'>
+                                <FormControl>
+                                  <RadioGroupItem value='attribute' />
+                                </FormControl>
+                                <FormLabel className='font-normal'>
+                                  Attribute List
+                                </FormLabel>
+                              </FormItem>
+                            )}
+                            {(addMode || section?.type === 'note') && (
+                              <FormItem className='flex items-center space-x-3 space-y-0'>
+                                <FormControl>
+                                  <RadioGroupItem value='note' />
+                                </FormControl>
+                                <FormLabel className='font-normal'>
+                                  Open Text / Note area
+                                </FormLabel>
+                              </FormItem>
+                            )}
                           </RadioGroup>
                         </FormControl>
                         <FormMessage />
@@ -144,19 +177,35 @@ const EditSectionDialog: React.FC<IEditSectionDialogProps> = ({
                 </div>
               </div>
               <DialogFooter>
-                <Button type='submit'>Save</Button>
-                <DialogClose asChild>
-                  <Button
-                    ref={closeButtonRef}
-                    type='button'
-                    variant='secondary'
-                  >
-                    Cancel
-                  </Button>
-                </DialogClose>
+                <div className='flex flex-1 justify-between gap-2'>
+                  <div>
+                    {!addMode && (
+                      <Button
+                        type='button'
+                        variant='destructive'
+                        onClick={() => handleDeleteClick(section?.id || '')}
+                      >
+                        <TrashIcon />
+                      </Button>
+                    )}
+                  </div>
+                  <div>
+                    <Button type='submit'>Save</Button>
+                    <DialogClose asChild>
+                      <Button
+                        ref={closeButtonRef}
+                        type='button'
+                        variant='secondary'
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </div>
               </DialogFooter>
             </form>
           </Form>
+          <ConfirmAlert ref={alertRef} />
         </div>
       </DialogContent>
     </Dialog>

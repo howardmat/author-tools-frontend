@@ -1,23 +1,36 @@
 import { IAttribute, IDetailSection } from '@/types';
 import EditAttributeDialog from '../dialog/edit-attribute-dialog';
+import DetailSectionHeader from './detail-section-header';
+import AttributeDetail from './attribute-detail';
 
 interface IAttributeDetailSectionProps {
   section: IDetailSection;
   emptyAttributesPlaceholder: string;
   onAttributeAdded: (attribute: IAttribute, section: IDetailSection) => void;
+  onAttributeChange: (attribute: IAttribute, section: IDetailSection) => void;
+  onAttributeDelete: (id: string, section: IDetailSection) => void;
+  onSectionChange: (section: IDetailSection) => void;
+  onSectionDelete: (id: string) => void;
 }
 
 const AttributeDetailSection: React.FC<IAttributeDetailSectionProps> = ({
   section,
   emptyAttributesPlaceholder,
   onAttributeAdded,
+  onAttributeChange,
+  onAttributeDelete,
+  onSectionChange,
+  onSectionDelete,
 }) => {
   return (
     <>
       <div key={section.title} className='rounded-xl bg-muted/50 p-3'>
-        <h4 className='scroll-m-20 text-xl font-semibold tracking-tight text-center md:text-left'>
-          {section.title}
-        </h4>
+        <DetailSectionHeader
+          section={section}
+          onSectionChange={onSectionChange}
+          onSectionDelete={onSectionDelete}
+        />
+
         {!section.attributes.length && (
           <div className='my-4 px-2 grid grid-cols-1 justify-center text-center relative'>
             <p className='leading-7 [&:not(:first-child)]:mt-6'>
@@ -35,12 +48,12 @@ const AttributeDetailSection: React.FC<IAttributeDetailSectionProps> = ({
           <>
             <div className='my-4 px-2 relative'>
               {section.attributes.map((attribute) => (
-                <div key={attribute.label} className='grid grid-cols-2 gap-2'>
-                  <div className='text-right font-semibold'>
-                    {attribute.label}
-                  </div>
-                  <div className='text-left'>{attribute.value}</div>
-                </div>
+                <AttributeDetail
+                  key={attribute.id}
+                  attribute={attribute}
+                  onSave={(attribute) => onAttributeChange(attribute, section)}
+                  onDelete={(id) => onAttributeDelete(id, section)}
+                />
               ))}
             </div>
             <div className='text-center'>
