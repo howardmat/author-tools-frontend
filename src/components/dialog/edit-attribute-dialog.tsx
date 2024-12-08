@@ -83,8 +83,10 @@ const EditAttributeDialog: React.FC<IEditAttributeDialogProps> = ({
     if (attribute) onSave({ ...attribute, ...data });
     else onSave({ ...data, id: newId() });
 
-    form.setValue('label', '');
-    form.setValue('value', '');
+    if (addMode) {
+      form.setValue('label', '');
+      form.setValue('value', '');
+    }
 
     if (closeButtonRef.current) closeButtonRef.current.click();
   };
