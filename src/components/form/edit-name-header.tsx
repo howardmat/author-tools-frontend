@@ -6,13 +6,13 @@ import loaderStyles from './loading-styles.module.css';
 import { FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import { Button } from '../ui/button';
 
-interface EditNameHeaderProps {
+interface IEditNameHeaderProps {
   name: string;
   onNameSave?: () => void;
   isSaving?: boolean;
 }
 
-const EditNameHeader: React.FC<EditNameHeaderProps> = ({
+const EditNameHeader: React.FC<IEditNameHeaderProps> = ({
   name,
   onNameSave,
   isSaving,

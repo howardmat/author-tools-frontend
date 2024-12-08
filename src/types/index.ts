@@ -1,78 +1,78 @@
-export interface CodeValue {
+export interface ICodeValue {
   code: string;
   value: string;
 }
 
-export interface Attribute {
+export interface IAttribute {
   label: string | null;
   value: string | null;
 }
 
-export interface DetailSection {
+export interface IDetailSection {
   title: string | null;
   type: 'attribute' | 'note' | null;
   noteContent: string | null;
-  attributes: Attribute[];
+  attributes: IAttribute[];
 }
 
-export interface Character {
+export interface ICharacter {
   id?: string;
   name: string;
   imageFileId: string;
   order?: number;
-  detailSections: DetailSection[];
+  detailSections: IDetailSection[];
 }
 
-export interface BreadcrumbTrail {
+export interface IBreadcrumbTrail {
   workspaceName: string;
-  trail: Breadcrumb[];
+  trail: IBreadcrumb[];
 }
-export interface Breadcrumb {
+export interface IBreadcrumb {
   name: string;
   url?: string;
 }
-export interface Workspace {
+export interface IWorkspace {
   name: string;
   logo: React.ElementType;
   description: string;
 }
 
-export interface PatchRequest {
+export interface IPatchRequest {
   operation: 'update';
   path: string;
   value: unknown;
 }
 
-interface AuthenticatedParams {
+interface IAuthenticatedParams {
   token?: string;
 }
-export interface GetCharactersParams extends AuthenticatedParams {
+export interface IGetCharactersParams extends IAuthenticatedParams {
   signal: AbortSignal;
 }
-export interface GetCharacterParams extends AuthenticatedParams {
+export interface IGetCharacterParams extends IAuthenticatedParams {
   id: string;
   signal: AbortSignal;
 }
-export interface PostCharacterParams extends AuthenticatedParams {
-  character: Character;
+export interface IPostCharacterParams extends IAuthenticatedParams {
+  character: ICharacter;
 }
-export interface PutCharacterParams extends AuthenticatedParams {
+export interface IPutCharacterParams extends IAuthenticatedParams {
   id: string;
-  character: Character;
+  character: ICharacter;
 }
-export interface PatchCharacterParams extends AuthenticatedParams {
+export interface IPatchCharacterParams extends IAuthenticatedParams {
   id: string;
-  patchRequests: PatchRequest[];
+  patchRequests: IPatchRequest[];
 }
-export interface DeleteCharacterParams extends AuthenticatedParams {
+export interface IDeleteCharacterParams extends IAuthenticatedParams {
   id: string;
 }
 
-export interface UseMutationCallbacksWithParams<T> {
+export interface IUseMutationCallbacksWithParams<T> {
   onSuccess?: (data: T) => void;
   onError?: (error?: Error) => void;
 }
-export interface UseMutationCallbacks {
+export interface IUseMutationCallbacks {
   onSuccess?: () => void;
   onError?: (error?: Error) => void;
 }

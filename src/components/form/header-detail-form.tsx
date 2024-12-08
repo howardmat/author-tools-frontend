@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import AvatarUpload from './avatar-upload';
 import EditNameHeader from './edit-name-header';
 
-interface HeaderFormProps {
+interface IHeaderFormProps {
   data?: HeaderFormData | null;
   onSave: (data: HeaderFormData) => void;
   isLoading?: boolean;
@@ -28,7 +28,7 @@ const formSchema = z.object({
   imageFileId: z.string(),
 });
 
-const HeaderDetailForm: React.FC<HeaderFormProps> = ({
+const HeaderDetailForm: React.FC<IHeaderFormProps> = ({
   data,
   onSave,
   isLoading,

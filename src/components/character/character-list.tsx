@@ -4,7 +4,7 @@ import {
   UserCircleIcon,
   EllipsisVerticalIcon,
 } from '@heroicons/react/20/solid';
-import { Character } from '../../types';
+import { ICharacter } from '../../types';
 import ConfirmAlert, { IConfirmAlert } from '../common/confirm-alert';
 import { DragEvent, MouseEvent, useRef } from 'react';
 import { Button } from '../ui/button';
@@ -19,7 +19,7 @@ import {
 const API_URL = import.meta.env.VITE_API_URL;
 
 const CharacterList: React.FC<{
-  characters: Character[];
+  characters: ICharacter[];
   onDragStart: (event: DragEvent<HTMLLIElement>) => void;
   onDragOver: (event: DragEvent<HTMLLIElement>) => void;
   onDragEnd: () => void;

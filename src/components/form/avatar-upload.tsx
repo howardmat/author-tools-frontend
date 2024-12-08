@@ -11,11 +11,11 @@ import EditOverlay from '../common/edit-overlay';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-interface AvatarUploadProps {
+interface IAvatarUploadProps {
   name: string;
 }
 
-const AvatarUpload: React.FC<AvatarUploadProps> = ({ name }) => {
+const AvatarUpload: React.FC<IAvatarUploadProps> = ({ name }) => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const form = useFormContext();

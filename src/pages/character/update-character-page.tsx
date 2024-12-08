@@ -9,13 +9,12 @@ import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import HeaderDetailForm, {
   HeaderFormData,
 } from '@/components/form/header-detail-form';
-import { Button } from '@/components/ui/button';
-import { PlusCircleIcon } from '@heroicons/react/20/solid';
-import { Character } from '@/types';
+import { IAttribute, ICharacter, IDetailSection } from '@/types';
+import DetailContainer from '@/components/detail-section/detail-container';
 
 const UpdateCharacterPage: React.FC = () => {
   const { toast } = useToast();
-  const [characterState, setCharacterState] = useState<Character | null>(null);
+  const [characterState, setCharacterState] = useState<ICharacter | null>(null);
   const { dispatch } = useBreadcrumbContext();
 
   useEffect(() => {
@@ -39,12 +38,13 @@ const UpdateCharacterPage: React.FC = () => {
   }, [data]);
 
   const { mutate, isPending: isPutPending } = usePutCharacterMutation({
-    onSuccess: () => {
+    onSuccess: (character) => {
       toast({
         title: 'Awesome!',
         description: 'Your character has been saved',
         variant: 'success',
       });
+      setCharacterState(character);
     },
     onError: (error?: Error) => {
       toast({
@@ -55,7 +55,9 @@ const UpdateCharacterPage: React.FC = () => {
     },
   });
 
-  const handleSave: SubmitHandler<HeaderFormData> = async (headerData) => {
+  const handleHeaderSave: SubmitHandler<HeaderFormData> = async (
+    headerData
+  ) => {
     if (characterState) {
       mutate({
         id: characterId,
@@ -67,19 +69,60 @@ const UpdateCharacterPage: React.FC = () => {
     }
   };
 
-  const handleAddSectionClick = () => {
+  const handleAddSection = (section: IDetailSection) => {
     if (characterState) {
       const characterStateCopy = {
         ...characterState,
         detailSections: [...characterState.detailSections],
       };
       characterStateCopy.detailSections.push({
-        title: 'Test',
-        type: 'attribute',
-        noteContent: '',
-        attributes: [],
+        title: section.title,
+        type: section.type,
+        noteContent: section.noteContent,
+        attributes: section.attributes,
       });
-      setCharacterState(characterStateCopy);
+      mutate({
+        id: characterId,
+        character: {
+          ...characterState,
+          ...characterStateCopy,
+        },
+      });
+    }
+  };
+
+  const handleAddAttribute = (
+    attribute: IAttribute,
+    section: IDetailSection
+  ) => {
+    section.attributes.push(attribute);
+    if (characterState) {
+      const characterStateCopy = {
+        ...characterState,
+        detailSections: [...characterState.detailSections],
+      };
+      mutate({
+        id: characterId,
+        character: {
+          ...characterStateCopy,
+        },
+      });
+    }
+  };
+
+  const handleAddNote = (noteContent: string, section: IDetailSection) => {
+    section.noteContent = noteContent;
+    if (characterState) {
+      const characterStateCopy = {
+        ...characterState,
+        detailSections: [...characterState.detailSections],
+      };
+      mutate({
+        id: characterId,
+        character: {
+          ...characterStateCopy,
+        },
+      });
     }
   };
 
@@ -94,55 +137,15 @@ const UpdateCharacterPage: React.FC = () => {
       imageFileId: characterState.imageFileId,
     };
 
-    let detailContent = (
-      <div className='rounded-xl bg-muted/50 p-3'>
-        <h4 className='scroll-m-20 text-xl font-semibold tracking-tight text-center'>
-          Create a section to get started!
-        </h4>
-        <div className='my-4 px-2 grid grid-cols-1 justify-center text-center relative'>
-          <p className='leading-7 [&:not(:first-child)]:mt-6'>
-            Sections let you group bits of related information together. Click
-            below to see how it works.
-          </p>
-          <div className='mt-6'>
-            <Button type='button' onClick={handleAddSectionClick}>
-              <PlusCircleIcon /> Create Section
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-
-    if (characterState.detailSections.length) {
-      detailContent = (
-        <>
-          {characterState.detailSections.map((section) => (
-            <div key={section.title} className='rounded-xl bg-muted/50 p-3'>
-              <h4 className='scroll-m-20 text-xl font-semibold tracking-tight text-center md:text-left'>
-                {section.title}
-              </h4>
-              <div className='my-4 px-2 grid grid-cols-1 justify-center text-center relative'>
-                <p className='leading-7 [&:not(:first-child)]:mt-6'>
-                  A new section! You can edit the Title or add attributes below.
-                </p>
-              </div>
-            </div>
-          ))}
-        </>
-      );
-    }
-
     content = (
       <>
         <HeaderDetailForm
           data={headerFormData}
           isLoading={isPutPending}
-          onSave={handleSave}
+          onSave={handleHeaderSave}
         />
         <div className='mt-8'>
-          <div className='grid auto-rows-min gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'>
-            {detailContent}
-          </div>
+          <DetailContainer data={characterState.detailSections} />
         </div>
       </>
     );

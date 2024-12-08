@@ -1,7 +1,7 @@
 import { PlusIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router-dom';
 
-interface EmptyPageProps {
+interface IEmptyPageProps {
   title: string;
   description?: string;
   actionLabel?: string;
@@ -9,7 +9,7 @@ interface EmptyPageProps {
   className?: string;
 }
 
-const EmptyPageContent: React.FC<EmptyPageProps> = ({
+const EmptyPageContent: React.FC<IEmptyPageProps> = ({
   title,
   description,
   actionLabel,

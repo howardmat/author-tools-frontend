@@ -24,12 +24,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { CodeValue } from '@/types';
+import { ICodeValue } from '@/types';
 
 interface ComboBoxProps {
   label: string;
   name: string;
-  options: CodeValue[];
+  options: ICodeValue[];
   placeholder?: string;
   searchLabel?: string;
   noMatchLabel?: string;

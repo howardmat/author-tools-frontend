@@ -125,7 +125,7 @@ async function postCharacter({
 export function usePutCharacterMutation({
   onSuccess,
   onError,
-}: UseMutationCallbacks) {
+}: UseMutationCallbacksWithParams<Character>) {
   const { getToken } = useAuth();
 
   return useMutation({
@@ -159,12 +159,12 @@ export function usePutCharacterMutation({
 
       if (onError) onError(error);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.CHARACTERS],
       });
 
-      if (onSuccess) onSuccess();
+      if (onSuccess) onSuccess(data);
     },
   });
 }
