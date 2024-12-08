@@ -1,6 +1,6 @@
-import { CodeValue } from '@/types';
+import { ICodeValue } from '@/types';
 
-export const ArchetypeOptions: CodeValue[] = [
+export const ArchetypeOptions: ICodeValue[] = [
   { value: 'The Hero', code: 'hero' },
   { value: 'The Villain', code: 'villain' },
   { value: 'The Caregiver', code: 'caregiver' },
@@ -25,7 +25,7 @@ export const ArchetypeOptions: CodeValue[] = [
   { value: 'Child Saviour', code: 'childsaviour' },
 ];
 
-export const GenderOptions: CodeValue[] = [
+export const GenderOptions: ICodeValue[] = [
   { value: 'Female', code: 'female' },
   { value: 'Male', code: 'male' },
 ];

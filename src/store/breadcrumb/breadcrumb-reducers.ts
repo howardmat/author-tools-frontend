@@ -1,8 +1,8 @@
 import { ActionTypes, Actions } from '../../actions';
-import { BreadcrumbTrail } from '../../types';
+import { IBreadcrumbTrail } from '../../types';
 
 export type State = {
-  breadcrumbTrail: BreadcrumbTrail;
+  breadcrumbTrail: IBreadcrumbTrail;
 };
 
 export const initialState: State = {

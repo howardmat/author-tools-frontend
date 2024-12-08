@@ -6,13 +6,13 @@ import LoadingIndicator from '@/components/common/loading-indicator';
 import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import { DragEvent, useEffect, useRef, useState } from 'react';
-import { Character } from '@/types';
+import { ICharacter } from '@/types';
 import { toast } from '@/hooks/use-toast';
 
 const CharacterListPage: React.FC = () => {
   const { data, isPending, isError, error } = useGetCharactersQuery();
   const { dispatch } = useBreadcrumbContext();
-  const [state, setState] = useState<Character[]>([]);
+  const [state, setState] = useState<ICharacter[]>([]);
   const dragItemId = useRef<string | undefined>();
   const dragOverItemId = useRef<string | undefined>();
 

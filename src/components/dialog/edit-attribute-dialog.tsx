@@ -22,12 +22,12 @@ import { Input } from '../ui/input';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Attribute } from '@/types';
+import { IAttribute } from '@/types';
 import { useRef } from 'react';
 
 interface IEditAttributeDialogProps {
   addMode?: boolean;
-  onSave: (attribute: Attribute) => void;
+  onSave: (attribute: IAttribute) => void;
   buttonVariant?:
     | 'default'
     | 'destructive'

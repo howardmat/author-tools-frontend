@@ -1,16 +1,16 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/clerk-react';
 import {
-  Character,
-  DeleteCharacterParams,
-  GetCharacterParams,
-  GetCharactersParams,
-  PostCharacterParams,
-  PutCharacterParams,
-  PatchCharacterParams,
-  UseMutationCallbacks,
-  PatchRequest,
-  UseMutationCallbacksWithParams,
+  ICharacter,
+  IDeleteCharacterParams,
+  IGetCharacterParams,
+  IGetCharactersParams,
+  IPostCharacterParams,
+  IPutCharacterParams,
+  IPatchCharacterParams,
+  IUseMutationCallbacks,
+  IPatchRequest,
+  IUseMutationCallbacksWithParams,
 } from '@/types';
 import { queryClient } from '@/http/query-client';
 import { QUERY_KEYS } from '../lib/constants';
@@ -36,7 +36,7 @@ export function useGetCharactersQuery() {
 async function getCharacters({
   signal,
   token,
-}: GetCharactersParams): Promise<Character[]> {
+}: IGetCharactersParams): Promise<ICharacter[]> {
   const response = await fetch(CHARACTER_ENDPOINT, {
     headers: { Authorization: `Bearer ${token}` },
     signal: signal,
@@ -47,7 +47,7 @@ async function getCharacters({
     throw error;
   }
 
-  return (await response.json()) as Character[];
+  return (await response.json()) as ICharacter[];
 }
 
 export function useGetCharacterQuery(id: string) {
@@ -66,7 +66,7 @@ async function getCharacter({
   id,
   signal,
   token,
-}: GetCharacterParams): Promise<Character> {
+}: IGetCharacterParams): Promise<ICharacter> {
   const response = await fetch(CHARACTER_ENDPOINT + `/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
     signal: signal,
@@ -77,17 +77,17 @@ async function getCharacter({
     throw error;
   }
 
-  return (await response.json()) as Character;
+  return (await response.json()) as ICharacter;
 }
 
 export function usePostCharacterMutation({
   onSuccess,
   onError,
-}: UseMutationCallbacksWithParams<Character>) {
+}: IUseMutationCallbacksWithParams<ICharacter>) {
   const { getToken } = useAuth();
 
   return useMutation({
-    mutationFn: async (character: Character) => {
+    mutationFn: async (character: ICharacter) => {
       const token = (await getToken({ template: JWT_TEMPLATE })) || '';
       return await postCharacter({ character, token });
     },
@@ -104,7 +104,7 @@ export function usePostCharacterMutation({
 async function postCharacter({
   character,
   token,
-}: PostCharacterParams): Promise<Character> {
+}: IPostCharacterParams): Promise<ICharacter> {
   const response = await fetch(CHARACTER_ENDPOINT, {
     method: 'POST',
     body: JSON.stringify(character),
@@ -125,7 +125,7 @@ async function postCharacter({
 export function usePutCharacterMutation({
   onSuccess,
   onError,
-}: UseMutationCallbacksWithParams<Character>) {
+}: IUseMutationCallbacksWithParams<ICharacter>) {
   const { getToken } = useAuth();
 
   return useMutation({
@@ -133,13 +133,13 @@ export function usePutCharacterMutation({
       character,
       id,
     }: {
-      character: Character;
+      character: ICharacter;
       id: string;
     }) => {
       const token = (await getToken({ template: JWT_TEMPLATE })) || '';
       return await putCharacter({ id, character, token });
     },
-    onMutate: async (data: PutCharacterParams) => {
+    onMutate: async (data: IPutCharacterParams) => {
       const character = data.character;
       const id = data.id;
 
@@ -173,7 +173,7 @@ async function putCharacter({
   id,
   character,
   token,
-}: PutCharacterParams): Promise<Character> {
+}: IPutCharacterParams): Promise<ICharacter> {
   const response = await fetch(CHARACTER_ENDPOINT + `/${id}`, {
     method: 'PUT',
     body: JSON.stringify(character),
@@ -194,7 +194,7 @@ async function putCharacter({
 export function usePatchCharacterMutation({
   onSuccess,
   onError,
-}: UseMutationCallbacks) {
+}: IUseMutationCallbacks) {
   const { getToken } = useAuth();
 
   return useMutation({
@@ -202,7 +202,7 @@ export function usePatchCharacterMutation({
       patchRequests,
       id,
     }: {
-      patchRequests: PatchRequest[];
+      patchRequests: IPatchRequest[];
       id: string;
     }) => {
       const token = (await getToken({ template: JWT_TEMPLATE })) || '';
@@ -221,7 +221,7 @@ async function patchCharacter({
   id,
   patchRequests,
   token,
-}: PatchCharacterParams): Promise<Character> {
+}: IPatchCharacterParams): Promise<ICharacter> {
   const response = await fetch(CHARACTER_ENDPOINT + `/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(patchRequests),
@@ -244,7 +244,7 @@ async function patchCharacter({
 export function useDeleteCharacterMutation({
   onSuccess,
   onError,
-}: UseMutationCallbacks) {
+}: IUseMutationCallbacks) {
   const { getToken } = useAuth();
 
   return useMutation({
@@ -262,7 +262,7 @@ export function useDeleteCharacterMutation({
   });
 }
 
-async function deleteCharacter({ id, token }: DeleteCharacterParams) {
+async function deleteCharacter({ id, token }: IDeleteCharacterParams) {
   const response = await fetch(CHARACTER_ENDPOINT + `/${id}`, {
     method: 'DELETE',
     headers: {

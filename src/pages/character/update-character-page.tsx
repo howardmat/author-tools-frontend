@@ -110,7 +110,7 @@ const UpdateCharacterPage: React.FC = () => {
     }
   };
 
-  const handleAddNote = (noteContent: string, section: IDetailSection) => {
+  const handleNoteChange = (noteContent: string, section: IDetailSection) => {
     section.noteContent = noteContent;
     if (characterState) {
       const characterStateCopy = {
@@ -145,7 +145,12 @@ const UpdateCharacterPage: React.FC = () => {
           onSave={handleHeaderSave}
         />
         <div className='mt-8'>
-          <DetailContainer data={characterState.detailSections} />
+          <DetailContainer
+            data={characterState.detailSections}
+            onSectionAdded={handleAddSection}
+            onAttributeAdded={handleAddAttribute}
+            onNoteChange={handleNoteChange}
+          />
         </div>
       </>
     );

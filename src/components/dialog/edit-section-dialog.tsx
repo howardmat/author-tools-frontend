@@ -24,7 +24,7 @@ import {
 } from '../ui/form';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
-import { DetailSection } from '@/types';
+import { IDetailSection } from '@/types';
 
 const FormSchema = z.object({
   title: z.string().min(1, 'Title is a required field'),
@@ -35,7 +35,7 @@ const FormSchema = z.object({
 
 interface IEditSectionDialogProps extends PropsWithChildren {
   addMode?: boolean;
-  onSave: (section: DetailSection) => void;
+  onSave: (section: IDetailSection) => void;
   buttonVariant?:
     | 'default'
     | 'destructive'
