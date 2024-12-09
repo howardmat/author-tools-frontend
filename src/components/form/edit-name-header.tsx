@@ -45,7 +45,7 @@ const EditNameHeader: React.FC<IEditNameHeaderProps> = ({
   let content: ReactElement;
   if (isEditing) {
     content = (
-      <div className='relative w-full'>
+      <div className='relative w-full mt-1 lg:mt-0'>
         <FormField
           control={form.control}
           name={name}
@@ -63,7 +63,7 @@ const EditNameHeader: React.FC<IEditNameHeaderProps> = ({
             </FormItem>
           )}
         />
-        <div className='absolute right-0 bottom-2 flex gap-1'>
+        <div className='flex justify-center gap-1 mt-4 lg:absolute lg:right-0 lg:bottom-2'>
           <Button
             type='button'
             className='h-12'
@@ -88,10 +88,10 @@ const EditNameHeader: React.FC<IEditNameHeaderProps> = ({
     );
   } else {
     content = (
-      <>
+      <div className='relative w-full text-center mt-6 lg:text-left lg:mt-0'>
         <h1 className='scroll-m-20 text-4xl font-bold px-3'>{nameContent}</h1>
         <EditOverlay opacity='50' className='rounded-md' />
-      </>
+      </div>
     );
   }
 

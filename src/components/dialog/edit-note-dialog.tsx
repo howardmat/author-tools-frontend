@@ -85,16 +85,18 @@ const EditNoteDialog = forwardRef<HTMLButtonElement, IEditNoteDialogProps>(
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button type='submit'>Save</Button>
-                  <DialogClose asChild>
-                    <Button
-                      ref={closeButtonRef}
-                      type='button'
-                      variant='secondary'
-                    >
-                      Cancel
-                    </Button>
-                  </DialogClose>
+                  <div className='flex gap-2'>
+                    <Button type='submit'>Save</Button>
+                    <DialogClose asChild>
+                      <Button
+                        ref={closeButtonRef}
+                        type='button'
+                        variant='secondary'
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
                 </DialogFooter>
               </form>
             </Form>
