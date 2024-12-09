@@ -3,18 +3,19 @@ import { useFormContext } from 'react-hook-form';
 import { LoaderCircle } from 'lucide-react';
 import { UserCircleIcon } from '@heroicons/react/20/solid';
 import { usePostFileMutation } from '@/http';
-import { FormField } from './ui/form';
-import { Input } from './ui/input';
+import { FormField } from '../ui/form';
+import { Input } from '../ui/input';
 import { useToast } from '@/hooks/use-toast';
 import styles from './avatar-upload.module.css';
+import EditOverlay from '../common/edit-overlay';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-interface AvatarUploadProps {
+interface IAvatarUploadProps {
   name: string;
 }
 
-const AvatarUpload: React.FC<AvatarUploadProps> = ({ name }) => {
+const AvatarUpload: React.FC<IAvatarUploadProps> = ({ name }) => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const form = useFormContext();
@@ -51,38 +52,34 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ name }) => {
     }
   };
 
-  let avatarPreviewContent = (
-    <UserCircleIcon aria-hidden='true' className='w-24' />
-  );
+  let avatarContent = <UserCircleIcon aria-hidden='true' viewBox='2 2 16 16' />;
 
-  if (isPending) {
-    avatarPreviewContent = (
-      <LoaderCircle className={`${styles.spin} w-24 text-gray-300`} />
+  if (fileId) {
+    avatarContent = (
+      <img
+        alt=''
+        src={`${API_URL}/file/${fileId}`}
+        className='w-24 rounded-full'
+      />
     );
   }
 
-  if (fileId) {
-    avatarPreviewContent = (
-      <span className='relative inline-block'>
-        <img
-          alt=''
-          src={`${API_URL}/file/${fileId}`}
-          className='w-24 rounded-full'
-        />
-      </span>
+  let finalAvatarPreviewContent = (
+    <div className='relative inline-block w-24' onClick={handleClick}>
+      {avatarContent}
+      <EditOverlay className='rounded-full' />
+    </div>
+  );
+
+  if (isPending) {
+    finalAvatarPreviewContent = (
+      <LoaderCircle className={`${styles.spin} w-24 text-gray-300`} />
     );
   }
 
   return (
     <div className='flex justify-center items-center gap-x-3'>
-      {avatarPreviewContent}
-      <button
-        onClick={handleClick}
-        type='button'
-        className='rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
-      >
-        Change
-      </button>
+      {finalAvatarPreviewContent}
       <input
         className='hidden'
         type='file'

@@ -16,15 +16,19 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
-import { Workspace } from '@/types';
+import { IWorkspace } from '@/types';
 import { ActionTypes, SetBreadcrumbWorkspaceAction } from '@/actions';
 
-export function WorkspaceSwitcher({ workspaces }: { workspaces: Workspace[] }) {
+export function WorkspaceSwitcher({
+  workspaces,
+}: {
+  workspaces: IWorkspace[];
+}) {
   const { isMobile } = useSidebar();
   const [activeWorkspace, setActiveWorkspace] = React.useState(workspaces[0]);
   const { dispatch } = useBreadcrumbContext();
 
-  const handleWorkspaceChange = (workspace: Workspace) => {
+  const handleWorkspaceChange = (workspace: IWorkspace) => {
     setActiveWorkspace(workspace);
     setBreadcrumbWorkspace(workspace.name);
   };

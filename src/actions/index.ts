@@ -1,4 +1,4 @@
-import { Breadcrumb } from '../types';
+import { IBreadcrumb } from '../types';
 
 export enum ActionTypes {
   SET_BREADCRUMB_WORKSPACE = 'SET_BREADCRUMB_WORKSPACE',
@@ -13,12 +13,12 @@ export type SetBreadcrumbWorkspaceAction = {
 
 export type SetBreadcrumbTrailAction = {
   type: ActionTypes.SET_BREADCRUMB_TRAIL;
-  payload: Breadcrumb[];
+  payload: IBreadcrumb[];
 };
 
 export type AddBreadcrumbTrailAction = {
   type: ActionTypes.ADD_BREADCRUMB_TRAIL;
-  payload: Breadcrumb;
+  payload: IBreadcrumb;
 };
 
 export type Actions =

@@ -1,7 +1,7 @@
 import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import { useNavigate } from 'react-router-dom';
-import { Button } from './ui/button';
-import { Separator } from './ui/separator';
+import { Button } from '../ui/button';
+import { Separator } from '../ui/separator';
 
 const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
   title,

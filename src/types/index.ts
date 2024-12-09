@@ -1,135 +1,80 @@
-interface CharacterRelationship {
-  name: string;
-  relationship: string;
-}
-
-export interface CodeValue {
+export interface ICodeValue {
   code: string;
   value: string;
 }
 
-export interface Character {
+export interface IAttribute {
+  id: string;
+  label: string | null;
+  value: string | null;
+}
+
+export interface IDetailSection {
+  id: string;
+  title: string | null;
+  type: 'attribute' | 'note' | null;
+  noteContent: string | null;
+  attributes: IAttribute[];
+}
+
+export interface ICharacter {
   id?: string;
   name: string;
-  alias: string;
-  archetype: CodeValue;
   imageFileId: string;
-  birthDate?: string | null;
-  age?: number;
-  profession: string;
-  loveInterest: string;
-  gender: CodeValue;
-  eyeColor: string;
-  hairType: string;
-  hairColor: string;
-  hairLength: string;
-  bodyShape: string;
-  personalTraits: string;
-  abilities: string;
-  strength: string;
-  weakness: string;
-  friendsAndFamily: string;
-  relationships: CharacterRelationship[];
-  history: string;
-  familyHistory: string;
   order?: number;
+  detailSections: IDetailSection[];
 }
 
-export class CharacterFormData {
-  name: string;
-  alias: string;
-  archetype: string;
-  imageFileId: string;
-  birthDate?: Date;
-  age?: number;
-  profession: string;
-  loveInterest: string;
-  gender: string;
-  eyeColor: string;
-  hairType: string;
-  hairColor: string;
-  hairLength: string;
-  bodyShape: string;
-  personalTraits: string;
-  abilities: string;
-  strength: string;
-  weakness: string;
-  friendsAndFamily: string;
-  relationships: CharacterRelationship[];
-  history: string;
-  familyHistory: string;
-
-  constructor() {
-    this.name = '';
-    this.alias = '';
-    this.archetype = '';
-    this.imageFileId = '';
-    this.age = 0;
-    this.profession = '';
-    this.loveInterest = '';
-    this.gender = '';
-    this.eyeColor = '';
-    this.hairType = '';
-    this.hairColor = '';
-    this.hairLength = '';
-    this.bodyShape = '';
-    this.personalTraits = '';
-    this.abilities = '';
-    this.strength = '';
-    this.weakness = '';
-    this.friendsAndFamily = '';
-    this.relationships = [];
-    this.history = '';
-    this.familyHistory = '';
-  }
-}
-
-export interface BreadcrumbTrail {
+export interface IBreadcrumbTrail {
   workspaceName: string;
-  trail: Breadcrumb[];
+  trail: IBreadcrumb[];
 }
-export interface Breadcrumb {
+export interface IBreadcrumb {
   name: string;
   url?: string;
 }
-export interface Workspace {
+export interface IWorkspace {
   name: string;
   logo: React.ElementType;
   description: string;
 }
 
-export interface PatchRequest {
+export interface IPatchRequest {
   operation: 'update';
   path: string;
   value: unknown;
 }
 
-interface AuthenticatedParams {
+interface IAuthenticatedParams {
   token?: string;
 }
-export interface GetCharactersParams extends AuthenticatedParams {
+export interface IGetCharactersParams extends IAuthenticatedParams {
   signal: AbortSignal;
 }
-export interface GetCharacterParams extends AuthenticatedParams {
+export interface IGetCharacterParams extends IAuthenticatedParams {
   id: string;
   signal: AbortSignal;
 }
-export interface PostCharacterParams extends AuthenticatedParams {
-  character: Character;
+export interface IPostCharacterParams extends IAuthenticatedParams {
+  character: ICharacter;
 }
-export interface PutCharacterParams extends AuthenticatedParams {
+export interface IPutCharacterParams extends IAuthenticatedParams {
   id: string;
-  character: Character;
+  character: ICharacter;
 }
-export interface PatchCharacterParams extends AuthenticatedParams {
+export interface IPatchCharacterParams extends IAuthenticatedParams {
   id: string;
-  patchRequests: PatchRequest[];
+  patchRequests: IPatchRequest[];
 }
-export interface DeleteCharacterParams extends AuthenticatedParams {
+export interface IDeleteCharacterParams extends IAuthenticatedParams {
   id: string;
 }
 
-export interface UseMutationCallbacks {
+export interface IUseMutationCallbacksWithParams<T> {
+  onSuccess?: (data: T) => void;
+  onError?: (error?: Error) => void;
+}
+export interface IUseMutationCallbacks {
   onSuccess?: () => void;
   onError?: (error?: Error) => void;
 }

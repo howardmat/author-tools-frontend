@@ -1,7 +1,7 @@
 import { PlusIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router-dom';
 
-interface EmptyPageProps {
+interface IEmptyPageProps {
   title: string;
   description?: string;
   actionLabel?: string;
@@ -9,7 +9,7 @@ interface EmptyPageProps {
   className?: string;
 }
 
-const EmptyPageContent: React.FC<EmptyPageProps> = ({
+const EmptyPageContent: React.FC<IEmptyPageProps> = ({
   title,
   description,
   actionLabel,
@@ -33,7 +33,7 @@ const EmptyPageContent: React.FC<EmptyPageProps> = ({
           strokeLinejoin='round'
         />
       </svg>
-      <h3 className='mt-2 text-sm font-semibold text-gray-900'>{title}</h3>
+      <h3 className='mt-2 text-sm font-semibold text-primary'>{title}</h3>
       {description && (
         <p className='mt-1 text-sm text-gray-500'>{description}</p>
       )}

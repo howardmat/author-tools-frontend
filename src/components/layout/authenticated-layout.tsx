@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { Toaster } from '@/components/ui/toaster';
-import LoadingIndicator from '../loading-indicator';
+import LoadingIndicator from '../common/loading-indicator';
 import { SidebarMenu } from './sidebar/sidebar-menu';
 import { Separator } from '@/components/ui/separator';
 import {

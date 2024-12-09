@@ -12,9 +12,9 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 
-interface ConfirmAlertProps {
+interface IConfirmAlertProps {
   title?: string;
   description?: string;
   confirmLabel?: string;
@@ -26,10 +26,10 @@ interface ConfirmAlertProps {
 }
 
 export interface IConfirmAlert {
-  show: (props?: ConfirmAlertProps) => void;
+  show: (props?: IConfirmAlertProps) => void;
 }
 
-const ConfirmAlert = forwardRef<IConfirmAlert, ConfirmAlertProps>(
+const ConfirmAlert = forwardRef<IConfirmAlert, IConfirmAlertProps>(
   (
     {
       title,
@@ -44,7 +44,7 @@ const ConfirmAlert = forwardRef<IConfirmAlert, ConfirmAlertProps>(
     ref
   ) => {
     const [open, setOpen] = useState(false);
-    const [stateProps, setStateProps] = useState<ConfirmAlertProps>({
+    const [stateProps, setStateProps] = useState<IConfirmAlertProps>({
       title,
       description,
       confirmLabel,
@@ -58,7 +58,7 @@ const ConfirmAlert = forwardRef<IConfirmAlert, ConfirmAlertProps>(
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     useImperativeHandle(ref, () => ({
-      show: (props?: ConfirmAlertProps) => {
+      show: (props?: IConfirmAlertProps) => {
         if (props) {
           setStateProps({ ...props });
         }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
-import LoadingIndicator from '@/components/loading-indicator';
+import LoadingIndicator from '@/components/common/loading-indicator';
 
 const CharacterRootPage: React.FC = () => {
   const { userId, isLoaded } = useAuth();

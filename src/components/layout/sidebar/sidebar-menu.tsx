@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 import { Bot, GalleryVerticalEnd, Settings2 } from 'lucide-react';
 

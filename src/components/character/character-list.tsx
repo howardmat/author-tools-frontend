@@ -1,12 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
 import {
   TrashIcon,
   UserCircleIcon,
   EllipsisVerticalIcon,
 } from '@heroicons/react/20/solid';
-import { Character } from '../../types';
-import ConfirmAlert, { IConfirmAlert } from '../confirm-alert';
+import { ICharacter } from '../../types';
+import ConfirmAlert, { IConfirmAlert } from '../common/confirm-alert';
 import { DragEvent, MouseEvent, useRef } from 'react';
 import { Button } from '../ui/button';
 import { toast } from '@/hooks/use-toast';
@@ -20,7 +19,7 @@ import {
 const API_URL = import.meta.env.VITE_API_URL;
 
 const CharacterList: React.FC<{
-  characters: Character[];
+  characters: ICharacter[];
   onDragStart: (event: DragEvent<HTMLLIElement>) => void;
   onDragOver: (event: DragEvent<HTMLLIElement>) => void;
   onDragEnd: () => void;
@@ -92,24 +91,9 @@ const CharacterList: React.FC<{
               )}
               <div className='min-w-0 flex-auto'>
                 <p className=' font-semibold text-primary'>{c.name}</p>
-                <p className='mt-1 flex text-sm/6 text-secondary-foreground'>
-                  {c.alias ?? <span>{c.alias}</span>}
-                </p>
               </div>
             </div>
             <div className='flex shrink-0 items-center gap-x-4'>
-              <div className='hidden sm:flex sm:flex-col sm:items-end'>
-                {c.archetype.value.length > 0 && (
-                  <p className=' text-primary'>{c.archetype.value}</p>
-                )}
-                <p className='mt-1 text-sm/6 text-secondary-foreground'>
-                  {c.birthDate && (
-                    <span>Born: {format(c.birthDate, 'MMMM d')}</span>
-                  )}
-                  {(c.age ?? 0) > 0 && <span> | Age: {c.age}</span>}
-                </p>
-              </div>
-
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant='ghost'>
