@@ -1,4 +1,4 @@
-import { PlusIcon } from '@heroicons/react/20/solid';
+import { PlusCircleIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router-dom';
 import { Button } from '../ui/button';
 
@@ -42,7 +42,7 @@ const EmptyPageContent: React.FC<IEmptyPageProps> = ({
         <div className='mt-6'>
           <Link to={actionRoute}>
             <Button>
-              <PlusIcon aria-hidden='true' className='-ml-0.5 mr-1.5 size-5' />
+              <PlusCircleIcon />
               {actionLabel}
             </Button>
           </Link>
