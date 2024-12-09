@@ -162,7 +162,7 @@ const EditAttributeDialog: React.FC<IEditAttributeDialogProps> = ({
                       </Button>
                     )}
                   </div>
-                  <div>
+                  <div className='flex gap-2'>
                     <Button type='submit'>Save</Button>
                     <DialogClose asChild>
                       <Button

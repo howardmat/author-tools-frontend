@@ -73,7 +73,7 @@ const AvatarUpload: React.FC<IAvatarUploadProps> = ({ name }) => {
 
   if (isPending) {
     finalAvatarPreviewContent = (
-      <LoaderCircle className={`${styles.spin} w-24 text-gray-300`} />
+      <LoaderCircle className={`${styles.spin} w-24 h-24 text-gray-300`} />
     );
   }
 

@@ -53,7 +53,7 @@ const HeaderDetailForm: React.FC<IHeaderFormProps> = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className='my-4 md:flex md:content-stretch gap-8 h-full'>
+        <div className='my-4 lg:flex lg:content-stretch gap-8 h-full'>
           <AvatarUpload name='imageFileId' />
           <EditNameHeader
             name='name'
