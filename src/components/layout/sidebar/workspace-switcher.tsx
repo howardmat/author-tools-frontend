@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/sidebar';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import { IWorkspace } from '@/types';
-import { ActionTypes, SetBreadcrumbWorkspaceAction } from '@/actions';
+import { BreadcrumbActionTypes, SetBreadcrumbWorkspaceAction } from '@/actions';
 
 export function WorkspaceSwitcher({
   workspaces,
@@ -35,7 +35,7 @@ export function WorkspaceSwitcher({
 
   const setBreadcrumbWorkspace = (name: string) => {
     const setBreadcrumbWorkspaceAction: SetBreadcrumbWorkspaceAction = {
-      type: ActionTypes.SET_BREADCRUMB_WORKSPACE,
+      type: BreadcrumbActionTypes.SET_BREADCRUMB_WORKSPACE,
       payload: name,
     };
     dispatch(setBreadcrumbWorkspaceAction);

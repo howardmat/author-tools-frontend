@@ -1,4 +1,4 @@
-import { ActionTypes, Actions } from '../../actions';
+import { BreadcrumbActionTypes, BreadcrumbActions } from '../../actions';
 import { IBreadcrumbTrail } from '../../types';
 
 export type State = {
@@ -12,9 +12,9 @@ export const initialState: State = {
   },
 };
 
-export function reducer(state: State, action: Actions) {
+export function reducer(state: State, action: BreadcrumbActions) {
   switch (action.type) {
-    case ActionTypes.SET_BREADCRUMB_WORKSPACE:
+    case BreadcrumbActionTypes.SET_BREADCRUMB_WORKSPACE:
       return {
         breadcrumbTrail: {
           ...state.breadcrumbTrail,
@@ -22,7 +22,7 @@ export function reducer(state: State, action: Actions) {
         },
       };
 
-    case ActionTypes.SET_BREADCRUMB_TRAIL:
+    case BreadcrumbActionTypes.SET_BREADCRUMB_TRAIL:
       return {
         breadcrumbTrail: {
           ...state.breadcrumbTrail,
@@ -30,7 +30,7 @@ export function reducer(state: State, action: Actions) {
         },
       };
 
-    case ActionTypes.ADD_BREADCRUMB_TRAIL: {
+    case BreadcrumbActionTypes.ADD_BREADCRUMB_TRAIL: {
       const stateCopy = {
         breadcrumbTrail: {
           ...state.breadcrumbTrail,

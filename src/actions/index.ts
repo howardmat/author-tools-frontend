@@ -1,27 +1,40 @@
 import { IBreadcrumb } from '../types';
 
-export enum ActionTypes {
+// Breadcrumb
+export enum BreadcrumbActionTypes {
   SET_BREADCRUMB_WORKSPACE = 'SET_BREADCRUMB_WORKSPACE',
   SET_BREADCRUMB_TRAIL = 'SET_BREADCRUMB_TRAIL',
   ADD_BREADCRUMB_TRAIL = 'ADD_BREADCRUMB_TRAIL',
 }
 
 export type SetBreadcrumbWorkspaceAction = {
-  type: ActionTypes.SET_BREADCRUMB_WORKSPACE;
+  type: BreadcrumbActionTypes.SET_BREADCRUMB_WORKSPACE;
   payload: string;
 };
 
 export type SetBreadcrumbTrailAction = {
-  type: ActionTypes.SET_BREADCRUMB_TRAIL;
+  type: BreadcrumbActionTypes.SET_BREADCRUMB_TRAIL;
   payload: IBreadcrumb[];
 };
 
 export type AddBreadcrumbTrailAction = {
-  type: ActionTypes.ADD_BREADCRUMB_TRAIL;
+  type: BreadcrumbActionTypes.ADD_BREADCRUMB_TRAIL;
   payload: IBreadcrumb;
 };
 
-export type Actions =
+export type BreadcrumbActions =
   | SetBreadcrumbWorkspaceAction
   | SetBreadcrumbTrailAction
   | AddBreadcrumbTrailAction;
+
+// User Settings
+export enum UserSettingsActionTypes {
+  SET_USERSETTINGS_THEME = 'SET_USERSETTINGS_THEME',
+}
+
+export type SetUserSettingsThemeAction = {
+  type: UserSettingsActionTypes.SET_USERSETTINGS_THEME;
+  payload: string;
+};
+
+export type UserSettingsActions = SetUserSettingsThemeAction;
