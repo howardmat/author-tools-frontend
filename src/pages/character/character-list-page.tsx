@@ -85,7 +85,7 @@ const CharacterListPage: React.FC = () => {
           patchRequests: [
             {
               operation: 'update',
-              path: '/order',
+              path: 'order',
               value: updatedOrder,
             },
           ],

@@ -1,5 +1,6 @@
 export const QUERY_KEYS = {
   CHARACTERS: 'characters',
+  USER_SETTINGS: 'user-settings',
   FILE: 'file',
 };
 

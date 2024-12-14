@@ -1,19 +1,24 @@
 import { THEMES } from '@/lib/constants';
 import { UserSettingsActionTypes, UserSettingsActions } from '../../actions';
+import { IUserSetting } from '@/types';
 
 export type State = {
-  theme: string;
+  userSetting: IUserSetting;
 };
 
 export const initialState: State = {
-  theme: THEMES.LIGHT,
+  userSetting: {
+    theme: THEMES.LIGHT,
+  },
 };
 
 export function reducer(state: State, action: UserSettingsActions) {
   switch (action.type) {
-    case UserSettingsActionTypes.SET_USERSETTINGS_THEME:
+    case UserSettingsActionTypes.SET_USERSETTINGS:
       return {
-        theme: action.payload,
+        userSetting: {
+          ...action.payload,
+        },
       };
 
     default:

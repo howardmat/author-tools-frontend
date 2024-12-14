@@ -1,7 +1,7 @@
 import {
   BreadcrumbActionTypes,
   SetBreadcrumbTrailAction,
-  SetUserSettingsThemeAction,
+  SetUserSettingsAction,
   UserSettingsActionTypes,
 } from '@/actions';
 import PageHeading from '@/components/common/page-heading';
@@ -22,6 +22,8 @@ import { z } from 'zod';
 import { THEMES } from '@/lib/constants';
 import { useUserSettingsContext } from '@/store/user-settings/use-user-settings-context';
 import useBodyClass from '@/hooks/use-body-class';
+import { usePostUserSettingMutation, usePutUserSettingMutation } from '@/http';
+import { toast } from '@/hooks/use-toast';
 
 const FormSchema = z.object({
   theme: z.enum(
@@ -55,26 +57,71 @@ const SettingsPage: React.FC = () => {
 
   const { state: userSettingsState, dispatch: userSettingsDispatch } =
     useUserSettingsContext();
-
   const { setBodyClass } = useBodyClass();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    values: {
+      theme: userSettingsState.userSetting.theme || THEMES.LIGHT,
+    },
     defaultValues: {
-      theme: userSettingsState.theme,
+      theme: userSettingsState.userSetting.theme,
     },
   });
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
+  useEffect(() => {
+    form.reset({
+      theme: userSettingsState.userSetting.theme,
+    });
+  }, [userSettingsState.userSetting.theme]);
+
+  const onSuccessHandler = () => {
+    toast({
+      title: 'Awesome!',
+      description: 'Your settings have been saved',
+      variant: 'success',
+    });
+  };
+  const onErrorHandler = (error?: Error) => {
+    toast({
+      title: 'Error!',
+      description: error?.message ?? 'An unexpected error occurred.',
+      variant: 'destructive',
+    });
   };
 
-  const handleThemeChange = (value: string) => {
-    setBodyClass(userSettingsState.theme, value);
+  const { mutate: putMutate } = usePutUserSettingMutation({
+    onSuccess: onSuccessHandler,
+    onError: onErrorHandler,
+  });
+  const { mutate: postMutate } = usePostUserSettingMutation({
+    onSuccess: onSuccessHandler,
+    onError: onErrorHandler,
+  });
 
-    const setUserSettingsThemeAction: SetUserSettingsThemeAction = {
-      type: UserSettingsActionTypes.SET_USERSETTINGS_THEME,
-      payload: value,
+  const handleThemeChange = (value: string) => {
+    setBodyClass(userSettingsState.userSetting.theme || THEMES.LIGHT, value);
+
+    if (userSettingsState?.userSetting?.id) {
+      putMutate({
+        id: userSettingsState.userSetting.id,
+        userSetting: {
+          ...userSettingsState,
+          theme: value,
+        },
+      });
+    } else {
+      postMutate({
+        theme: value,
+      });
+    }
+
+    const setUserSettingsThemeAction: SetUserSettingsAction = {
+      type: UserSettingsActionTypes.SET_USERSETTINGS,
+      payload: {
+        ...userSettingsState.userSetting,
+        theme: value,
+      },
     };
     userSettingsDispatch(setUserSettingsThemeAction);
   };
@@ -82,17 +129,14 @@ const SettingsPage: React.FC = () => {
   return (
     <>
       <PageHeading title='Settings' />
-      <div className='space-y-12'>
-        <div className='pb-12'>
+      <div className='space-y-12 rounded-xl bg-muted/50 p-3'>
+        <div className='pb-6'>
           <h4 className='scroll-m-20 text-xl font-semibold tracking-tight'>
             Theme
           </h4>
           <div className='leading-7 [&:not(:first-child)]:mt-6 ml-2'>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className='w-2/3 space-y-6'
-              >
+              <form className='w-2/3 space-y-6'>
                 <FormField
                   control={form.control}
                   name='theme'

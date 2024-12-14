@@ -11,6 +11,10 @@ import {
   IUseMutationCallbacks,
   IPatchRequest,
   IUseMutationCallbacksWithParams,
+  IUserSetting,
+  IGetUserSettingParams,
+  IPostUserSettingParams,
+  IPutUserSettingParams,
 } from '@/types';
 import { queryClient } from '@/http/query-client';
 import { QUERY_KEYS } from '../lib/constants';
@@ -18,9 +22,11 @@ import { QUERY_KEYS } from '../lib/constants';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const CHARACTER_ENDPOINT = `${API_URL}/characters`;
+const USER_SETTING_ENDPOINT = `${API_URL}/user-setting`;
 const FILE_ENDPOINT = `${API_URL}/file`;
 const JWT_TEMPLATE = 'author-tools-jwt';
 
+/* Characters */
 export function useGetCharactersQuery() {
   const { getToken } = useAuth();
 
@@ -184,7 +190,7 @@ async function putCharacter({
   });
 
   if (!response.ok) {
-    const error = new Error('An error occurred while creating the character');
+    const error = new Error('An error occurred while updating the character');
     throw error;
   }
 
@@ -221,7 +227,7 @@ async function patchCharacter({
   id,
   patchRequests,
   token,
-}: IPatchCharacterParams): Promise<ICharacter> {
+}: IPatchCharacterParams): Promise<void> {
   const response = await fetch(CHARACTER_ENDPOINT + `/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(patchRequests),
@@ -237,8 +243,6 @@ async function patchCharacter({
     );
     throw error;
   }
-
-  return await response.json();
 }
 
 export function useDeleteCharacterMutation({
@@ -274,6 +278,152 @@ async function deleteCharacter({ id, token }: IDeleteCharacterParams) {
     const error = new Error('An error occurred while deleting the character');
     throw error;
   }
+}
+
+/* User Settings */
+export function useGetUserSettingQuery() {
+  const { getToken, userId } = useAuth();
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.USER_SETTINGS, userId],
+    queryFn: async ({ signal }) => {
+      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
+      return await getUserSetting({ signal, token });
+    },
+  });
+}
+
+async function getUserSetting({
+  signal,
+  token,
+}: IGetUserSettingParams): Promise<IUserSetting> {
+  const response = await fetch(USER_SETTING_ENDPOINT, {
+    headers: { Authorization: `Bearer ${token}` },
+    signal: signal,
+  });
+
+  if (!response.ok) {
+    const error = new Error(
+      'An error occurred while fetching the user settings'
+    );
+    throw error;
+  }
+
+  return (await response.json()) as IUserSetting;
+}
+
+export function usePostUserSettingMutation({
+  onSuccess,
+  onError,
+}: IUseMutationCallbacksWithParams<IUserSetting>) {
+  const { getToken } = useAuth();
+
+  return useMutation({
+    mutationFn: async (userSetting: IUserSetting) => {
+      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
+      return await postUserSetting({ userSetting, token });
+    },
+    onError: (error) => {
+      if (onError) onError(error);
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER_SETTINGS] });
+      if (onSuccess) onSuccess(data);
+    },
+  });
+}
+
+async function postUserSetting({
+  userSetting,
+  token,
+}: IPostUserSettingParams): Promise<IUserSetting> {
+  const response = await fetch(USER_SETTING_ENDPOINT, {
+    method: 'POST',
+    body: JSON.stringify(userSetting),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const error = new Error(
+      'An error occurred while creating the user setting'
+    );
+    throw error;
+  }
+
+  return await response.json();
+}
+
+export function usePutUserSettingMutation({
+  onSuccess,
+  onError,
+}: IUseMutationCallbacksWithParams<IUserSetting>) {
+  const { getToken, userId } = useAuth();
+
+  return useMutation({
+    mutationFn: async ({
+      userSetting,
+      id,
+    }: {
+      userSetting: IUserSetting;
+      id: string;
+    }) => {
+      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
+      return await putUserSetting({ id, userSetting, token });
+    },
+    onMutate: async (data: IPutUserSettingParams) => {
+      const userSetting = data.userSetting;
+
+      await queryClient.cancelQueries({
+        queryKey: [QUERY_KEYS.USER_SETTINGS, userId],
+      });
+      const previousData = queryClient.getQueryData([
+        QUERY_KEYS.USER_SETTINGS,
+        userId,
+      ]);
+      queryClient.setQueryData([QUERY_KEYS.USER_SETTINGS, userId], userSetting);
+
+      return { previousData };
+    },
+    onError: (error, _variables, context) => {
+      queryClient.setQueryData([QUERY_KEYS.USER_SETTINGS, userId], context);
+
+      if (onError) onError(error);
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.USER_SETTINGS],
+      });
+
+      if (onSuccess) onSuccess(data);
+    },
+  });
+}
+
+async function putUserSetting({
+  id,
+  userSetting,
+  token,
+}: IPutUserSettingParams): Promise<IUserSetting> {
+  const response = await fetch(USER_SETTING_ENDPOINT + `/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(userSetting),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const error = new Error(
+      'An error occurred while updating the user settings'
+    );
+    throw error;
+  }
+
+  return await response.json();
 }
 
 /* Files */

@@ -1,4 +1,4 @@
-import { IBreadcrumb } from '../types';
+import { IBreadcrumb, IUserSetting } from '../types';
 
 // Breadcrumb
 export enum BreadcrumbActionTypes {
@@ -29,12 +29,12 @@ export type BreadcrumbActions =
 
 // User Settings
 export enum UserSettingsActionTypes {
-  SET_USERSETTINGS_THEME = 'SET_USERSETTINGS_THEME',
+  SET_USERSETTINGS = 'SET_USERSETTINGS',
 }
 
-export type SetUserSettingsThemeAction = {
-  type: UserSettingsActionTypes.SET_USERSETTINGS_THEME;
-  payload: string;
+export type SetUserSettingsAction = {
+  type: UserSettingsActionTypes.SET_USERSETTINGS;
+  payload: IUserSetting;
 };
 
-export type UserSettingsActions = SetUserSettingsThemeAction;
+export type UserSettingsActions = SetUserSettingsAction;
