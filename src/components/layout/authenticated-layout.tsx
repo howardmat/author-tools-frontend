@@ -26,6 +26,7 @@ const AuthenticatedLayout: React.FC = () => {
     if (isLoaded && !userId) {
       navigate('/sign-in');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded]);
 
   const { dispatch } = useUserSettingsContext();
@@ -44,6 +45,7 @@ const AuthenticatedLayout: React.FC = () => {
       dispatch(setUserSettingsThemeAction);
       if (data.theme) setBodyClass(THEMES.LIGHT, data.theme);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPending, data]);
 
   if (!isLoaded || isPending) return <LoadingIndicator />;

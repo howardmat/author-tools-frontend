@@ -73,6 +73,7 @@ const SettingsPage: React.FC = () => {
     form.reset({
       theme: userSettingsState.userSetting.theme,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSettingsState.userSetting.theme]);
 
   const onSuccessHandler = () => {
