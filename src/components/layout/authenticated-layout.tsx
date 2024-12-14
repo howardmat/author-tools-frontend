@@ -12,6 +12,11 @@ import {
 } from '@/components/ui/sidebar';
 import AppBreadcrumb from './app-breadcrumb';
 import BreadcrumbContextProvider from '@/store/breadcrumb/breadcrumb-context-provider';
+import { useGetUserSettingQuery } from '@/http';
+import { SetUserSettingsAction, UserSettingsActionTypes } from '@/actions';
+import { useUserSettingsContext } from '@/store/user-settings/use-user-settings-context';
+import useBodyClass from '@/hooks/use-body-class';
+import { THEMES } from '@/lib/constants';
 
 const AuthenticatedLayout: React.FC = () => {
   const { userId, isLoaded } = useAuth();
@@ -21,9 +26,29 @@ const AuthenticatedLayout: React.FC = () => {
     if (isLoaded && !userId) {
       navigate('/sign-in');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded]);
 
-  if (!isLoaded) return <LoadingIndicator />;
+  const { dispatch } = useUserSettingsContext();
+  const { setBodyClass } = useBodyClass();
+
+  const { data, isPending } = useGetUserSettingQuery();
+  useEffect(() => {
+    if (!isPending && data) {
+      const setUserSettingsThemeAction: SetUserSettingsAction = {
+        type: UserSettingsActionTypes.SET_USERSETTINGS,
+        payload: {
+          ...data,
+        },
+      };
+
+      dispatch(setUserSettingsThemeAction);
+      if (data.theme) setBodyClass(THEMES.LIGHT, data.theme);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPending, data]);
+
+  if (!isLoaded || isPending) return <LoadingIndicator />;
 
   return (
     <>

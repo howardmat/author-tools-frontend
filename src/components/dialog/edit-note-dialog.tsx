@@ -45,12 +45,19 @@ const EditNoteDialog = forwardRef<HTMLButtonElement, IEditNoteDialogProps>(
 
     const onSubmit = (data: z.infer<typeof FormSchema>) => {
       onSave(data.noteContent);
+      form.resetField('noteContent', { defaultValue: data.noteContent });
 
       if (closeButtonRef.current) closeButtonRef.current.click();
     };
 
+    const handleOpenChange = (open: boolean) => {
+      if (open) return;
+
+      form.reset(undefined, { keepDefaultValues: true });
+    };
+
     return (
-      <Dialog>
+      <Dialog onOpenChange={handleOpenChange}>
         <DialogTrigger ref={ref} asChild>
           {children}
         </DialogTrigger>

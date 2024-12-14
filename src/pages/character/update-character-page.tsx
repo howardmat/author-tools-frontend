@@ -5,7 +5,7 @@ import LoadingIndicator from '@/components/common/loading-indicator';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect, useState } from 'react';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
-import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
+import { BreadcrumbActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import HeaderDetailForm, {
   HeaderFormData,
 } from '@/components/form/header-detail-form';
@@ -19,7 +19,7 @@ const UpdateCharacterPage: React.FC = () => {
 
   useEffect(() => {
     const setBreadcrumbTrailAction: SetBreadcrumbTrailAction = {
-      type: ActionTypes.SET_BREADCRUMB_TRAIL,
+      type: BreadcrumbActionTypes.SET_BREADCRUMB_TRAIL,
       payload: [{ name: 'Characters', url: '/characters' }, { name: 'Edit' }],
     };
     dispatch(setBreadcrumbTrailAction);

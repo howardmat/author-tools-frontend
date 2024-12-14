@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { usePostCharacterMutation } from '@/http';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
-import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
+import { BreadcrumbActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import HeaderDetailForm, {
   HeaderFormData,
@@ -17,7 +17,7 @@ const AddCharacterPage: React.FC = () => {
 
   useEffect(() => {
     const setBreadcrumbTrailAction: SetBreadcrumbTrailAction = {
-      type: ActionTypes.SET_BREADCRUMB_TRAIL,
+      type: BreadcrumbActionTypes.SET_BREADCRUMB_TRAIL,
       payload: [{ name: 'Characters', url: '/characters' }, { name: 'Add' }],
     };
     dispatch(setBreadcrumbTrailAction);

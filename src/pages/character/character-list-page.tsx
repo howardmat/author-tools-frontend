@@ -3,7 +3,7 @@ import CharacterList from '../../components/character/character-list';
 import { useGetCharactersQuery, usePatchCharacterMutation } from '@/http';
 import EmptyPageContent from '@/components/common/empty-page-content';
 import LoadingIndicator from '@/components/common/loading-indicator';
-import { ActionTypes, SetBreadcrumbTrailAction } from '@/actions';
+import { BreadcrumbActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import { DragEvent, useEffect, useRef, useState } from 'react';
 import { ICharacter } from '@/types';
@@ -24,7 +24,7 @@ const CharacterListPage: React.FC = () => {
 
   useEffect(() => {
     const setBreadcrumbTrailAction: SetBreadcrumbTrailAction = {
-      type: ActionTypes.SET_BREADCRUMB_TRAIL,
+      type: BreadcrumbActionTypes.SET_BREADCRUMB_TRAIL,
       payload: [
         {
           name: 'Characters',
@@ -85,7 +85,7 @@ const CharacterListPage: React.FC = () => {
           patchRequests: [
             {
               operation: 'update',
-              path: '/order',
+              path: 'order',
               value: updatedOrder,
             },
           ],

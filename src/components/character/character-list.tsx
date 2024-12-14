@@ -90,7 +90,7 @@ const CharacterList: React.FC<{
                 <UserCircleIcon aria-hidden='true' className='w-16' />
               )}
               <div className='min-w-0 flex-auto'>
-                <p className=' font-semibold text-primary'>{c.name}</p>
+                <p className='font-semibold'>{c.name}</p>
               </div>
             </div>
             <div className='flex shrink-0 items-center gap-x-4'>

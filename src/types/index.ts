@@ -25,6 +25,11 @@ export interface ICharacter {
   detailSections: IDetailSection[];
 }
 
+export interface IUserSetting {
+  id?: string;
+  theme?: string;
+}
+
 export interface IBreadcrumbTrail {
   workspaceName: string;
   trail: IBreadcrumb[];
@@ -68,6 +73,17 @@ export interface IPatchCharacterParams extends IAuthenticatedParams {
 }
 export interface IDeleteCharacterParams extends IAuthenticatedParams {
   id: string;
+}
+
+export interface IGetUserSettingParams extends IAuthenticatedParams {
+  signal: AbortSignal;
+}
+export interface IPostUserSettingParams extends IAuthenticatedParams {
+  userSetting: IUserSetting;
+}
+export interface IPutUserSettingParams extends IAuthenticatedParams {
+  id: string;
+  userSetting: IUserSetting;
 }
 
 export interface IUseMutationCallbacksWithParams<T> {

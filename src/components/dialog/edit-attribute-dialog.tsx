@@ -83,12 +83,16 @@ const EditAttributeDialog: React.FC<IEditAttributeDialogProps> = ({
     if (attribute) onSave({ ...attribute, ...data });
     else onSave({ ...data, id: newId() });
 
-    if (addMode) {
-      form.setValue('label', '');
-      form.setValue('value', '');
-    }
-
     if (closeButtonRef.current) closeButtonRef.current.click();
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    if (open) return;
+
+    form.reset({
+      label: attribute?.label || '',
+      value: attribute?.value || '',
+    });
   };
 
   const title = addMode ? 'Add a new attribute' : 'Edit the attribute';
@@ -107,7 +111,7 @@ const EditAttributeDialog: React.FC<IEditAttributeDialogProps> = ({
   );
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{buttonContent}</DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>

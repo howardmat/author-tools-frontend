@@ -87,10 +87,16 @@ const EditSectionDialog: React.FC<IEditSectionDialogProps> = ({
     if (section) onSave({ ...section, ...data });
     else onSave({ ...data, id: newId(), noteContent: '', attributes: [] });
 
-    form.setValue('title', '');
-    form.setValue('type', 'attribute');
-
     if (closeButtonRef.current) closeButtonRef.current.click();
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    if (open) return;
+
+    form.reset({
+      title: section?.title || '',
+      type: section?.type || 'attribute',
+    });
   };
 
   const title = addMode ? 'Add a new section' : 'Edit the section';
@@ -108,7 +114,7 @@ const EditSectionDialog: React.FC<IEditSectionDialogProps> = ({
   );
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{triggerContent}</DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
