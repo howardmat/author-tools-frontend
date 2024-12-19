@@ -191,3 +191,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+.dark-orange\:bg-primary-foreground:is(.dark-orange *) {
+  background-color: hsl(var(--primary-foreground));
+}
+.dark-blue\:bg-primary-foreground:is(.dark-blue *) {
+  background-color: hsl(var(--primary-foreground));
+}
+.dark-violet\:bg-primary-foreground:is(.dark-violet *) {
+  background-color: hsl(var(--primary-foreground));
+}

@@ -5,6 +5,7 @@ import { LoaderCircle } from 'lucide-react';
 import loaderStyles from './loading-styles.module.css';
 import { FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 interface IEditNameHeaderProps {
   name: string;
@@ -45,17 +46,17 @@ const EditNameHeader: React.FC<IEditNameHeaderProps> = ({
   let content: ReactElement;
   if (isEditing) {
     content = (
-      <div className='relative w-full mt-1 lg:mt-0'>
+      <div className='relative w-full mt-3 lg:mt-0'>
         <FormField
           control={form.control}
           name={name}
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <input
+                <Input
                   {...field}
                   type='text'
-                  className='border-0 border-b-primary focus:border-b-primary border-b h-full w-full focus:ring-0 font-bold text-4xl dark:bg-primary-foreground'
+                  className='py-8 font-bold'
                   placeholder='Type a name and click save'
                 />
               </FormControl>
@@ -63,7 +64,7 @@ const EditNameHeader: React.FC<IEditNameHeaderProps> = ({
             </FormItem>
           )}
         />
-        <div className='flex justify-center gap-1 mt-4 lg:absolute lg:right-0 lg:bottom-2'>
+        <div className='flex justify-center gap-1 mt-4 lg:absolute lg:right-2 lg:bottom-2'>
           <Button
             type='button'
             className='h-12'
