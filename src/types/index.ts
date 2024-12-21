@@ -17,12 +17,18 @@ export interface IDetailSection {
   attributes: IAttribute[];
 }
 
-export interface ICharacter {
+export interface IEntity {
   id?: string;
   name: string;
   imageFileId: string;
   order?: number;
   detailSections: IDetailSection[];
+}
+
+export enum EntityQueryType {
+  character,
+  creature,
+  location,
 }
 
 export interface IUserSetting {
@@ -53,25 +59,31 @@ export interface IPatchRequest {
 interface IAuthenticatedParams {
   token?: string;
 }
-export interface IGetCharactersParams extends IAuthenticatedParams {
+export interface IGetEntitiesParams extends IAuthenticatedParams {
+  type: EntityQueryType;
   signal: AbortSignal;
 }
-export interface IGetCharacterParams extends IAuthenticatedParams {
+export interface IGetEntityParams extends IAuthenticatedParams {
+  type: EntityQueryType;
   id: string;
   signal: AbortSignal;
 }
-export interface IPostCharacterParams extends IAuthenticatedParams {
-  character: ICharacter;
+export interface IPostEntityParams extends IAuthenticatedParams {
+  type: EntityQueryType;
+  entity: IEntity;
 }
-export interface IPutCharacterParams extends IAuthenticatedParams {
+export interface IPutEntityParams extends IAuthenticatedParams {
+  type: EntityQueryType;
   id: string;
-  character: ICharacter;
+  entity: IEntity;
 }
-export interface IPatchCharacterParams extends IAuthenticatedParams {
+export interface IPatchEntityParams extends IAuthenticatedParams {
+  type: EntityQueryType;
   id: string;
   patchRequests: IPatchRequest[];
 }
-export interface IDeleteCharacterParams extends IAuthenticatedParams {
+export interface IDeleteEntityParams extends IAuthenticatedParams {
+  type: EntityQueryType;
   id: string;
 }
 
@@ -93,4 +105,8 @@ export interface IUseMutationCallbacksWithParams<T> {
 export interface IUseMutationCallbacks {
   onSuccess?: () => void;
   onError?: (error?: Error) => void;
+}
+export interface IMutateEntityParams {
+  id: string;
+  entity: IEntity;
 }

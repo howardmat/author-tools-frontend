@@ -1,119 +1,69 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/clerk-react';
 import {
-  ICharacter,
-  IDeleteCharacterParams,
-  IGetCharacterParams,
-  IGetCharactersParams,
-  IPostCharacterParams,
-  IPutCharacterParams,
-  IPatchCharacterParams,
-  IUseMutationCallbacks,
-  IPatchRequest,
+  IEntity,
+  IDeleteEntityParams,
+  IGetEntityParams,
+  IPostEntityParams,
+  IPutEntityParams,
+  IPatchEntityParams,
   IUseMutationCallbacksWithParams,
   IUserSetting,
   IGetUserSettingParams,
   IPostUserSettingParams,
   IPutUserSettingParams,
+  IGetEntitiesParams,
+  EntityQueryType,
 } from '@/types';
 import { queryClient } from '@/http/query-client';
-import { QUERY_KEYS } from '../lib/constants';
+import { API_ENDPOINTS, JWT_TEMPLATE, QUERY_KEYS } from '../lib/constants';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
-const CHARACTER_ENDPOINT = `${API_URL}/characters`;
-const USER_SETTING_ENDPOINT = `${API_URL}/user-setting`;
-const FILE_ENDPOINT = `${API_URL}/file`;
-const JWT_TEMPLATE = 'author-tools-jwt';
-
-/* Characters */
-export function useGetCharactersQuery() {
-  const { getToken } = useAuth();
-
-  return useQuery({
-    queryKey: [QUERY_KEYS.CHARACTERS],
-    queryFn: async ({ signal }) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await getCharacters({ signal, token });
-    },
-  });
-}
-
-async function getCharacters({
+/* Common Entities */
+export async function getEntities({
+  type,
   signal,
   token,
-}: IGetCharactersParams): Promise<ICharacter[]> {
-  const response = await fetch(CHARACTER_ENDPOINT, {
+}: IGetEntitiesParams): Promise<IEntity[]> {
+  const response = await fetch(getEntityEndpointByQueryType(type), {
     headers: { Authorization: `Bearer ${token}` },
     signal: signal,
   });
 
   if (!response.ok) {
-    const error = new Error('An error occurred while fetching the characters');
+    const error = new Error('An error occurred while fetching the data');
     throw error;
   }
 
-  return (await response.json()) as ICharacter[];
+  return (await response.json()) as IEntity[];
 }
 
-export function useGetCharacterQuery(id: string) {
-  const { getToken } = useAuth();
-
-  return useQuery({
-    queryKey: [QUERY_KEYS.CHARACTERS, id],
-    queryFn: async ({ signal }) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await getCharacter({ id: id, signal, token });
-    },
-  });
-}
-
-async function getCharacter({
+export async function getEntity({
+  type,
   id,
   signal,
   token,
-}: IGetCharacterParams): Promise<ICharacter> {
-  const response = await fetch(CHARACTER_ENDPOINT + `/${id}`, {
+}: IGetEntityParams): Promise<IEntity> {
+  const response = await fetch(getEntityEndpointByQueryType(type) + `/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
     signal: signal,
   });
 
   if (!response.ok) {
-    const error = new Error('An error occurred while fetching the characters');
+    const error = new Error('An error occurred while fetching the data');
     throw error;
   }
 
-  return (await response.json()) as ICharacter;
+  return (await response.json()) as IEntity;
 }
 
-export function usePostCharacterMutation({
-  onSuccess,
-  onError,
-}: IUseMutationCallbacksWithParams<ICharacter>) {
-  const { getToken } = useAuth();
-
-  return useMutation({
-    mutationFn: async (character: ICharacter) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await postCharacter({ character, token });
-    },
-    onError: (error) => {
-      if (onError) onError(error);
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CHARACTERS] });
-      if (onSuccess) onSuccess(data);
-    },
-  });
-}
-
-async function postCharacter({
-  character,
+export async function postEntity({
+  type,
+  entity,
   token,
-}: IPostCharacterParams): Promise<ICharacter> {
-  const response = await fetch(CHARACTER_ENDPOINT, {
+}: IPostEntityParams): Promise<IEntity> {
+  const response = await fetch(getEntityEndpointByQueryType(type), {
     method: 'POST',
-    body: JSON.stringify(character),
+    body: JSON.stringify(entity),
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -121,68 +71,22 @@ async function postCharacter({
   });
 
   if (!response.ok) {
-    const error = new Error('An error occurred while creating the character');
+    const error = new Error('An error occurred while creating the record');
     throw error;
   }
 
   return await response.json();
 }
 
-export function usePutCharacterMutation({
-  onSuccess,
-  onError,
-}: IUseMutationCallbacksWithParams<ICharacter>) {
-  const { getToken } = useAuth();
-
-  return useMutation({
-    mutationFn: async ({
-      character,
-      id,
-    }: {
-      character: ICharacter;
-      id: string;
-    }) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await putCharacter({ id, character, token });
-    },
-    onMutate: async (data: IPutCharacterParams) => {
-      const character = data.character;
-      const id = data.id;
-
-      await queryClient.cancelQueries({
-        queryKey: [QUERY_KEYS.CHARACTERS, id],
-      });
-      const previousData = queryClient.getQueryData([
-        QUERY_KEYS.CHARACTERS,
-        id,
-      ]);
-      queryClient.setQueryData([QUERY_KEYS.CHARACTERS, id], character);
-
-      return { previousData };
-    },
-    onError: (error, variables, context) => {
-      queryClient.setQueryData([QUERY_KEYS.CHARACTERS, variables.id], context);
-
-      if (onError) onError(error);
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.CHARACTERS],
-      });
-
-      if (onSuccess) onSuccess(data);
-    },
-  });
-}
-
-async function putCharacter({
+export async function putEntity({
+  type,
   id,
-  character,
+  entity,
   token,
-}: IPutCharacterParams): Promise<ICharacter> {
-  const response = await fetch(CHARACTER_ENDPOINT + `/${id}`, {
+}: IPutEntityParams): Promise<IEntity> {
+  const response = await fetch(getEntityEndpointByQueryType(type) + `/${id}`, {
     method: 'PUT',
-    body: JSON.stringify(character),
+    body: JSON.stringify(entity),
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -190,45 +94,20 @@ async function putCharacter({
   });
 
   if (!response.ok) {
-    const error = new Error('An error occurred while updating the character');
+    const error = new Error('An error occurred while updating the record');
     throw error;
   }
 
   return await response.json();
 }
 
-export function usePatchCharacterMutation({
-  onSuccess,
-  onError,
-}: IUseMutationCallbacks) {
-  const { getToken } = useAuth();
-
-  return useMutation({
-    mutationFn: async ({
-      patchRequests,
-      id,
-    }: {
-      patchRequests: IPatchRequest[];
-      id: string;
-    }) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await patchCharacter({ id, patchRequests, token });
-    },
-    onError: (error) => {
-      if (onError) onError(error);
-    },
-    onSuccess: () => {
-      if (onSuccess) onSuccess();
-    },
-  });
-}
-
-async function patchCharacter({
+export async function patchEntity({
+  type,
   id,
   patchRequests,
   token,
-}: IPatchCharacterParams): Promise<void> {
-  const response = await fetch(CHARACTER_ENDPOINT + `/${id}`, {
+}: IPatchEntityParams): Promise<void> {
+  const response = await fetch(getEntityEndpointByQueryType(type) + `/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(patchRequests),
     headers: {
@@ -239,35 +118,14 @@ async function patchCharacter({
 
   if (!response.ok) {
     const error = new Error(
-      'An error occurred while partially updating the character'
+      'An error occurred while partially updating the record'
     );
     throw error;
   }
 }
 
-export function useDeleteCharacterMutation({
-  onSuccess,
-  onError,
-}: IUseMutationCallbacks) {
-  const { getToken } = useAuth();
-
-  return useMutation({
-    mutationFn: async (id: string) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      await deleteCharacter({ id, token });
-    },
-    onError: (error) => {
-      if (onError) onError(error);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CHARACTERS] });
-      if (onSuccess) onSuccess();
-    },
-  });
-}
-
-async function deleteCharacter({ id, token }: IDeleteCharacterParams) {
-  const response = await fetch(CHARACTER_ENDPOINT + `/${id}`, {
+export async function deleteEntity({ type, id, token }: IDeleteEntityParams) {
+  const response = await fetch(getEntityEndpointByQueryType(type) + `/${id}`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -275,10 +133,23 @@ async function deleteCharacter({ id, token }: IDeleteCharacterParams) {
   });
 
   if (!response.ok) {
-    const error = new Error('An error occurred while deleting the character');
+    const error = new Error('An error occurred while deleting the record');
     throw error;
   }
 }
+
+const getEntityEndpointByQueryType = (type: EntityQueryType) => {
+  switch (type) {
+    case EntityQueryType.character:
+      return API_ENDPOINTS.CHARACTERS;
+    case EntityQueryType.location:
+      return API_ENDPOINTS.LOCATIONS;
+    case EntityQueryType.creature:
+      return API_ENDPOINTS.CREATURES;
+    default:
+      throw new Error(`Invalid type [${type}]`);
+  }
+};
 
 /* User Settings */
 export function useGetUserSettingQuery() {
@@ -297,7 +168,7 @@ async function getUserSetting({
   signal,
   token,
 }: IGetUserSettingParams): Promise<IUserSetting> {
-  const response = await fetch(USER_SETTING_ENDPOINT, {
+  const response = await fetch(API_ENDPOINTS.USER_SETTINGS, {
     headers: { Authorization: `Bearer ${token}` },
     signal: signal,
   });
@@ -337,7 +208,7 @@ async function postUserSetting({
   userSetting,
   token,
 }: IPostUserSettingParams): Promise<IUserSetting> {
-  const response = await fetch(USER_SETTING_ENDPOINT, {
+  const response = await fetch(API_ENDPOINTS.USER_SETTINGS, {
     method: 'POST',
     body: JSON.stringify(userSetting),
     headers: {
@@ -407,7 +278,7 @@ async function putUserSetting({
   userSetting,
   token,
 }: IPutUserSettingParams): Promise<IUserSetting> {
-  const response = await fetch(USER_SETTING_ENDPOINT + `/${id}`, {
+  const response = await fetch(API_ENDPOINTS.USER_SETTINGS + `/${id}`, {
     method: 'PUT',
     body: JSON.stringify(userSetting),
     headers: {
@@ -453,7 +324,7 @@ async function postFile({
   formData: FormData;
   token: string;
 }): Promise<string> {
-  const response = await fetch(FILE_ENDPOINT, {
+  const response = await fetch(API_ENDPOINTS.FILE, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,

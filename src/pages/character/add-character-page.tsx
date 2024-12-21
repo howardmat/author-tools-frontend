@@ -1,6 +1,5 @@
 import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { usePostCharacterMutation } from '@/http';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
 import { BreadcrumbActionTypes, SetBreadcrumbTrailAction } from '@/actions';
@@ -9,6 +8,8 @@ import HeaderDetailForm, {
   HeaderFormData,
 } from '@/components/form/header-detail-form';
 import EmptyPageContent from '@/components/common/empty-page-content';
+import { usePostEntityMutation } from '@/hooks/use-entity-query';
+import { EntityQueryType } from '@/types';
 
 const AddCharacterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -21,25 +22,29 @@ const AddCharacterPage: React.FC = () => {
       payload: [{ name: 'Characters', url: '/characters' }, { name: 'Add' }],
     };
     dispatch(setBreadcrumbTrailAction);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { mutate, isPending } = usePostCharacterMutation({
-    onSuccess: (character) => {
-      toast({
-        title: 'Awesome!',
-        description: 'Your character is ready to be edited.',
-        variant: 'success',
-      });
-      navigate(`/characters/${character.id}/edit`);
-    },
-    onError: (error?: Error) => {
-      toast({
-        title: 'Error!',
-        description: error?.message ?? 'An unexpected error occurred',
-        variant: 'destructive',
-      });
-    },
-  });
+  const { mutate, isPending } = usePostEntityMutation(
+    EntityQueryType.character,
+    {
+      onSuccess: (character) => {
+        toast({
+          title: 'Awesome!',
+          description: 'Your character is ready to be edited.',
+          variant: 'success',
+        });
+        navigate(`/characters/${character.id}/edit`);
+      },
+      onError: (error?: Error) => {
+        toast({
+          title: 'Error!',
+          description: error?.message ?? 'An unexpected error occurred',
+          variant: 'destructive',
+        });
+      },
+    }
+  );
 
   const handleSave: SubmitHandler<HeaderFormData> = async (data) => {
     mutate({ ...data, detailSections: [] });

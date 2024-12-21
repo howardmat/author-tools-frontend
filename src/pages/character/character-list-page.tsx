@@ -1,18 +1,25 @@
+import { DragEvent, MouseEvent, useEffect, useRef, useState } from 'react';
 import PageHeading from '../../components/common/page-heading';
-import CharacterList from '../../components/character/character-list';
-import { useGetCharactersQuery, usePatchCharacterMutation } from '@/http';
+import EntityList from '../../components/entity/entity-list';
 import EmptyPageContent from '@/components/common/empty-page-content';
 import LoadingIndicator from '@/components/common/loading-indicator';
 import { BreadcrumbActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
-import { DragEvent, useEffect, useRef, useState } from 'react';
-import { ICharacter } from '@/types';
+import { EntityQueryType, IEntity } from '@/types';
 import { toast } from '@/hooks/use-toast';
+import ConfirmAlert, { IConfirmAlert } from '@/components/common/confirm-alert';
+import {
+  useDeleteEntityMutation,
+  useGetEntitiesQuery,
+  usePatchEntityMutation,
+} from '@/hooks/use-entity-query';
 
 const CharacterListPage: React.FC = () => {
-  const { data, isPending, isError, error } = useGetCharactersQuery();
+  const { data, isPending, isError, error } = useGetEntitiesQuery(
+    EntityQueryType.character
+  );
   const { dispatch } = useBreadcrumbContext();
-  const [state, setState] = useState<ICharacter[]>([]);
+  const [state, setState] = useState<IEntity[]>([]);
   const dragItemId = useRef<string | undefined>();
   const dragOverItemId = useRef<string | undefined>();
 
@@ -36,17 +43,54 @@ const CharacterListPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { mutate: patchMutate } = usePatchCharacterMutation({
+  const { mutate } = useDeleteEntityMutation(EntityQueryType.character, {
+    onSuccess: () => {
+      toast({
+        title: 'Success!',
+        description: 'Successfully deleted the character',
+        variant: 'success',
+      });
+    },
     onError: (error?: Error) => {
       toast({
         title: 'Error!',
-        description:
-          error?.message ??
-          'An unexpected error occurred while updating the order',
+        description: error?.message ?? 'An unexpected error occurred',
         variant: 'destructive',
       });
     },
   });
+
+  const alertRef = useRef<IConfirmAlert>(null);
+  const handleDelete = (event: MouseEvent<HTMLDivElement>, id: string) => {
+    event.stopPropagation();
+
+    if (alertRef.current) {
+      alertRef.current.show({
+        title: 'Are you sure?',
+        description: 'This will permanently delete the character.',
+        confirmLabel: 'Continue',
+        declineLabel: 'Cancel',
+        icon: 'question',
+        variant: 'destructive',
+        onConfirm: () => mutate(id),
+      });
+    }
+  };
+
+  const { mutate: patchMutate } = usePatchEntityMutation(
+    EntityQueryType.character,
+    {
+      onError: (error?: Error) => {
+        toast({
+          title: 'Error!',
+          description:
+            error?.message ??
+            'An unexpected error occurred while updating the order',
+          variant: 'destructive',
+        });
+      },
+    }
+  );
 
   const handleDragStart = (event: DragEvent<HTMLLIElement>) => {
     dragItemId.current = event.currentTarget.id;
@@ -106,8 +150,9 @@ const CharacterListPage: React.FC = () => {
 
   if (state && state.length > 0) {
     content = (
-      <CharacterList
-        characters={state}
+      <EntityList
+        entities={state}
+        onDelete={handleDelete}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
@@ -133,6 +178,7 @@ const CharacterListPage: React.FC = () => {
     <>
       <PageHeading title='Characters' addRoute='/characters/add' />
       {content}
+      <ConfirmAlert ref={alertRef} />
     </>
   );
 };

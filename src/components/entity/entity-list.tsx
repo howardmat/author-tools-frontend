@@ -1,15 +1,12 @@
+import { DragEvent, MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   TrashIcon,
   UserCircleIcon,
   EllipsisVerticalIcon,
 } from '@heroicons/react/20/solid';
-import { ICharacter } from '../../types';
-import ConfirmAlert, { IConfirmAlert } from '../common/confirm-alert';
-import { DragEvent, MouseEvent, useRef } from 'react';
+import { IEntity } from '../../types';
 import { Button } from '../ui/button';
-import { toast } from '@/hooks/use-toast';
-import { useDeleteCharacterMutation } from '@/http';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,56 +15,23 @@ import {
 } from '../ui/dropdown-menu';
 const API_URL = import.meta.env.VITE_API_URL;
 
-const CharacterList: React.FC<{
-  characters: ICharacter[];
+const EntityList: React.FC<{
+  entities: IEntity[];
+  onDelete: (event: MouseEvent<HTMLDivElement>, id: string) => void;
   onDragStart: (event: DragEvent<HTMLLIElement>) => void;
   onDragOver: (event: DragEvent<HTMLLIElement>) => void;
   onDragEnd: () => void;
-}> = ({ characters, onDragStart, onDragOver, onDragEnd }) => {
+}> = ({ entities, onDelete, onDragStart, onDragOver, onDragEnd }) => {
   const navigate = useNavigate();
 
   const handleListClick = (id: string | undefined) => {
     navigate(`${id}/edit`);
   };
 
-  const { mutate } = useDeleteCharacterMutation({
-    onSuccess: () => {
-      toast({
-        title: 'Success!',
-        description: 'Successfully deleted the character',
-        variant: 'success',
-      });
-    },
-    onError: (error?: Error) => {
-      toast({
-        title: 'Error!',
-        description: error?.message ?? 'An unexpected error occurred',
-        variant: 'destructive',
-      });
-    },
-  });
-
-  const alertRef = useRef<IConfirmAlert>(null);
-  const handleDeleteClick = (event: MouseEvent<HTMLDivElement>, id: string) => {
-    event.stopPropagation();
-
-    if (alertRef.current) {
-      alertRef.current.show({
-        title: 'Are you sure?',
-        description: 'This will permanently delete the character.',
-        confirmLabel: 'Continue',
-        declineLabel: 'Cancel',
-        icon: 'question',
-        variant: 'destructive',
-        onConfirm: () => mutate(id),
-      });
-    }
-  };
-
   return (
     <>
       <ul role='list' className='divide-y divide-accent-background'>
-        {characters.map((c) => (
+        {entities.map((c) => (
           <li
             draggable
             onDragStart={onDragStart}
@@ -103,7 +67,7 @@ const CharacterList: React.FC<{
                 <DropdownMenuContent className='w-56'>
                   <DropdownMenuItem
                     className='flex justify-between'
-                    onClick={(event) => handleDeleteClick(event, c.id || '')}
+                    onClick={(event) => onDelete(event, c.id || '')}
                   >
                     Delete
                     <TrashIcon className='text-destructive' />
@@ -114,9 +78,8 @@ const CharacterList: React.FC<{
           </li>
         ))}
       </ul>
-      <ConfirmAlert ref={alertRef} />
     </>
   );
 };
 
-export default CharacterList;
+export default EntityList;
