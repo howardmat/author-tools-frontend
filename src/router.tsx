@@ -5,20 +5,13 @@ import HomePage from './pages/home-page';
 import ContactPage from './pages/contact-page';
 import SignInPage from './pages/sign-in-page';
 import SignUpPage from './pages/sign-up-page';
-import CharacterListPage from './pages/character/character-list-page';
-import AddCharacterPage from './pages/character/add-character-page';
-import UpdateCharacterPage from './pages/character/update-character-page';
-import CharacterRootPage from './pages/character/character-root-page';
 import AuthenticatedLayout from './components/layout/authenticated-layout';
 import SettingsPage from './pages/settings-page';
-import LocationRootPage from './pages/location/location-root-page';
-import LocationListPage from './pages/location/location-list-page';
-import AddLocationPage from './pages/location/add-location-page';
-import UpdateLocationPage from './pages/location/update-location-page';
-import CreatureRootPage from './pages/creature/creature-root-page';
-import CreatureListPage from './pages/creature/creature-list-page';
-import AddCreaturePage from './pages/creature/add-creature-page';
-import UpdateCreaturePage from './pages/creature/update-creature-page';
+import { EntityQueryType } from './types';
+import EntityListPage from './pages/entity/entity-list-page';
+import EntityRootPage from './pages/entity/entity-root-page';
+import AddEntityPage from './pages/entity/add-entity-page';
+import UpdateEntityPage from './pages/entity/update-entity-page';
 
 const router = createBrowserRouter([
   {
@@ -38,58 +31,121 @@ const router = createBrowserRouter([
       { path: '/settings', element: <SettingsPage /> },
       {
         path: 'characters',
-        element: <CharacterRootPage />,
+        element: <EntityRootPage />,
         children: [
           {
             index: true,
-            element: <CharacterListPage />,
+            element: (
+              <EntityListPage
+                entityType={EntityQueryType.character}
+                title='Characters'
+                entityBaseUrl='/characters'
+                entityName='character'
+              />
+            ),
           },
           {
             path: 'add',
-            element: <AddCharacterPage />,
+            element: (
+              <AddEntityPage
+                entityType={EntityQueryType.character}
+                title='Characters'
+                entityBaseUrl='/characters'
+                entityName='character'
+              />
+            ),
           },
           {
             id: 'update-character',
             path: ':id/edit',
-            element: <UpdateCharacterPage />,
+            element: (
+              <UpdateEntityPage
+                entityType={EntityQueryType.character}
+                title='Characters'
+                entityBaseUrl='/characters'
+                entityName='character'
+              />
+            ),
           },
         ],
       },
       {
         path: 'locations',
-        element: <LocationRootPage />,
+        element: <EntityRootPage />,
         children: [
           {
             index: true,
-            element: <LocationListPage />,
+            element: (
+              <EntityListPage
+                entityType={EntityQueryType.location}
+                title='Locations'
+                entityBaseUrl='/locations'
+                entityName='locations'
+              />
+            ),
           },
           {
             path: 'add',
-            element: <AddLocationPage />,
+            element: (
+              <AddEntityPage
+                entityType={EntityQueryType.location}
+                title='Locations'
+                entityBaseUrl='/locations'
+                entityName='locations'
+              />
+            ),
           },
           {
             id: 'update-location',
             path: ':id/edit',
-            element: <UpdateLocationPage />,
+            element: (
+              <UpdateEntityPage
+                entityType={EntityQueryType.location}
+                title='Locations'
+                entityBaseUrl='/locations'
+                entityName='locations'
+              />
+            ),
           },
         ],
       },
       {
         path: 'creatures',
-        element: <CreatureRootPage />,
+        element: <EntityRootPage />,
         children: [
           {
             index: true,
-            element: <CreatureListPage />,
+            element: (
+              <EntityListPage
+                entityType={EntityQueryType.creature}
+                title='Creatures'
+                entityBaseUrl='/creatures'
+                entityName='creatures'
+              />
+            ),
           },
           {
             path: 'add',
-            element: <AddCreaturePage />,
+            element: (
+              <AddEntityPage
+                entityType={EntityQueryType.creature}
+                title='Creatures'
+                entityBaseUrl='/creatures'
+                entityName='creatures'
+              />
+            ),
           },
           {
             id: 'update-creature',
             path: ':id/edit',
-            element: <UpdateCreaturePage />,
+            element: (
+              <UpdateEntityPage
+                entityType={EntityQueryType.creature}
+                title='Creatures'
+                entityBaseUrl='/creatures'
+                entityName='creatures'
+              />
+            ),
           },
         ],
       },

@@ -14,10 +14,22 @@ import {
   usePatchEntityMutation,
 } from '@/hooks/use-entity-query';
 
-const CreatureListPage: React.FC = () => {
-  const { data, isPending, isError, error } = useGetEntitiesQuery(
-    EntityQueryType.creature
-  );
+interface IEntityListPageProps {
+  entityType: EntityQueryType;
+  title: string;
+  entityBaseUrl: string;
+  entityName?: string;
+  breadcrumbTitle?: string;
+}
+
+const EntityListPage: React.FC<IEntityListPageProps> = ({
+  entityType,
+  title,
+  entityName,
+  breadcrumbTitle,
+  entityBaseUrl,
+}) => {
+  const { data, isPending, isError, error } = useGetEntitiesQuery(entityType);
   const { dispatch } = useBreadcrumbContext();
   const [state, setState] = useState<IEntity[]>([]);
   const dragItemId = useRef<string | undefined>();
@@ -29,25 +41,28 @@ const CreatureListPage: React.FC = () => {
     }
   }, [data]);
 
+  breadcrumbTitle = breadcrumbTitle || title;
+  entityName = entityName || title;
+
   useEffect(() => {
     const setBreadcrumbTrailAction: SetBreadcrumbTrailAction = {
       type: BreadcrumbActionTypes.SET_BREADCRUMB_TRAIL,
       payload: [
         {
-          name: 'Creatures',
-          url: '/creatures',
+          name: breadcrumbTitle,
+          url: entityBaseUrl,
         },
       ],
     };
     dispatch(setBreadcrumbTrailAction);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [entityBaseUrl]);
 
-  const { mutate } = useDeleteEntityMutation(EntityQueryType.creature, {
+  const { mutate } = useDeleteEntityMutation(entityType, {
     onSuccess: () => {
       toast({
         title: 'Success!',
-        description: 'Successfully deleted the creature',
+        description: `Successfully deleted the ${entityName}`,
         variant: 'success',
       });
     },
@@ -67,7 +82,7 @@ const CreatureListPage: React.FC = () => {
     if (alertRef.current) {
       alertRef.current.show({
         title: 'Are you sure?',
-        description: 'This will permanently delete the creature.',
+        description: `This will permanently delete the ${entityName}.`,
         confirmLabel: 'Continue',
         declineLabel: 'Cancel',
         icon: 'question',
@@ -77,20 +92,17 @@ const CreatureListPage: React.FC = () => {
     }
   };
 
-  const { mutate: patchMutate } = usePatchEntityMutation(
-    EntityQueryType.creature,
-    {
-      onError: (error?: Error) => {
-        toast({
-          title: 'Error!',
-          description:
-            error?.message ??
-            'An unexpected error occurred while updating the order',
-          variant: 'destructive',
-        });
-      },
-    }
-  );
+  const { mutate: patchMutate } = usePatchEntityMutation(entityType, {
+    onError: (error?: Error) => {
+      toast({
+        title: 'Error!',
+        description:
+          error?.message ??
+          'An unexpected error occurred while updating the order',
+        variant: 'destructive',
+      });
+    },
+  });
 
   const handleDragStart = (event: DragEvent<HTMLLIElement>) => {
     dragItemId.current = event.currentTarget.id;
@@ -100,28 +112,28 @@ const CreatureListPage: React.FC = () => {
     if (dragOverItemId.current !== event.currentTarget.id) {
       dragOverItemId.current = event.currentTarget.id;
 
-      const creaturesCopy = [...state];
+      const entitiesCopy = [...state];
 
-      const dragCreatureIndex = creaturesCopy.findIndex(
+      const dragEntityIndex = entitiesCopy.findIndex(
         (c) => c?.id === dragItemId.current
       );
-      const dragCreature = creaturesCopy[dragCreatureIndex];
+      const dragEntity = entitiesCopy[dragEntityIndex];
 
-      const dragOverCreatureIndex = creaturesCopy.findIndex(
+      const dragOverEntityIndex = entitiesCopy.findIndex(
         (c) => c?.id === dragOverItemId.current
       );
 
-      creaturesCopy.splice(dragCreatureIndex, 1);
-      creaturesCopy.splice(dragOverCreatureIndex, 0, dragCreature);
+      entitiesCopy.splice(dragEntityIndex, 1);
+      entitiesCopy.splice(dragOverEntityIndex, 0, dragEntity);
 
-      setState(creaturesCopy);
+      setState(entitiesCopy);
     }
   };
 
   const handleDragEnd = () => {
-    const creaturesCopy = [...state];
+    const entitiesCopy = [...state];
 
-    creaturesCopy.forEach((c, i) => {
+    entitiesCopy.forEach((c, i) => {
       const updatedOrder = i + 1;
       if (c.order !== updatedOrder) {
         patchMutate({
@@ -141,9 +153,9 @@ const CreatureListPage: React.FC = () => {
   let content = (
     <EmptyPageContent
       title='Nothing&lsquo;s here yet!'
-      description='Get started by creating a new creature.'
-      actionLabel='New Creature'
-      actionRoute='/creatures/add'
+      description={`Get started by creating a new ${entityName}.`}
+      actionLabel='New Character'
+      actionRoute={`${entityBaseUrl}/add`}
       className='mt-8'
     />
   );
@@ -176,11 +188,11 @@ const CreatureListPage: React.FC = () => {
 
   return (
     <>
-      <PageHeading title='Creatures' addRoute='/creatures/add' />
+      <PageHeading title={title} addRoute={`${entityBaseUrl}/add`} />
       {content}
       <ConfirmAlert ref={alertRef} />
     </>
   );
 };
 
-export default CreatureListPage;
+export default EntityListPage;
