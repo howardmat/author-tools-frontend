@@ -11,6 +11,14 @@ import UpdateCharacterPage from './pages/character/update-character-page';
 import CharacterRootPage from './pages/character/character-root-page';
 import AuthenticatedLayout from './components/layout/authenticated-layout';
 import SettingsPage from './pages/settings-page';
+import LocationRootPage from './pages/location/location-root-page';
+import LocationListPage from './pages/location/location-list-page';
+import AddLocationPage from './pages/location/add-location-page';
+import UpdateLocationPage from './pages/location/update-location-page';
+import CreatureRootPage from './pages/creature/creature-root-page';
+import CreatureListPage from './pages/creature/creature-list-page';
+import AddCreaturePage from './pages/creature/add-creature-page';
+import UpdateCreaturePage from './pages/creature/update-creature-page';
 
 const router = createBrowserRouter([
   {
@@ -44,6 +52,44 @@ const router = createBrowserRouter([
             id: 'update-character',
             path: ':id/edit',
             element: <UpdateCharacterPage />,
+          },
+        ],
+      },
+      {
+        path: 'locations',
+        element: <LocationRootPage />,
+        children: [
+          {
+            index: true,
+            element: <LocationListPage />,
+          },
+          {
+            path: 'add',
+            element: <AddLocationPage />,
+          },
+          {
+            id: 'update-location',
+            path: ':id/edit',
+            element: <UpdateLocationPage />,
+          },
+        ],
+      },
+      {
+        path: 'creatures',
+        element: <CreatureRootPage />,
+        children: [
+          {
+            index: true,
+            element: <CreatureListPage />,
+          },
+          {
+            path: 'add',
+            element: <AddCreaturePage />,
+          },
+          {
+            id: 'update-creature',
+            path: ':id/edit',
+            element: <UpdateCreaturePage />,
           },
         ],
       },
