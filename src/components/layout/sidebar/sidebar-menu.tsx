@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { Bot, GalleryVerticalEnd, Settings2 } from 'lucide-react';
+import {
+  Bot,
+  GalleryVerticalEnd,
+  MapPinned,
+  Settings2,
+  Skull,
+} from 'lucide-react';
 
 import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
@@ -26,6 +32,16 @@ const data = {
       title: 'Characters',
       url: '/characters',
       icon: Bot,
+    },
+    {
+      title: 'Creatures',
+      url: '/creatures',
+      icon: Skull,
+    },
+    {
+      title: 'Locations',
+      url: '/locations',
+      icon: MapPinned,
     },
     {
       title: 'Settings',
