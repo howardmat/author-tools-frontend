@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import { useGetCharacterQuery, usePutCharacterMutation } from '@/http';
 import { SubmitHandler } from 'react-hook-form';
 import LoadingIndicator from '@/components/common/loading-indicator';
 import { useToast } from '@/hooks/use-toast';
@@ -9,12 +8,16 @@ import { BreadcrumbActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import HeaderDetailForm, {
   HeaderFormData,
 } from '@/components/form/header-detail-form';
-import { IAttribute, ICharacter, IDetailSection } from '@/types';
+import { IAttribute, IEntity, IDetailSection, EntityQueryType } from '@/types';
 import DetailContainer from '@/components/detail-section/detail-container';
+import {
+  useGetEntityQuery,
+  usePutEntityMutation,
+} from '@/hooks/use-entity-query';
 
 const UpdateCharacterPage: React.FC = () => {
   const { toast } = useToast();
-  const [characterState, setCharacterState] = useState<ICharacter | null>(null);
+  const [characterState, setCharacterState] = useState<IEntity | null>(null);
   const { dispatch } = useBreadcrumbContext();
 
   useEffect(() => {
@@ -29,7 +32,10 @@ const UpdateCharacterPage: React.FC = () => {
   const params = useParams();
   const characterId = params['id'] || '';
 
-  const { data, isPending } = useGetCharacterQuery(characterId);
+  const { data, isPending } = useGetEntityQuery(
+    EntityQueryType.character,
+    characterId
+  );
 
   useEffect(() => {
     if (data) {
@@ -37,23 +43,26 @@ const UpdateCharacterPage: React.FC = () => {
     }
   }, [data]);
 
-  const { mutate, isPending: isPutPending } = usePutCharacterMutation({
-    onSuccess: (character) => {
-      toast({
-        title: 'Awesome!',
-        description: 'Your character has been saved',
-        variant: 'success',
-      });
-      setCharacterState(character);
-    },
-    onError: (error?: Error) => {
-      toast({
-        title: 'Error!',
-        description: error?.message ?? 'An unexpected error occurred.',
-        variant: 'destructive',
-      });
-    },
-  });
+  const { mutate, isPending: isPutPending } = usePutEntityMutation(
+    EntityQueryType.character,
+    {
+      onSuccess: (character) => {
+        toast({
+          title: 'Awesome!',
+          description: 'Your character has been saved',
+          variant: 'success',
+        });
+        setCharacterState(character);
+      },
+      onError: (error?: Error) => {
+        toast({
+          title: 'Error!',
+          description: error?.message ?? 'An unexpected error occurred.',
+          variant: 'destructive',
+        });
+      },
+    }
+  );
 
   const handleHeaderSave: SubmitHandler<HeaderFormData> = async (
     headerData
@@ -61,7 +70,7 @@ const UpdateCharacterPage: React.FC = () => {
     if (characterState) {
       mutate({
         id: characterId,
-        character: {
+        entity: {
           ...characterState,
           ...headerData,
         },
@@ -73,7 +82,7 @@ const UpdateCharacterPage: React.FC = () => {
     if (characterState) {
       const characterStateCopy = JSON.parse(
         JSON.stringify(characterState)
-      ) as ICharacter;
+      ) as IEntity;
 
       const sectionCopy = characterStateCopy.detailSections.find(
         (s) => s.id === section.id
@@ -84,7 +93,7 @@ const UpdateCharacterPage: React.FC = () => {
 
       mutate({
         id: characterId,
-        character: {
+        entity: {
           ...characterStateCopy,
         },
       });
@@ -95,13 +104,13 @@ const UpdateCharacterPage: React.FC = () => {
     if (characterState) {
       const characterStateCopy = JSON.parse(
         JSON.stringify(characterState)
-      ) as ICharacter;
+      ) as IEntity;
 
       characterStateCopy.detailSections.push({ ...section });
 
       mutate({
         id: characterId,
-        character: {
+        entity: {
           ...characterState,
           ...characterStateCopy,
         },
@@ -113,7 +122,7 @@ const UpdateCharacterPage: React.FC = () => {
     if (characterState) {
       const characterStateCopy = JSON.parse(
         JSON.stringify(characterState)
-      ) as ICharacter;
+      ) as IEntity;
 
       const sectionCopy = characterStateCopy.detailSections.find(
         (s) => s.id === section.id
@@ -124,7 +133,7 @@ const UpdateCharacterPage: React.FC = () => {
 
       mutate({
         id: characterId,
-        character: {
+        entity: {
           ...characterStateCopy,
         },
       });
@@ -135,14 +144,14 @@ const UpdateCharacterPage: React.FC = () => {
     if (characterState) {
       const characterStateCopy = JSON.parse(
         JSON.stringify(characterState)
-      ) as ICharacter;
+      ) as IEntity;
 
       characterStateCopy.detailSections =
         characterStateCopy.detailSections.filter((s) => s.id !== id);
 
       mutate({
         id: characterId,
-        character: {
+        entity: {
           ...characterStateCopy,
         },
       });
@@ -156,7 +165,7 @@ const UpdateCharacterPage: React.FC = () => {
     if (characterState) {
       const characterStateCopy = JSON.parse(
         JSON.stringify(characterState)
-      ) as ICharacter;
+      ) as IEntity;
 
       const sectionCopy = characterStateCopy.detailSections.find(
         (s) => s.id === section.id
@@ -167,7 +176,7 @@ const UpdateCharacterPage: React.FC = () => {
 
       mutate({
         id: characterId,
-        character: {
+        entity: {
           ...characterStateCopy,
         },
       });
@@ -181,7 +190,7 @@ const UpdateCharacterPage: React.FC = () => {
     if (characterState) {
       const characterStateCopy = JSON.parse(
         JSON.stringify(characterState)
-      ) as ICharacter;
+      ) as IEntity;
 
       const sectionCopy = characterStateCopy.detailSections.find(
         (s) => s.id === section.id
@@ -198,7 +207,7 @@ const UpdateCharacterPage: React.FC = () => {
 
       mutate({
         id: characterId,
-        character: {
+        entity: {
           ...characterStateCopy,
         },
       });
@@ -209,7 +218,7 @@ const UpdateCharacterPage: React.FC = () => {
     if (characterState) {
       const characterStateCopy = JSON.parse(
         JSON.stringify(characterState)
-      ) as ICharacter;
+      ) as IEntity;
 
       const sectionCopy = characterStateCopy.detailSections.find(
         (s) => s.id === section.id
@@ -222,7 +231,7 @@ const UpdateCharacterPage: React.FC = () => {
 
       mutate({
         id: characterId,
-        character: {
+        entity: {
           ...characterStateCopy,
         },
       });
