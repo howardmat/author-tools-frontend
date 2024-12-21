@@ -154,7 +154,7 @@ const EntityListPage: React.FC<IEntityListPageProps> = ({
     <EmptyPageContent
       title='Nothing&lsquo;s here yet!'
       description={`Get started by creating a new ${entityName}.`}
-      actionLabel='New Character'
+      actionLabel={`New ${title}`}
       actionRoute={`${entityBaseUrl}/add`}
       className='mt-8'
     />
