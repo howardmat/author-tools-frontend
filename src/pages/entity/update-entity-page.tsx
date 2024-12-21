@@ -41,7 +41,7 @@ const UpdateEntityPage: React.FC<IUpdateEntityPageProps> = ({
     const setBreadcrumbTrailAction: SetBreadcrumbTrailAction = {
       type: BreadcrumbActionTypes.SET_BREADCRUMB_TRAIL,
       payload: [
-        { name: breadcrumbTitle, url: entityBaseUrl },
+        { name: `${breadcrumbTitle}s`, url: entityBaseUrl },
         { name: 'Edit' },
       ],
     };

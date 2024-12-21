@@ -36,7 +36,10 @@ const AddEntityPage: React.FC<IAddEntityPageProps> = ({
   useEffect(() => {
     const setBreadcrumbTrailAction: SetBreadcrumbTrailAction = {
       type: BreadcrumbActionTypes.SET_BREADCRUMB_TRAIL,
-      payload: [{ name: breadcrumbTitle, url: entityBaseUrl }, { name: 'Add' }],
+      payload: [
+        { name: `${breadcrumbTitle}s`, url: entityBaseUrl },
+        { name: 'Add' },
+      ],
     };
     dispatch(setBreadcrumbTrailAction);
     // eslint-disable-next-line react-hooks/exhaustive-deps

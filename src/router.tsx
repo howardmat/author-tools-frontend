@@ -38,7 +38,7 @@ const router = createBrowserRouter([
             element: (
               <EntityListPage
                 entityType={EntityQueryType.character}
-                title='Characters'
+                title='Character'
                 entityBaseUrl='/characters'
                 entityName='character'
               />
@@ -49,7 +49,7 @@ const router = createBrowserRouter([
             element: (
               <AddEntityPage
                 entityType={EntityQueryType.character}
-                title='Characters'
+                title='Character'
                 entityBaseUrl='/characters'
                 entityName='character'
               />
@@ -61,7 +61,7 @@ const router = createBrowserRouter([
             element: (
               <UpdateEntityPage
                 entityType={EntityQueryType.character}
-                title='Characters'
+                title='Character'
                 entityBaseUrl='/characters'
                 entityName='character'
               />
@@ -78,9 +78,9 @@ const router = createBrowserRouter([
             element: (
               <EntityListPage
                 entityType={EntityQueryType.location}
-                title='Locations'
+                title='Location'
                 entityBaseUrl='/locations'
-                entityName='locations'
+                entityName='location'
               />
             ),
           },
@@ -89,9 +89,9 @@ const router = createBrowserRouter([
             element: (
               <AddEntityPage
                 entityType={EntityQueryType.location}
-                title='Locations'
+                title='Location'
                 entityBaseUrl='/locations'
-                entityName='locations'
+                entityName='location'
               />
             ),
           },
@@ -101,9 +101,9 @@ const router = createBrowserRouter([
             element: (
               <UpdateEntityPage
                 entityType={EntityQueryType.location}
-                title='Locations'
+                title='Location'
                 entityBaseUrl='/locations'
-                entityName='locations'
+                entityName='location'
               />
             ),
           },
@@ -118,9 +118,9 @@ const router = createBrowserRouter([
             element: (
               <EntityListPage
                 entityType={EntityQueryType.creature}
-                title='Creatures'
+                title='Creature'
                 entityBaseUrl='/creatures'
-                entityName='creatures'
+                entityName='creature'
               />
             ),
           },
@@ -129,9 +129,9 @@ const router = createBrowserRouter([
             element: (
               <AddEntityPage
                 entityType={EntityQueryType.creature}
-                title='Creatures'
+                title='Creature'
                 entityBaseUrl='/creatures'
-                entityName='creatures'
+                entityName='creature'
               />
             ),
           },
@@ -141,9 +141,9 @@ const router = createBrowserRouter([
             element: (
               <UpdateEntityPage
                 entityType={EntityQueryType.creature}
-                title='Creatures'
+                title='Creature'
                 entityBaseUrl='/creatures'
-                entityName='creatures'
+                entityName='creature'
               />
             ),
           },

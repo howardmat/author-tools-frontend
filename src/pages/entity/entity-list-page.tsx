@@ -49,7 +49,7 @@ const EntityListPage: React.FC<IEntityListPageProps> = ({
       type: BreadcrumbActionTypes.SET_BREADCRUMB_TRAIL,
       payload: [
         {
-          name: breadcrumbTitle,
+          name: `${breadcrumbTitle}s`,
           url: entityBaseUrl,
         },
       ],
@@ -188,7 +188,7 @@ const EntityListPage: React.FC<IEntityListPageProps> = ({
 
   return (
     <>
-      <PageHeading title={title} addRoute={`${entityBaseUrl}/add`} />
+      <PageHeading title={`${title}s`} addRoute={`${entityBaseUrl}/add`} />
       {content}
       <ConfirmAlert ref={alertRef} />
     </>
