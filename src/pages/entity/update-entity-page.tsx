@@ -15,63 +15,77 @@ import {
   usePutEntityMutation,
 } from '@/hooks/use-entity-query';
 
-const UpdateLocationPage: React.FC = () => {
+interface IUpdateEntityPageProps {
+  entityType: EntityQueryType;
+  title: string;
+  entityBaseUrl: string;
+  entityName?: string;
+  breadcrumbTitle?: string;
+}
+
+const UpdateEntityPage: React.FC<IUpdateEntityPageProps> = ({
+  entityType,
+  title,
+  entityBaseUrl,
+  entityName,
+  breadcrumbTitle,
+}) => {
   const { toast } = useToast();
-  const [locationState, setLocationState] = useState<IEntity | null>(null);
+  const [entityState, setEntityState] = useState<IEntity | null>(null);
   const { dispatch } = useBreadcrumbContext();
+
+  breadcrumbTitle = breadcrumbTitle || title;
+  entityName = entityName || title;
 
   useEffect(() => {
     const setBreadcrumbTrailAction: SetBreadcrumbTrailAction = {
       type: BreadcrumbActionTypes.SET_BREADCRUMB_TRAIL,
-      payload: [{ name: 'Locations', url: '/locations' }, { name: 'Edit' }],
+      payload: [
+        { name: breadcrumbTitle, url: entityBaseUrl },
+        { name: 'Edit' },
+      ],
     };
     dispatch(setBreadcrumbTrailAction);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const params = useParams();
-  const locationId = params['id'] || '';
+  const entityId = params['id'] || '';
 
-  const { data, isPending } = useGetEntityQuery(
-    EntityQueryType.location,
-    locationId
-  );
+  const { data, isPending } = useGetEntityQuery(entityType, entityId);
 
   useEffect(() => {
     if (data) {
-      setLocationState(data);
+      setEntityState(data);
     }
   }, [data]);
 
-  const { mutate, isPending: isPutPending } = usePutEntityMutation(
-    EntityQueryType.location,
-    {
-      onSuccess: (location) => {
-        toast({
-          title: 'Awesome!',
-          description: 'Your location has been saved',
-          variant: 'success',
-        });
-        setLocationState(location);
-      },
-      onError: (error?: Error) => {
-        toast({
-          title: 'Error!',
-          description: error?.message ?? 'An unexpected error occurred.',
-          variant: 'destructive',
-        });
-      },
-    }
-  );
+  const { mutate, isPending: isPutPending } = usePutEntityMutation(entityType, {
+    onSuccess: (entity) => {
+      toast({
+        title: 'Awesome!',
+        description: `Your ${entityName} has been saved`,
+        variant: 'success',
+      });
+      setEntityState(entity);
+    },
+    onError: (error?: Error) => {
+      toast({
+        title: 'Error!',
+        description: error?.message ?? 'An unexpected error occurred.',
+        variant: 'destructive',
+      });
+    },
+  });
 
   const handleHeaderSave: SubmitHandler<HeaderFormData> = async (
     headerData
   ) => {
-    if (locationState) {
+    if (entityState) {
       mutate({
-        id: locationId,
+        id: entityId,
         entity: {
-          ...locationState,
+          ...entityState,
           ...headerData,
         },
       });
@@ -79,12 +93,12 @@ const UpdateLocationPage: React.FC = () => {
   };
 
   const handleNoteChange = (noteContent: string, section: IDetailSection) => {
-    if (locationState) {
-      const locationStateCopy = JSON.parse(
-        JSON.stringify(locationState)
+    if (entityState) {
+      const entityStateCopy = JSON.parse(
+        JSON.stringify(entityState)
       ) as IEntity;
 
-      const sectionCopy = locationStateCopy.detailSections.find(
+      const sectionCopy = entityStateCopy.detailSections.find(
         (s) => s.id === section.id
       );
       if (!sectionCopy) throw new Error('Section was not found to update');
@@ -92,39 +106,39 @@ const UpdateLocationPage: React.FC = () => {
       sectionCopy.noteContent = noteContent;
 
       mutate({
-        id: locationId,
+        id: entityId,
         entity: {
-          ...locationStateCopy,
+          ...entityStateCopy,
         },
       });
     }
   };
 
   const handleAddSection = (section: IDetailSection) => {
-    if (locationState) {
-      const locationStateCopy = JSON.parse(
-        JSON.stringify(locationState)
+    if (entityState) {
+      const entityStateCopy = JSON.parse(
+        JSON.stringify(entityState)
       ) as IEntity;
 
-      locationStateCopy.detailSections.push({ ...section });
+      entityStateCopy.detailSections.push({ ...section });
 
       mutate({
-        id: locationId,
+        id: entityId,
         entity: {
-          ...locationState,
-          ...locationStateCopy,
+          ...entityState,
+          ...entityStateCopy,
         },
       });
     }
   };
 
   const handleSectionChange = (section: IDetailSection) => {
-    if (locationState) {
-      const locationStateCopy = JSON.parse(
-        JSON.stringify(locationState)
+    if (entityState) {
+      const entityStateCopy = JSON.parse(
+        JSON.stringify(entityState)
       ) as IEntity;
 
-      const sectionCopy = locationStateCopy.detailSections.find(
+      const sectionCopy = entityStateCopy.detailSections.find(
         (s) => s.id === section.id
       );
       if (!sectionCopy) throw new Error('Section was not found to update');
@@ -132,27 +146,28 @@ const UpdateLocationPage: React.FC = () => {
       sectionCopy.title = section.title;
 
       mutate({
-        id: locationId,
+        id: entityId,
         entity: {
-          ...locationStateCopy,
+          ...entityStateCopy,
         },
       });
     }
   };
 
   const handleDeleteSection = (id: string) => {
-    if (locationState) {
-      const locationStateCopy = JSON.parse(
-        JSON.stringify(locationState)
+    if (entityState) {
+      const entityStateCopy = JSON.parse(
+        JSON.stringify(entityState)
       ) as IEntity;
 
-      locationStateCopy.detailSections =
-        locationStateCopy.detailSections.filter((s) => s.id !== id);
+      entityStateCopy.detailSections = entityStateCopy.detailSections.filter(
+        (s) => s.id !== id
+      );
 
       mutate({
-        id: locationId,
+        id: entityId,
         entity: {
-          ...locationStateCopy,
+          ...entityStateCopy,
         },
       });
     }
@@ -162,12 +177,12 @@ const UpdateLocationPage: React.FC = () => {
     attribute: IAttribute,
     section: IDetailSection
   ) => {
-    if (locationState) {
-      const locationStateCopy = JSON.parse(
-        JSON.stringify(locationState)
+    if (entityState) {
+      const entityStateCopy = JSON.parse(
+        JSON.stringify(entityState)
       ) as IEntity;
 
-      const sectionCopy = locationStateCopy.detailSections.find(
+      const sectionCopy = entityStateCopy.detailSections.find(
         (s) => s.id === section.id
       );
       if (!sectionCopy) throw new Error('Section was not found to update');
@@ -175,9 +190,9 @@ const UpdateLocationPage: React.FC = () => {
       sectionCopy.attributes.push(attribute);
 
       mutate({
-        id: locationId,
+        id: entityId,
         entity: {
-          ...locationStateCopy,
+          ...entityStateCopy,
         },
       });
     }
@@ -187,12 +202,12 @@ const UpdateLocationPage: React.FC = () => {
     attribute: IAttribute,
     section: IDetailSection
   ) => {
-    if (locationState) {
-      const locationStateCopy = JSON.parse(
-        JSON.stringify(locationState)
+    if (entityState) {
+      const entityStateCopy = JSON.parse(
+        JSON.stringify(entityState)
       ) as IEntity;
 
-      const sectionCopy = locationStateCopy.detailSections.find(
+      const sectionCopy = entityStateCopy.detailSections.find(
         (s) => s.id === section.id
       );
       if (!sectionCopy) throw new Error('Section was not found to update');
@@ -206,21 +221,21 @@ const UpdateLocationPage: React.FC = () => {
       attributeCopy.value = attribute.value;
 
       mutate({
-        id: locationId,
+        id: entityId,
         entity: {
-          ...locationStateCopy,
+          ...entityStateCopy,
         },
       });
     }
   };
 
   const handleDeleteAttribute = (id: string, section: IDetailSection) => {
-    if (locationState) {
-      const locationStateCopy = JSON.parse(
-        JSON.stringify(locationState)
+    if (entityState) {
+      const entityStateCopy = JSON.parse(
+        JSON.stringify(entityState)
       ) as IEntity;
 
-      const sectionCopy = locationStateCopy.detailSections.find(
+      const sectionCopy = entityStateCopy.detailSections.find(
         (s) => s.id === section.id
       );
       if (!sectionCopy) throw new Error('Section was not found to update');
@@ -230,9 +245,9 @@ const UpdateLocationPage: React.FC = () => {
       );
 
       mutate({
-        id: locationId,
+        id: entityId,
         entity: {
-          ...locationStateCopy,
+          ...entityStateCopy,
         },
       });
     }
@@ -243,10 +258,10 @@ const UpdateLocationPage: React.FC = () => {
     content = <LoadingIndicator />;
   }
 
-  if (locationState) {
+  if (entityState) {
     const headerFormData: HeaderFormData = {
-      name: locationState.name,
-      imageFileId: locationState.imageFileId,
+      name: entityState.name,
+      imageFileId: entityState.imageFileId,
     };
 
     content = (
@@ -258,7 +273,7 @@ const UpdateLocationPage: React.FC = () => {
         />
         <div className='mt-8'>
           <DetailContainer
-            data={locationState.detailSections}
+            data={entityState.detailSections}
             onSectionAdded={handleAddSection}
             onSectionChange={handleSectionChange}
             onSectionDelete={handleDeleteSection}
@@ -275,4 +290,4 @@ const UpdateLocationPage: React.FC = () => {
   return content;
 };
 
-export default UpdateLocationPage;
+export default UpdateEntityPage;

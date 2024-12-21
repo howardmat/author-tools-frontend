@@ -1,8 +1,8 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-const CharacterRootPage: React.FC = () => {
+const EntityRootPage: React.FC = () => {
   return <Outlet />;
 };
 
-export default CharacterRootPage;
+export default EntityRootPage;
