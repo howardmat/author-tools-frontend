@@ -17,6 +17,7 @@ import { SetUserSettingsAction, UserSettingsActionTypes } from '@/actions';
 import { useUserSettingsContext } from '@/store/user-settings/use-user-settings-context';
 import useBodyClass from '@/hooks/use-body-class';
 import { THEMES } from '@/lib/constants';
+import WorkspaceContextProvider from '@/store/workspace/workspace-context-provider';
 
 const AuthenticatedLayout: React.FC = () => {
   const { userId, isLoaded } = useAuth();
@@ -46,29 +47,31 @@ const AuthenticatedLayout: React.FC = () => {
       if (data.theme) setBodyClass(THEMES.LIGHT, data.theme);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPending, data]);
+  }, [isPending]);
 
   if (!isLoaded || isPending) return <LoadingIndicator />;
 
   return (
     <>
-      <BreadcrumbContextProvider>
-        <SidebarProvider>
-          <SidebarMenu />
-          <SidebarInset>
-            <header className='flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12'>
-              <div className='flex items-center gap-2 px-4'>
-                <SidebarTrigger className='-ml-1' />
-                <Separator orientation='vertical' className='mr-2 h-4' />
-                <AppBreadcrumb />
+      <WorkspaceContextProvider>
+        <BreadcrumbContextProvider>
+          <SidebarProvider>
+            <SidebarMenu />
+            <SidebarInset>
+              <header className='flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12'>
+                <div className='flex items-center gap-2 px-4'>
+                  <SidebarTrigger className='-ml-1' />
+                  <Separator orientation='vertical' className='mr-2 h-4' />
+                  <AppBreadcrumb />
+                </div>
+              </header>
+              <div className='mx-6 mb-6'>
+                <Outlet />
               </div>
-            </header>
-            <div className='mx-6 mb-6'>
-              <Outlet />
-            </div>
-          </SidebarInset>
-        </SidebarProvider>
-      </BreadcrumbContextProvider>
+            </SidebarInset>
+          </SidebarProvider>
+        </BreadcrumbContextProvider>
+      </WorkspaceContextProvider>
       <Toaster />
     </>
   );

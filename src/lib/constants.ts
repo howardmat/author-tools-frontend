@@ -3,6 +3,7 @@ export const QUERY_KEYS = {
   LOCATIONS: 'locations',
   CREATURES: 'creatures',
   USER_SETTINGS: 'user-settings',
+  WORKSPACES: 'workspaces',
   FILE: 'file',
 };
 
@@ -12,6 +13,7 @@ export const API_ENDPOINTS = {
   LOCATIONS: `${API_URL}/locations`,
   CREATURES: `${API_URL}/creatures`,
   USER_SETTINGS: `${API_URL}/user-setting`,
+  WORKSPACE: `${API_URL}/workspace`,
   FILE: `${API_URL}/file`,
 };
 
@@ -24,3 +26,5 @@ export const THEMES = {
   DARK_BLUE: 'dark-blue',
   DARK_VIOLET: 'dark-violet',
 };
+
+export const DEFAULT_WORKSPACE_ID = 'DEFAULT';

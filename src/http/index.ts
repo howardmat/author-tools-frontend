@@ -14,6 +14,11 @@ import {
   IPutUserSettingParams,
   IGetEntitiesParams,
   EntityQueryType,
+  IWorkspace,
+  IGetWorkspacesParams,
+  IPostWorkspaceParams,
+  IPutWorkspaceParams,
+  IDeleteWorkspaceParams,
 } from '@/types';
 import { queryClient } from '@/http/query-client';
 import { API_ENDPOINTS, JWT_TEMPLATE, QUERY_KEYS } from '../lib/constants';
@@ -21,13 +26,21 @@ import { API_ENDPOINTS, JWT_TEMPLATE, QUERY_KEYS } from '../lib/constants';
 /* Common Entities */
 export async function getEntities({
   type,
+  workspaceId,
   signal,
   token,
 }: IGetEntitiesParams): Promise<IEntity[]> {
-  const response = await fetch(getEntityEndpointByQueryType(type), {
-    headers: { Authorization: `Bearer ${token}` },
-    signal: signal,
-  });
+  const response = await fetch(
+    getEntityEndpointByQueryType(type) +
+      '?' +
+      new URLSearchParams({
+        workspaceId,
+      }),
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: signal,
+    }
+  );
 
   if (!response.ok) {
     const error = new Error('An error occurred while fetching the data');
@@ -295,6 +308,211 @@ async function putUserSetting({
   }
 
   return await response.json();
+}
+
+/* Workspaces */
+export function useGetWorkspacesQuery() {
+  const { getToken, userId } = useAuth();
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.WORKSPACES, userId],
+    queryFn: async ({ signal }) => {
+      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
+      return await getWorkspaces({ signal, token });
+    },
+  });
+}
+
+async function getWorkspaces({
+  signal,
+  token,
+}: IGetWorkspacesParams): Promise<IWorkspace[]> {
+  const response = await fetch(API_ENDPOINTS.WORKSPACE, {
+    headers: { Authorization: `Bearer ${token}` },
+    signal: signal,
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the workspaces');
+    throw error;
+  }
+
+  return (await response.json()) as IWorkspace[];
+}
+
+export function usePostWorkspaceMutation({
+  onSuccess,
+  onError,
+}: IUseMutationCallbacksWithParams<IWorkspace>) {
+  const { getToken } = useAuth();
+
+  return useMutation({
+    mutationFn: async (workspace: IWorkspace) => {
+      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
+      return await postWorkspace({ workspace, token });
+    },
+    onError: (error) => {
+      if (onError) onError(error);
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.WORKSPACES] });
+      if (onSuccess) onSuccess(data);
+    },
+  });
+}
+
+async function postWorkspace({
+  workspace,
+  token,
+}: IPostWorkspaceParams): Promise<IWorkspace> {
+  const response = await fetch(API_ENDPOINTS.WORKSPACE, {
+    method: 'POST',
+    body: JSON.stringify(workspace),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while creating the workspace');
+    throw error;
+  }
+
+  return await response.json();
+}
+
+export function usePutWorkspaceMutation({
+  onSuccess,
+  onError,
+}: IUseMutationCallbacksWithParams<IWorkspace>) {
+  const { getToken } = useAuth();
+
+  return useMutation({
+    mutationFn: async ({
+      workspace,
+      id,
+    }: {
+      workspace: IWorkspace;
+      id: string;
+    }) => {
+      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
+      return await putWorkspace({ id, workspace, token });
+    },
+    onMutate: async (data: IPutWorkspaceParams) => {
+      const workspace = data.workspace;
+
+      await queryClient.cancelQueries({
+        queryKey: [QUERY_KEYS.WORKSPACES, workspace.id],
+      });
+      const previousData = queryClient.getQueryData([
+        QUERY_KEYS.WORKSPACES,
+        workspace.id,
+      ]);
+      queryClient.setQueryData(
+        [QUERY_KEYS.WORKSPACES, workspace.id],
+        workspace
+      );
+
+      return { previousData };
+    },
+    onError: (error, variables, context) => {
+      queryClient.setQueryData([QUERY_KEYS.WORKSPACES, variables.id], context);
+
+      if (onError) onError(error);
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.WORKSPACES],
+      });
+
+      if (onSuccess) onSuccess(data);
+    },
+  });
+}
+
+async function putWorkspace({
+  id,
+  workspace,
+  token,
+}: IPutWorkspaceParams): Promise<IWorkspace> {
+  const response = await fetch(API_ENDPOINTS.WORKSPACE + `/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(workspace),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while updating the workspace');
+    throw error;
+  }
+
+  return await response.json();
+}
+
+export function useDeleteWorkspaceMutation({
+  onSuccess,
+  onError,
+}: IUseMutationCallbacksWithParams<string>) {
+  const { getToken } = useAuth();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
+      await deleteWorkspace({ id, token });
+    },
+    onError: (error) => {
+      if (onError) onError(error);
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.WORKSPACES] });
+      if (onSuccess) onSuccess(variables);
+    },
+  });
+}
+
+async function deleteWorkspace({ id, token }: IDeleteWorkspaceParams) {
+  const response = await fetch(API_ENDPOINTS.WORKSPACE + `/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while deleting the workspace');
+
+    if (response.status === 400) {
+      const responseJson = await response.json();
+      switch (responseJson.error) {
+        case 'WORKSPACE_ASSOCIATED_DATA_EXISTS':
+          error.message = "This workspace has data saved and can't be deleted";
+          break;
+        case 'WORKSPACE_IS_LAST':
+          error.message = "This is the only workspace and can't be deleted";
+          break;
+        default:
+          break;
+      }
+    }
+
+    throw error;
+  }
+}
+
+export function invalidateEntityQueries(workspaceId: string) {
+  queryClient.invalidateQueries({
+    queryKey: [QUERY_KEYS.CHARACTERS, workspaceId],
+  });
+  queryClient.invalidateQueries({
+    queryKey: [QUERY_KEYS.CREATURES, workspaceId],
+  });
+  queryClient.invalidateQueries({
+    queryKey: [QUERY_KEYS.LOCATIONS, workspaceId],
+  });
 }
 
 /* Files */

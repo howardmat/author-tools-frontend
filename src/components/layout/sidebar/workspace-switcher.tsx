@@ -1,10 +1,8 @@
-import * as React from 'react';
-import { ChevronsUpDown, Plus } from 'lucide-react';
-
+import { useEffect, MouseEvent, useRef } from 'react';
+import { ChevronsUpDown, LoaderCircle } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -17,20 +15,124 @@ import {
 } from '@/components/ui/sidebar';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import { IWorkspace } from '@/types';
-import { BreadcrumbActionTypes, SetBreadcrumbWorkspaceAction } from '@/actions';
+import {
+  BreadcrumbActionTypes,
+  SetActiveWorkspaceAction,
+  SetBreadcrumbWorkspaceAction,
+  WorkspaceActionTypes,
+} from '@/actions';
+import EditWorkspaceDialog from '@/components/dialog/edit-workspace-dialog';
+import { getWorkspaceIcon } from '@/lib/tsx-utils';
+import {
+  invalidateEntityQueries,
+  useDeleteWorkspaceMutation,
+  useGetWorkspacesQuery,
+  usePostWorkspaceMutation,
+  usePutWorkspaceMutation,
+} from '@/http';
+import styles from './workspace-switcher.module.css';
+import { toast } from '@/hooks/use-toast';
+import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
+import { DEFAULT_WORKSPACE_ID } from '@/lib/constants';
+import { useWorkspaceContext } from '@/store/workspace/use-workspace-context';
 
-export function WorkspaceSwitcher({
-  workspaces,
-}: {
-  workspaces: IWorkspace[];
-}) {
+const WorkspaceSwitcher: React.FC = () => {
   const { isMobile } = useSidebar();
-  const [activeWorkspace, setActiveWorkspace] = React.useState(workspaces[0]);
-  const { dispatch } = useBreadcrumbContext();
+  const { state: workspaceState, dispatch: workspaceDispatch } =
+    useWorkspaceContext();
+  const { dispatch: breadcrumbDispatch } = useBreadcrumbContext();
+  const dropdownContentRef = useRef(null);
 
-  const handleWorkspaceChange = (workspace: IWorkspace) => {
-    setActiveWorkspace(workspace);
-    setBreadcrumbWorkspace(workspace.name);
+  const activeWorkspace = workspaceState.workspace;
+
+  const setActiveWorkspace = (workspace: IWorkspace) => {
+    const previousWorkspaceId = activeWorkspace.id;
+
+    const setActiveWorkspaceAction: SetActiveWorkspaceAction = {
+      type: WorkspaceActionTypes.SET_ACTIVE_WORKSPACE,
+      payload: {
+        ...workspace,
+      },
+    };
+    workspaceDispatch(setActiveWorkspaceAction);
+
+    invalidateEntityQueries(previousWorkspaceId);
+  };
+
+  const { data, isPending } = useGetWorkspacesQuery();
+  const { mutate: postMutate, isPending: postPending } =
+    usePostWorkspaceMutation({
+      onSuccess: () => {
+        toast({
+          title: 'Awesome!',
+          description: 'The workspace was created',
+          variant: 'success',
+        });
+      },
+      onError: (error?: Error) => {
+        toast({
+          title: 'Error!',
+          description: error?.message ?? 'An unexpected error occurred',
+          variant: 'destructive',
+        });
+      },
+    });
+  const { mutate: putMutate, isPending: putPending } = usePutWorkspaceMutation({
+    onSuccess: (workspace) => {
+      toast({
+        title: 'Awesome!',
+        description: 'The workspace was updated',
+        variant: 'success',
+      });
+
+      if (workspace.id === activeWorkspace.id) {
+        setActiveWorkspace(workspace);
+        setBreadcrumbWorkspace(workspace.name);
+      }
+    },
+    onError: (error?: Error) => {
+      toast({
+        title: 'Error!',
+        description: error?.message ?? 'An unexpected error occurred',
+        variant: 'destructive',
+      });
+    },
+  });
+  const { mutate: deleteMutate, isPending: deletePending } =
+    useDeleteWorkspaceMutation({
+      onSuccess: (deletedId) => {
+        toast({
+          title: 'Awesome!',
+          description: 'The workspace was deleted',
+          variant: 'success',
+        });
+
+        if (deletedId === activeWorkspace.id && data) {
+          const nextWorkspace = data.find((w) => w.id !== deletedId);
+          if (nextWorkspace) {
+            setActiveWorkspace(nextWorkspace);
+            setBreadcrumbWorkspace(nextWorkspace.name);
+          }
+        }
+      },
+      onError: (error?: Error) => {
+        toast({
+          title: 'Error!',
+          description: error?.message ?? 'An unexpected error occurred',
+          variant: 'destructive',
+        });
+      },
+    });
+
+  const handleWorkspaceChange = (
+    event: MouseEvent<HTMLElement>,
+    workspace: IWorkspace
+  ) => {
+    event.stopPropagation();
+    if (workspace.id !== activeWorkspace.id) {
+      setActiveWorkspace(workspace);
+      setBreadcrumbWorkspace(workspace.name);
+    }
   };
 
   const setBreadcrumbWorkspace = (name: string) => {
@@ -38,13 +140,36 @@ export function WorkspaceSwitcher({
       type: BreadcrumbActionTypes.SET_BREADCRUMB_WORKSPACE,
       payload: name,
     };
-    dispatch(setBreadcrumbWorkspaceAction);
+    breadcrumbDispatch(setBreadcrumbWorkspaceAction);
   };
 
-  React.useEffect(() => {
-    setBreadcrumbWorkspace(workspaces[0].name);
+  useEffect(() => {
+    if (data?.length && activeWorkspace.id === DEFAULT_WORKSPACE_ID) {
+      setActiveWorkspace(data[0]);
+      setBreadcrumbWorkspace(data[0].name);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [data]);
+
+  const onWorkspaceAdd = (workspace: IWorkspace) => {
+    postMutate(workspace);
+  };
+
+  const onWorkspaceDelete = (workspaceId: string) => {
+    deleteMutate(workspaceId);
+  };
+
+  const onWorkspaceUpdate = (workspace: IWorkspace) => {
+    putMutate({ id: workspace.id, workspace });
+  };
+
+  if (isPending || postPending || putPending || deletePending || !data) {
+    return (
+      <LoaderCircle className={`${styles.spin} w-18 h-18 text-gray-300`} />
+    );
+  }
+
+  const activeWorkspaceIcon = getWorkspaceIcon(activeWorkspace.icon);
 
   return (
     <SidebarMenu>
@@ -56,7 +181,7 @@ export function WorkspaceSwitcher({
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
               <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground'>
-                <activeWorkspace.logo className='size-4' />
+                {activeWorkspaceIcon}
               </div>
               <div className='grid flex-1 text-left text-sm leading-tight'>
                 <span className='truncate font-semibold'>
@@ -70,38 +195,36 @@ export function WorkspaceSwitcher({
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
+            className='w-auto min-w-56 rounded-lg'
             align='start'
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
+            ref={dropdownContentRef}
           >
             <DropdownMenuLabel className='text-xs text-muted-foreground'>
               Workspaces
             </DropdownMenuLabel>
-            {workspaces.map((workspace) => (
-              <DropdownMenuItem
-                key={workspace.name}
-                onClick={() => handleWorkspaceChange(workspace)}
-                className='gap-2 p-2'
-              >
-                <div className='flex size-6 items-center justify-center rounded-sm border'>
-                  <workspace.logo className='size-4 shrink-0' />
-                </div>
-                {workspace.name}
+            {data.map((workspace) => (
+              <DropdownMenuItem asChild key={workspace.name}>
+                <EditWorkspaceDialog
+                  workspace={workspace}
+                  onSave={onWorkspaceUpdate}
+                  onDelete={onWorkspaceDelete}
+                  onClick={(event) => handleWorkspaceChange(event, workspace)}
+                />
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='gap-2 p-2'>
-              <div className='flex size-6 items-center justify-center rounded-md border bg-background'>
-                <Plus className='size-4' />
-              </div>
-              <div className='font-medium text-muted-foreground'>
-                Add Workspace
-              </div>
-            </DropdownMenuItem>
+            <EditWorkspaceDialog
+              addMode
+              onSave={onWorkspaceAdd}
+              onDelete={onWorkspaceDelete}
+            />
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
   );
-}
+};
+
+export default WorkspaceSwitcher;
