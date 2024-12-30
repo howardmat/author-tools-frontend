@@ -64,7 +64,7 @@ const AddEntityPage: React.FC<IAddEntityPageProps> = ({
   });
 
   const handleSave: SubmitHandler<HeaderFormData> = async (data) => {
-    mutate({ ...data, detailSections: [] });
+    mutate({ ...data, detailSections: [], workspaceId: '' });
   };
 
   return (
