@@ -1,15 +1,7 @@
 import * as React from 'react';
-import {
-  Bot,
-  GalleryVerticalEnd,
-  MapPinned,
-  Settings2,
-  Skull,
-} from 'lucide-react';
-
+import { Bot, MapPinned, Settings2, Skull } from 'lucide-react';
 import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
-import { WorkspaceSwitcher } from './workspace-switcher';
 import {
   Sidebar,
   SidebarContent,
@@ -18,15 +10,9 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar';
 import { useUser } from '@clerk/clerk-react';
+import WorkspaceSwitcher from './workspace-switcher';
 
 const data = {
-  workspaces: [
-    {
-      name: 'Default Workspace',
-      logo: GalleryVerticalEnd,
-      description: 'Enterprise',
-    },
-  ],
   navMain: [
     {
       title: 'Characters',
@@ -61,7 +47,7 @@ export function SidebarMenu({
   return (
     <Sidebar collapsible='icon' {...props}>
       <SidebarHeader>
-        <WorkspaceSwitcher workspaces={data.workspaces} />
+        <WorkspaceSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

@@ -51,67 +51,74 @@ const ComboBox: React.FC<ComboBoxProps> = ({
     <FormField
       control={form.control}
       name={name}
-      render={({ field }) => (
-        <FormItem className='flex flex-col'>
-          <FormLabel>{label}</FormLabel>
-          <Popover>
-            <PopoverTrigger asChild>
-              <FormControl>
-                <Button
-                  variant='outline'
-                  role='combobox'
-                  className={cn(
-                    'w-full justify-between',
-                    !field.value && 'text-muted-foreground'
-                  )}
-                >
-                  {field.value
-                    ? options.find((option) => option.code === field.value)
-                        ?.value
-                    : placeholder}
-                  <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
-                </Button>
-              </FormControl>
-            </PopoverTrigger>
-            <PopoverContent className='w-[200px] p-0'>
-              <Command>
-                <CommandInput
-                  className='my-1'
-                  placeholder={searchLabel ?? 'Search options...'}
-                />
-                <CommandList>
-                  <CommandEmpty>
-                    {noMatchLabel ?? 'No match found.'}
-                  </CommandEmpty>
-                  <CommandGroup>
-                    {options.map((option) => (
-                      <CommandItem
-                        value={option.value}
-                        key={option.code}
-                        onSelect={() => {
-                          form.setValue(name, option.code);
-                        }}
-                      >
-                        {option.value}
-                        <Check
-                          className={cn(
-                            'ml-auto',
-                            option.code === field.value
-                              ? 'opacity-100'
-                              : 'opacity-0'
-                          )}
-                        />
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          {description && <FormDescription>{description}</FormDescription>}
-          <FormMessage />
-        </FormItem>
-      )}
+      render={({ field }) => {
+        let displayValue: JSX.Element = <>{placeholder}</>;
+
+        if (field.value) {
+          const option = options.find((option) => option.code === field.value);
+          if (option) {
+            displayValue = option.displayValue ?? <>{option.value}</>;
+          }
+        }
+        return (
+          <FormItem className='flex flex-col'>
+            <FormLabel>{label}</FormLabel>
+            <Popover>
+              <PopoverTrigger asChild>
+                <FormControl>
+                  <Button
+                    variant='outline'
+                    role='combobox'
+                    className={cn(
+                      'w-full justify-between',
+                      !field.value && 'text-muted-foreground'
+                    )}
+                  >
+                    {displayValue}
+                    <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                  </Button>
+                </FormControl>
+              </PopoverTrigger>
+              <PopoverContent className='w-[200px] p-0'>
+                <Command>
+                  <CommandInput
+                    className='my-1'
+                    placeholder={searchLabel ?? 'Search options...'}
+                  />
+                  <CommandList>
+                    <CommandEmpty>
+                      {noMatchLabel ?? 'No match found.'}
+                    </CommandEmpty>
+                    <CommandGroup>
+                      {options.map((option) => (
+                        <CommandItem
+                          value={option.value}
+                          key={option.code}
+                          onSelect={() => {
+                            form.setValue(name, option.code);
+                          }}
+                        >
+                          {option.displayValue || option.value}
+                          <Check
+                            className={cn(
+                              'ml-auto',
+                              option.code === field.value
+                                ? 'opacity-100'
+                                : 'opacity-0'
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            {description && <FormDescription>{description}</FormDescription>}
+            <FormMessage />
+          </FormItem>
+        );
+      }}
     />
   );
 };

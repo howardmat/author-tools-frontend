@@ -1,6 +1,7 @@
 export interface ICodeValue {
   code: string;
   value: string;
+  displayValue?: JSX.Element;
 }
 
 export interface IAttribute {
@@ -21,6 +22,7 @@ export interface IEntity {
   id?: string;
   name: string;
   imageFileId: string;
+  workspaceId: string;
   order?: number;
   detailSections: IDetailSection[];
 }
@@ -45,9 +47,10 @@ export interface IBreadcrumb {
   url?: string;
 }
 export interface IWorkspace {
+  id: string;
   name: string;
-  logo: React.ElementType;
-  description: string;
+  icon?: string;
+  description?: string;
 }
 
 export interface IPatchRequest {
@@ -61,6 +64,7 @@ interface IAuthenticatedParams {
 }
 export interface IGetEntitiesParams extends IAuthenticatedParams {
   type: EntityQueryType;
+  workspaceId: string;
   signal: AbortSignal;
 }
 export interface IGetEntityParams extends IAuthenticatedParams {
@@ -96,6 +100,20 @@ export interface IPostUserSettingParams extends IAuthenticatedParams {
 export interface IPutUserSettingParams extends IAuthenticatedParams {
   id: string;
   userSetting: IUserSetting;
+}
+
+export interface IGetWorkspacesParams extends IAuthenticatedParams {
+  signal: AbortSignal;
+}
+export interface IPostWorkspaceParams extends IAuthenticatedParams {
+  workspace: IWorkspace;
+}
+export interface IPutWorkspaceParams extends IAuthenticatedParams {
+  id: string;
+  workspace: IWorkspace;
+}
+export interface IDeleteWorkspaceParams extends IAuthenticatedParams {
+  id: string;
 }
 
 export interface IUseMutationCallbacksWithParams<T> {

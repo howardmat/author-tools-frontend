@@ -18,15 +18,22 @@ import {
 } from '@/http';
 import { JWT_TEMPLATE, QUERY_KEYS } from '@/lib/constants';
 import { queryClient } from '@/http/query-client';
+import { useWorkspaceContext } from '@/store/workspace/use-workspace-context';
 
 export function useGetEntitiesQuery(type: EntityQueryType) {
   const { getToken } = useAuth();
+  const { state: workspaceState } = useWorkspaceContext();
 
   return useQuery({
-    queryKey: [getKeyByQueryType(type)],
+    queryKey: [getKeyByQueryType(type), workspaceState.workspace.id],
     queryFn: async ({ signal }) => {
       const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await getEntities({ type, signal, token });
+      return await getEntities({
+        type,
+        workspaceId: workspaceState.workspace.id,
+        signal,
+        token,
+      });
     },
   });
 }
@@ -48,9 +55,12 @@ export function usePostEntityMutation(
   { onSuccess, onError }: IUseMutationCallbacksWithParams<IEntity>
 ) {
   const { getToken } = useAuth();
+  const { state: workspaceState } = useWorkspaceContext();
 
   return useMutation({
     mutationFn: async (entity: IEntity) => {
+      entity.workspaceId = workspaceState.workspace.id;
+
       const token = (await getToken({ template: JWT_TEMPLATE })) || '';
       return await postEntity({ type, entity, token });
     },

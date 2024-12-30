@@ -1,4 +1,4 @@
-import { IBreadcrumb, IUserSetting } from '../types';
+import { IBreadcrumb, IUserSetting, IWorkspace } from '../types';
 
 // Breadcrumb
 export enum BreadcrumbActionTypes {
@@ -38,3 +38,15 @@ export type SetUserSettingsAction = {
 };
 
 export type UserSettingsActions = SetUserSettingsAction;
+
+// Workspace
+export enum WorkspaceActionTypes {
+  SET_ACTIVE_WORKSPACE = 'SET_ACTIVE_WORKSPACE',
+}
+
+export type SetActiveWorkspaceAction = {
+  type: WorkspaceActionTypes.SET_ACTIVE_WORKSPACE;
+  payload: IWorkspace;
+};
+
+export type WorkspaceActions = SetActiveWorkspaceAction;
