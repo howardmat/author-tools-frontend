@@ -7,7 +7,6 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogHeaderContent,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
@@ -79,14 +78,14 @@ function ConfirmAlert({
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger ref={buttonRef} />
       <AlertDialogContent>
-        <AlertDialogHeader>
+        <AlertDialogHeader className="flex flex-col sm:flex-row space-x-2 text-center items-center">
           {iconContent}
-          <AlertDialogHeaderContent>
+          <div className="flex flex-col space-y-2 text-center sm:text-left">
             <AlertDialogTitle>{stateProps.title}</AlertDialogTitle>
             <AlertDialogDescription>
               {stateProps.description}
             </AlertDialogDescription>
-          </AlertDialogHeaderContent>
+          </div>
         </AlertDialogHeader>
         <AlertDialogFooter>
           {stateProps.declineLabel && (
