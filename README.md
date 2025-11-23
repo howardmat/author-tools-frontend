@@ -53,7 +53,7 @@ The application follows a client-server architecture where:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/author-tools-frontend.git
+git clone https://github.com/howardmat/author-tools-frontend.git
 cd author-tools-frontend
 ```
 
