@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { forwardRef, MouseEvent, PropsWithChildren, useRef } from 'react';
+import { MouseEvent, PropsWithChildren, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
@@ -54,10 +54,9 @@ interface IEditWorkspaceDialogProps extends PropsWithChildren {
   onClick?: (event: MouseEvent<HTMLElement>) => void;
 }
 
-const EditWorkspaceDialog = forwardRef<
-  HTMLButtonElement,
-  IEditWorkspaceDialogProps
->(({ addMode, workspace, onSave, onDelete, onClick }, ref) => {
+function EditWorkspaceDialog({
+  addMode, workspace, onSave, onDelete, onClick, ref
+}: IEditWorkspaceDialogProps & { ref?: React.Ref<HTMLButtonElement> }){
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -260,6 +259,6 @@ const EditWorkspaceDialog = forwardRef<
       </DialogContent>
     </Dialog>
   );
-});
+}
 
 export default EditWorkspaceDialog;

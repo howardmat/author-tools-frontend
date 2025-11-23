@@ -8,11 +8,11 @@ interface IDetailSectionProps {
   onSectionAdded: (section: IDetailSection) => void;
 }
 
-const EmptyDetailSection: React.FC<IDetailSectionProps> = ({
+export default function EmptyDetailSection({
   title,
   description,
   onSectionAdded,
-}) => {
+}: IDetailSectionProps) {
   return (
     <div className='rounded-xl bg-muted/50 p-3'>
       <DetailSectionHeader title={title} centerHeader />
@@ -24,6 +24,4 @@ const EmptyDetailSection: React.FC<IDetailSectionProps> = ({
       </div>
     </div>
   );
-};
-
-export default EmptyDetailSection;
+}

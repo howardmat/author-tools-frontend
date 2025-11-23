@@ -19,7 +19,7 @@ import useBodyClass from '@/hooks/use-body-class';
 import { THEMES } from '@/lib/constants';
 import WorkspaceContextProvider from '@/store/workspace/workspace-context-provider';
 
-const AuthenticatedLayout: React.FC = () => {
+export default function AuthenticatedLayout() {
   const { userId, isLoaded } = useAuth();
   const navigate = useNavigate();
 
@@ -75,6 +75,4 @@ const AuthenticatedLayout: React.FC = () => {
       <Toaster />
     </>
   );
-};
-
-export default AuthenticatedLayout;
+}

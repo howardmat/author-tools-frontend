@@ -13,7 +13,7 @@ interface IAttributeDetailSectionProps {
   onSectionDelete: (id: string) => void;
 }
 
-const AttributeDetailSection: React.FC<IAttributeDetailSectionProps> = ({
+export default function AttributeDetailSection({
   section,
   emptyAttributesPlaceholder,
   onAttributeAdded,
@@ -21,7 +21,7 @@ const AttributeDetailSection: React.FC<IAttributeDetailSectionProps> = ({
   onAttributeDelete,
   onSectionChange,
   onSectionDelete,
-}) => {
+}: IAttributeDetailSectionProps) {
   return (
     <>
       <div key={section.title} className='rounded-xl bg-muted/50 p-3'>
@@ -68,6 +68,4 @@ const AttributeDetailSection: React.FC<IAttributeDetailSectionProps> = ({
       </div>
     </>
   );
-};
-
-export default AttributeDetailSection;
+}

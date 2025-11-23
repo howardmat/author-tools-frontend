@@ -22,18 +22,18 @@ interface IEntityListPageProps {
   breadcrumbTitle?: string;
 }
 
-const EntityListPage: React.FC<IEntityListPageProps> = ({
+export default function EntityListPage({
   entityType,
   title,
   entityName,
   breadcrumbTitle,
   entityBaseUrl,
-}) => {
+}: IEntityListPageProps) {
   const { data, isPending, isError, error } = useGetEntitiesQuery(entityType);
   const { dispatch } = useBreadcrumbContext();
   const [state, setState] = useState<IEntity[]>([]);
-  const dragItemId = useRef<string | undefined>();
-  const dragOverItemId = useRef<string | undefined>();
+  const dragItemId = useRef<string | undefined>(undefined);
+  const dragOverItemId = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     if (data) {
@@ -193,6 +193,4 @@ const EntityListPage: React.FC<IEntityListPageProps> = ({
       <ConfirmAlert ref={alertRef} />
     </>
   );
-};
-
-export default EntityListPage;
+}

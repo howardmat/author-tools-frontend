@@ -36,7 +36,7 @@ import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 import { DEFAULT_WORKSPACE_ID } from '@/lib/constants';
 import { useWorkspaceContext } from '@/store/workspace/use-workspace-context';
 
-const WorkspaceSwitcher: React.FC = () => {
+export default function WorkspaceSwitcher() {
   const { isMobile } = useSidebar();
   const { state: workspaceState, dispatch: workspaceDispatch } =
     useWorkspaceContext();
@@ -225,6 +225,4 @@ const WorkspaceSwitcher: React.FC = () => {
       </SidebarMenuItem>
     </SidebarMenu>
   );
-};
-
-export default WorkspaceSwitcher;
+}

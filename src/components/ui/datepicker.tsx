@@ -25,12 +25,12 @@ interface DatePickerProps {
   placeholder?: string;
 }
 
-const DatePicker: React.FC<DatePickerProps> = ({
+export default function DatePicker({
   label,
   name,
   description,
   placeholder,
-}) => {
+}: DatePickerProps) {
   const form = useFormContext();
 
   return (
@@ -74,6 +74,4 @@ const DatePicker: React.FC<DatePickerProps> = ({
       )}
     />
   );
-};
-
-export default DatePicker;
+}

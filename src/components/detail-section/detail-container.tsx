@@ -15,7 +15,7 @@ interface IDetailContainerProps {
   onNoteChange: (noteContent: string, section: IDetailSection) => void;
 }
 
-const DetailContainer: React.FC<IDetailContainerProps> = ({
+export default function DetailContainer({
   data,
   onSectionAdded,
   onAttributeAdded,
@@ -24,7 +24,7 @@ const DetailContainer: React.FC<IDetailContainerProps> = ({
   onNoteChange,
   onSectionChange,
   onSectionDelete,
-}) => {
+}: IDetailContainerProps) {
   let detailContent = (
     <DetailSection
       onSectionAdded={onSectionAdded}
@@ -80,6 +80,4 @@ const DetailContainer: React.FC<IDetailContainerProps> = ({
       {detailContent}
     </div>
   );
-};
-
-export default DetailContainer;
+}

@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
 
-const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
+export default function PageHeading({
   title,
   addRoute,
-}) => {
+}: { title: string; addRoute?: string | null }) {
   const navigate = useNavigate();
 
   const handleAddClick = () => {
@@ -35,6 +35,4 @@ const PageHeading: React.FC<{ title: string; addRoute?: string | null }> = ({
       </div>
     </>
   );
-};
-
-export default PageHeading;
+}

@@ -46,14 +46,14 @@ const FormSchema = z.object({
   value: z.string().min(1, 'Value is a required field'),
 });
 
-const EditAttributeDialog: React.FC<IEditAttributeDialogProps> = ({
+export default function EditAttributeDialog({
   addMode,
   attribute,
   buttonVariant,
   children,
   onSave,
   onDelete,
-}) => {
+}: IEditAttributeDialogProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -187,6 +187,4 @@ const EditAttributeDialog: React.FC<IEditAttributeDialogProps> = ({
       </DialogContent>
     </Dialog>
   );
-};
-
-export default EditAttributeDialog;
+}

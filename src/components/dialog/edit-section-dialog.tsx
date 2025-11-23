@@ -31,7 +31,7 @@ import ConfirmAlert, { IConfirmAlert } from '../common/confirm-alert';
 const FormSchema = z.object({
   title: z.string().min(1, 'Title is a required field'),
   type: z.enum(['attribute', 'note'], {
-    required_error: 'You need to select a type.',
+    message: 'You need to select a type.',
   }),
 });
 
@@ -49,14 +49,14 @@ interface IEditSectionDialogProps extends PropsWithChildren {
     | 'secondary';
 }
 
-const EditSectionDialog: React.FC<IEditSectionDialogProps> = ({
+export default function EditSectionDialog({
   addMode,
   section,
   onSave,
   onDelete,
   buttonVariant,
   children,
-}) => {
+}: IEditSectionDialogProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -216,6 +216,4 @@ const EditSectionDialog: React.FC<IEditSectionDialogProps> = ({
       </DialogContent>
     </Dialog>
   );
-};
-
-export default EditSectionDialog;
+}

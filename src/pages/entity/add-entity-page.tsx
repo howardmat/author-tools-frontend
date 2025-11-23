@@ -19,13 +19,13 @@ interface IAddEntityPageProps {
   breadcrumbTitle?: string;
 }
 
-const AddEntityPage: React.FC<IAddEntityPageProps> = ({
+export default function AddEntityPage({
   entityType,
   title,
   entityBaseUrl,
   entityName,
   breadcrumbTitle,
-}) => {
+}: IAddEntityPageProps) {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { dispatch } = useBreadcrumbContext();
@@ -79,6 +79,4 @@ const AddEntityPage: React.FC<IAddEntityPageProps> = ({
       </div>
     </>
   );
-};
-
-export default AddEntityPage;
+}

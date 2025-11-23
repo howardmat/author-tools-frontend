@@ -9,8 +9,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
-    "forceConsistentCasingInFileNames": true
+    // "module": "NodeNext",
+    // "moduleResolution": "nodenext",
+    // "forceConsistentCasingInFileNames": true
   }
 }

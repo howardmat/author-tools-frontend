@@ -10,11 +10,11 @@ interface IEditOverlayProps {
   onClick?: () => void;
 }
 
-const EditOverlay: React.FC<IEditOverlayProps> = ({
+export default function EditOverlay({
   className,
   opacity,
   onClick,
-}) => {
+}: IEditOverlayProps) {
   const getComponentClassName = () => {
     let componentClassName =
       'absolute flex justify-center align-middle top-0 left-0 right-0 bottom-0 w-full h-full bg-primary opacity-0';
@@ -30,6 +30,4 @@ const EditOverlay: React.FC<IEditOverlayProps> = ({
       <PencilSquareIcon className='text-accent w-8' />
     </div>
   );
-};
-
-export default EditOverlay;
+}

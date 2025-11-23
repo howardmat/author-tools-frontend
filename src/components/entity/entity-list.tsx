@@ -15,13 +15,19 @@ import {
 } from '../ui/dropdown-menu';
 const API_URL = import.meta.env.VITE_API_URL;
 
-const EntityList: React.FC<{
+export default function EntityList({ 
+  entities, 
+  onDelete, 
+  onDragStart, 
+  onDragOver, 
+  onDragEnd 
+}:{
   entities: IEntity[];
   onDelete: (event: MouseEvent<HTMLDivElement>, id: string) => void;
   onDragStart: (event: DragEvent<HTMLLIElement>) => void;
   onDragOver: (event: DragEvent<HTMLLIElement>) => void;
   onDragEnd: () => void;
-}> = ({ entities, onDelete, onDragStart, onDragOver, onDragEnd }) => {
+}){
   const navigate = useNavigate();
 
   const handleListClick = (id: string | undefined) => {
@@ -80,6 +86,4 @@ const EntityList: React.FC<{
       </ul>
     </>
   );
-};
-
-export default EntityList;
+}

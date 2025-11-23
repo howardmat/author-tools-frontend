@@ -23,13 +23,13 @@ interface IUpdateEntityPageProps {
   breadcrumbTitle?: string;
 }
 
-const UpdateEntityPage: React.FC<IUpdateEntityPageProps> = ({
+export default function UpdateEntityPage({
   entityType,
   title,
   entityBaseUrl,
   entityName,
   breadcrumbTitle,
-}) => {
+}: IUpdateEntityPageProps) {
   const { toast } = useToast();
   const [entityState, setEntityState] = useState<IEntity | null>(null);
   const { dispatch } = useBreadcrumbContext();
@@ -288,6 +288,4 @@ const UpdateEntityPage: React.FC<IUpdateEntityPageProps> = ({
   }
 
   return content;
-};
-
-export default UpdateEntityPage;
+}
