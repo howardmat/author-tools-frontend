@@ -10,11 +10,11 @@ interface IAttributeDetailProps {
   onDelete: (id: string) => void;
 }
 
-const AttributeDetail: React.FC<IAttributeDetailProps> = ({
+export default function AttributeDetail({
   attribute,
   onSave,
   onDelete,
-}) => {
+}: IAttributeDetailProps) {
   const editAttributeDialogRef = useRef<HTMLButtonElement>(null);
 
   return (
@@ -39,6 +39,4 @@ const AttributeDetail: React.FC<IAttributeDetailProps> = ({
       />
     </div>
   );
-};
-
-export default AttributeDetail;
+}

@@ -10,13 +10,13 @@ interface IEmptyPageProps {
   className?: string;
 }
 
-const EmptyPageContent: React.FC<IEmptyPageProps> = ({
+export default function EmptyPageContent({
   title,
   description,
   actionLabel,
   actionRoute,
   className,
-}) => {
+}: IEmptyPageProps) {
   return (
     <div className={`text-center ${className}`}>
       <svg
@@ -50,6 +50,4 @@ const EmptyPageContent: React.FC<IEmptyPageProps> = ({
       )}
     </div>
   );
-};
-
-export default EmptyPageContent;
+}

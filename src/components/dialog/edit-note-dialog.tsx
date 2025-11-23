@@ -20,7 +20,7 @@ import {
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { forwardRef, PropsWithChildren, useRef } from 'react';
+import { PropsWithChildren, useRef } from 'react';
 import { Textarea } from '../ui/textarea';
 
 interface IEditNoteDialogProps extends PropsWithChildren {
@@ -32,86 +32,86 @@ const FormSchema = z.object({
   noteContent: z.string().min(1, 'Some content is required'),
 });
 
-const EditNoteDialog = forwardRef<HTMLButtonElement, IEditNoteDialogProps>(
-  ({ currentNoteContent, onSave, children }, ref) => {
-    const form = useForm<z.infer<typeof FormSchema>>({
-      resolver: zodResolver(FormSchema),
-      defaultValues: {
-        noteContent: currentNoteContent || '',
-      },
-    });
+function EditNoteDialog({ 
+  currentNoteContent, onSave, children, ref 
+}: IEditNoteDialogProps & { ref?: React.Ref<HTMLButtonElement> }) {
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      noteContent: currentNoteContent || '',
+    },
+  });
 
-    const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-    const onSubmit = (data: z.infer<typeof FormSchema>) => {
-      onSave(data.noteContent);
-      form.resetField('noteContent', { defaultValue: data.noteContent });
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    onSave(data.noteContent);
+    form.resetField('noteContent', { defaultValue: data.noteContent });
 
-      if (closeButtonRef.current) closeButtonRef.current.click();
-    };
+    if (closeButtonRef.current) closeButtonRef.current.click();
+  };
 
-    const handleOpenChange = (open: boolean) => {
-      if (open) return;
+  const handleOpenChange = (open: boolean) => {
+    if (open) return;
 
-      form.reset(undefined, { keepDefaultValues: true });
-    };
+    form.reset(undefined, { keepDefaultValues: true });
+  };
 
-    return (
-      <Dialog onOpenChange={handleOpenChange}>
-        <DialogTrigger ref={ref} asChild>
-          {children}
-        </DialogTrigger>
-        <DialogContent className='sm:max-w-[425px]'>
-          <DialogHeader>
-            <DialogTitle>Update the details</DialogTitle>
-            <DialogDescription>
-              Add any details you like here. Click save when you're done.
-            </DialogDescription>
-          </DialogHeader>
-          <div>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className='space-y-6'
-              >
-                <div className='grid gap-4 py-4'>
-                  <div className='grid grid-cols-1 items-center gap-4'>
-                    <FormField
-                      control={form.control}
-                      name='noteContent'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Content</FormLabel>
-                          <FormControl>
-                            <Textarea {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+  return (
+    <Dialog onOpenChange={handleOpenChange}>
+      <DialogTrigger ref={ref} asChild>
+        {children}
+      </DialogTrigger>
+      <DialogContent className='sm:max-w-[425px]'>
+        <DialogHeader>
+          <DialogTitle>Update the details</DialogTitle>
+          <DialogDescription>
+            Add any details you like here. Click save when you're done.
+          </DialogDescription>
+        </DialogHeader>
+        <div>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className='space-y-6'
+            >
+              <div className='grid gap-4 py-4'>
+                <div className='grid grid-cols-1 items-center gap-4'>
+                  <FormField
+                    control={form.control}
+                    name='noteContent'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Content</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-                <DialogFooter>
-                  <div className='flex gap-2'>
-                    <Button type='submit'>Save</Button>
-                    <DialogClose asChild>
-                      <Button
-                        ref={closeButtonRef}
-                        type='button'
-                        variant='secondary'
-                      >
-                        Cancel
-                      </Button>
-                    </DialogClose>
-                  </div>
-                </DialogFooter>
-              </form>
-            </Form>
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
-  }
-);
+              </div>
+              <DialogFooter>
+                <div className='flex gap-2'>
+                  <Button type='submit'>Save</Button>
+                  <DialogClose asChild>
+                    <Button
+                      ref={closeButtonRef}
+                      type='button'
+                      variant='secondary'
+                    >
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                </div>
+              </DialogFooter>
+            </form>
+          </Form>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default EditNoteDialog;

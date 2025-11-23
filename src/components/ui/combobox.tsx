@@ -36,7 +36,7 @@ interface ComboBoxProps {
   description?: string;
 }
 
-const ComboBox: React.FC<ComboBoxProps> = ({
+export default function ComboBox({
   label,
   name,
   options,
@@ -44,7 +44,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
   searchLabel,
   noMatchLabel,
   description,
-}) => {
+}: ComboBoxProps) {
   const form = useFormContext();
 
   return (
@@ -52,7 +52,7 @@ const ComboBox: React.FC<ComboBoxProps> = ({
       control={form.control}
       name={name}
       render={({ field }) => {
-        let displayValue: JSX.Element = <>{placeholder}</>;
+        let displayValue: React.ReactNode = <>{placeholder}</>;
 
         if (field.value) {
           const option = options.find((option) => option.code === field.value);
@@ -121,6 +121,4 @@ const ComboBox: React.FC<ComboBoxProps> = ({
       }}
     />
   );
-};
-
-export default ComboBox;
+}

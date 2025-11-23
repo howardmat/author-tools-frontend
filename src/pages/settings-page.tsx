@@ -35,12 +35,12 @@ const FormSchema = z.object({
       THEMES.DARK_VIOLET,
     ],
     {
-      required_error: 'You need to select a theme.',
+      message: 'You need to select a theme.',
     }
   ),
 });
 
-const SettingsPage: React.FC = () => {
+export default function SettingsPage() {
   const { dispatch } = useBreadcrumbContext();
   useEffect(() => {
     const setBreadcrumbTrailAction: SetBreadcrumbTrailAction = {
@@ -196,6 +196,4 @@ const SettingsPage: React.FC = () => {
       </div>
     </>
   );
-};
-
-export default SettingsPage;
+}

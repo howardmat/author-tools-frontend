@@ -15,7 +15,7 @@ interface IAvatarUploadProps {
   name: string;
 }
 
-const AvatarUpload: React.FC<IAvatarUploadProps> = ({ name }) => {
+export default function AvatarUpload({ name }: IAvatarUploadProps) {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const form = useFormContext();
@@ -93,6 +93,4 @@ const AvatarUpload: React.FC<IAvatarUploadProps> = ({ name }) => {
       />
     </div>
   );
-};
-
-export default AvatarUpload;
+}

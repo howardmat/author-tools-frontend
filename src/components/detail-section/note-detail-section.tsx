@@ -13,13 +13,13 @@ interface INoteDetailSectionProps {
   onSectionDelete: (id: string) => void;
 }
 
-const NoteDetailSection: React.FC<INoteDetailSectionProps> = ({
+export default function NoteDetailSection({
   section,
   emptyNotePlaceholder,
   onNoteChange,
   onSectionChange,
   onSectionDelete,
-}) => {
+}: INoteDetailSectionProps) {
   const editNoteDialogRef = useRef<HTMLButtonElement>(null);
 
   return (
@@ -49,6 +49,4 @@ const NoteDetailSection: React.FC<INoteDetailSectionProps> = ({
       </div>
     </div>
   );
-};
-
-export default NoteDetailSection;
+}

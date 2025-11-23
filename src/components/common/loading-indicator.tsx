@@ -1,7 +1,7 @@
 import { LoaderCircle } from 'lucide-react';
 import styles from './loading-indicator.module.css';
 
-const LoadingIndicator: React.FC = () => {
+export default function LoadingIndicator() {
   return (
     <div className='flex justify-center'>
       <div className='w-full flex items-center md:w-3/4 md:mt-6'>
@@ -17,6 +17,4 @@ const LoadingIndicator: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default LoadingIndicator;
+}

@@ -12,13 +12,13 @@ interface IDetailSectionHeaderProps {
   onSectionDelete?: (id: string) => void;
 }
 
-const DetailSectionHeader: React.FC<IDetailSectionHeaderProps> = ({
+export default function DetailSectionHeader ({
   section,
   title,
   centerHeader,
   onSectionChange,
   onSectionDelete,
-}) => {
+}: IDetailSectionHeaderProps) {
   const editSectionDialogRef = useRef<HTMLButtonElement>(null);
 
   const headerTextAlignStyle = centerHeader
@@ -54,6 +54,4 @@ const DetailSectionHeader: React.FC<IDetailSectionHeaderProps> = ({
       )}
     </div>
   );
-};
-
-export default DetailSectionHeader;
+}

@@ -7,7 +7,7 @@ import {
 import { SignedIn, SignedOut } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
 
-const HomePage: React.FC = () => {
+export default function HomePage() {
   const navigate = useNavigate();
 
   const year = new Date().getFullYear();
@@ -74,6 +74,4 @@ const HomePage: React.FC = () => {
       </footer>
     </>
   );
-};
-
-export default HomePage;
+}

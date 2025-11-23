@@ -13,11 +13,11 @@ interface IEditNameHeaderProps {
   isSaving?: boolean;
 }
 
-const EditNameHeader: React.FC<IEditNameHeaderProps> = ({
+export default function EditNameHeader({
   name,
   onNameSave,
   isSaving,
-}) => {
+}: IEditNameHeaderProps) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const form = useFormContext();
 
@@ -109,6 +109,4 @@ const EditNameHeader: React.FC<IEditNameHeaderProps> = ({
       {content}
     </div>
   );
-};
-
-export default EditNameHeader;
+}

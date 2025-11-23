@@ -1,7 +1,7 @@
 export interface ICodeValue {
   code: string;
   value: string;
-  displayValue?: JSX.Element;
+  displayValue?: React.ReactNode;
 }
 
 export interface IAttribute {

@@ -10,7 +10,7 @@ import {
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import { Link } from 'react-router-dom';
 
-const AppBreadcrumb: React.FC = () => {
+export default function AppBreadcrumb() {
   const { state } = useBreadcrumbContext();
   const workspaceName = state.breadcrumbTrail.workspaceName;
   const breadcrumbTrail = state.breadcrumbTrail.trail;
@@ -40,6 +40,4 @@ const AppBreadcrumb: React.FC = () => {
       </BreadcrumbList>
     </Breadcrumb>
   );
-};
-
-export default AppBreadcrumb;
+}

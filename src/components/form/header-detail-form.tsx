@@ -28,11 +28,11 @@ const formSchema = z.object({
   imageFileId: z.string(),
 });
 
-const HeaderDetailForm: React.FC<IHeaderFormProps> = ({
+export default function HeaderDetailForm({
   data,
   onSave,
   isLoading,
-}) => {
+}: IHeaderFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: data
@@ -64,6 +64,4 @@ const HeaderDetailForm: React.FC<IHeaderFormProps> = ({
       </form>
     </Form>
   );
-};
-
-export default HeaderDetailForm;
+}
