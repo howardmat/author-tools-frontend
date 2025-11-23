@@ -1,4 +1,4 @@
-# AuthorTools Frontend
+# Author Tools
 
 A modern web application designed to help authors organize and manage their creative writing projects. Author Tools provides a centralized platform for tracking characters, locations, and world-building details across multiple story universes and book series.
 
@@ -43,37 +43,6 @@ The application follows a client-server architecture where:
 - **[Zod](https://zod.dev/)**: TypeScript-first schema validation library for robust form and data validation
 - **[Clerk](https://clerk.com/)**: Complete authentication and user management solution with modern security practices
 
-## 📋 Prerequisites
-
-- **Node.js**: >= 22.0.0
-- **npm**: >= 10.8.2
-- **Backend API**: Running instance of [author-tools-backend](https://github.com/howardmat/author-tools-backend)
-
-## 🛠️ Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/howardmat/author-tools-frontend.git
-cd author-tools-frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Set up environment variables:
-```bash
-# Create a .env file in the root directory
-VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-VITE_API_URL=your_api_url
-```
-
-4. Start the development server:
-```bash
-npm run dev
-```
-
 ## 🔐 Authentication
 
 This application uses Clerk for authentication, providing:
@@ -98,6 +67,37 @@ Author Tools is fully responsive and optimized for:
 - Tablets
 - Mobile devices
 
+## 📋 Prerequisites
+
+- **Node.js**: >= 22.0.0
+- **npm**: >= 10.8.2
+- **Backend API**: Running instance of [author-tools-backend](https://github.com/howardmat/author-tools-backend)
+
+## 🚦 Getting Started
+
+1. Clone the repository:
+```bash
+git clone https://github.com/howardmat/author-tools-frontend.git
+cd author-tools-frontend
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables:
+```bash
+# Create a .env file in the root directory
+VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+VITE_API_URL=your_api_url
+```
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
 ## 🚀 Deployment
 
 This project is configured for deployment to Azure Static Web Apps with automated CI/CD via GitHub Actions.
@@ -109,13 +109,3 @@ This project is licensed under GNU General Public License v3.0 - see the COPYING
 ## 👤 Author
 
 Mat Howard - [GitHub Profile](https://github.com/howardmat)
-
-## 🔗 Related Projects
-
-- [Author Tools Backend](https://github.com/howardmat/author-tools-backend) - RESTful API for Author Tools
-
-## 🙏 Acknowledgments
-
-- Powered by [Vite](https://vite.dev/) and [React](https://react.dev/)
-- Built with [shadcn/ui](https://ui.shadcn.com/) component library
-- Icons by [Lucide](https://lucide.dev/)
