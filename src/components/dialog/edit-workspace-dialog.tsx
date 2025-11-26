@@ -39,11 +39,13 @@ import {
   Webhook,
 } from 'lucide-react';
 import { getWorkspaceIcon } from '@/lib/tsx-utils';
+import { Checkbox } from '../ui/checkbox';
 
 const FormSchema = z.object({
   name: z.string().min(1, 'A name is required'),
   description: z.string(),
   icon: z.string().min(1, 'An icon is required'),
+  isDefault: z.boolean(),
 });
 
 interface IEditWorkspaceDialogProps extends PropsWithChildren {
@@ -63,6 +65,7 @@ function EditWorkspaceDialog({
       name: workspace?.name || '',
       description: workspace?.description || '',
       icon: workspace?.icon || '',
+      isDefault: workspace?.isDefault || false,
     },
   });
 
@@ -97,6 +100,7 @@ function EditWorkspaceDialog({
       name: workspace?.name || '',
       description: workspace?.description || '',
       icon: workspace?.icon || '',
+      isDefault: workspace?.isDefault || false,
     });
   };
 
@@ -222,6 +226,21 @@ function EditWorkspaceDialog({
                     label='Icon'
                     placeholder='Select an icon'
                     options={iconOptions}
+                  />
+                </div>
+                <div className='grid grid-cols-1 items-center gap-4'>
+                  <FormField
+                    control={form.control}
+                    name='isDefault'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Default Workspace</FormLabel>
+                        <FormControl>
+                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
               </div>
