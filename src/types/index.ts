@@ -51,6 +51,7 @@ export interface IWorkspace {
   name: string;
   icon?: string;
   description?: string;
+  isDefault: boolean;
 }
 
 export interface IPatchRequest {

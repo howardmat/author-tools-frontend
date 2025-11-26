@@ -145,8 +145,11 @@ export default function WorkspaceSwitcher() {
 
   useEffect(() => {
     if (data?.length && activeWorkspace.id === DEFAULT_WORKSPACE_ID) {
-      setActiveWorkspace(data[0]);
-      setBreadcrumbWorkspace(data[0].name);
+      const defaultWorkspace = data.find((w) => w.isDefault === true);
+      const workspaceToSet = defaultWorkspace ?? data[0];
+      
+      setActiveWorkspace(workspaceToSet);
+      setBreadcrumbWorkspace(workspaceToSet.name);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
