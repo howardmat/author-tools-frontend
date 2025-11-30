@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from 'sonner';
 import LoadingIndicator from '../common/loading-indicator';
 import { SidebarMenu } from './sidebar/sidebar-menu';
 import { Separator } from '@/components/ui/separator';
@@ -72,7 +72,7 @@ export default function AuthenticatedLayout() {
           </SidebarProvider>
         </BreadcrumbContextProvider>
       </WorkspaceContextProvider>
-      <Toaster />
+      <Toaster richColors />
     </>
   );
 }

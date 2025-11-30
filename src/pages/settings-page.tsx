@@ -23,7 +23,7 @@ import { THEMES } from '@/lib/constants';
 import { useUserSettingsContext } from '@/store/user-settings/use-user-settings-context';
 import useBodyClass from '@/hooks/use-body-class';
 import { usePostUserSettingMutation, usePutUserSettingMutation } from '@/http';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 const FormSchema = z.object({
   theme: z.enum(
@@ -77,17 +77,13 @@ export default function SettingsPage() {
   }, [userSettingsState.userSetting.theme]);
 
   const onSuccessHandler = () => {
-    toast({
-      title: 'Awesome!',
+    toast.success('Awesome!', {
       description: 'Your settings have been saved',
-      variant: 'success',
     });
   };
   const onErrorHandler = (error?: Error) => {
-    toast({
-      title: 'Error!',
+    toast.error('Oops!', {
       description: error?.message ?? 'An unexpected error occurred.',
-      variant: 'destructive',
     });
   };
 

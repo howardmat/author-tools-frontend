@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { SubmitHandler } from 'react-hook-form';
 import LoadingIndicator from '@/components/common/loading-indicator';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import { BreadcrumbActionTypes, SetBreadcrumbTrailAction } from '@/actions';
@@ -30,7 +30,6 @@ export default function UpdateEntityPage({
   entityName,
   breadcrumbTitle,
 }: IUpdateEntityPageProps) {
-  const { toast } = useToast();
   const [entityState, setEntityState] = useState<IEntity | null>(null);
   const { dispatch } = useBreadcrumbContext();
 
@@ -62,18 +61,14 @@ export default function UpdateEntityPage({
 
   const { mutate, isPending: isPutPending } = usePutEntityMutation(entityType, {
     onSuccess: (entity) => {
-      toast({
-        title: 'Awesome!',
+      toast.success('Awesome!', {
         description: `Your ${entityName} has been saved`,
-        variant: 'success',
       });
       setEntityState(entity);
     },
     onError: (error?: Error) => {
-      toast({
-        title: 'Error!',
+      toast.error('Oops!', {
         description: error?.message ?? 'An unexpected error occurred.',
-        variant: 'destructive',
       });
     },
   });
