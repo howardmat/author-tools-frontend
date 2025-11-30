@@ -6,7 +6,7 @@ import LoadingIndicator from '@/components/common/loading-indicator';
 import { BreadcrumbActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import { EntityQueryType, IEntity } from '@/types';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import ConfirmAlert, { IConfirmAlert } from '@/components/common/confirm-alert';
 import {
   useDeleteEntityMutation,
@@ -60,17 +60,13 @@ export default function EntityListPage({
 
   const { mutate } = useDeleteEntityMutation(entityType, {
     onSuccess: () => {
-      toast({
-        title: 'Success!',
+      toast.success('Success!', {
         description: `Successfully deleted the ${entityName}`,
-        variant: 'success',
       });
     },
     onError: (error?: Error) => {
-      toast({
-        title: 'Error!',
+      toast.error('Oops!', {
         description: error?.message ?? 'An unexpected error occurred',
-        variant: 'destructive',
       });
     },
   });
@@ -94,12 +90,10 @@ export default function EntityListPage({
 
   const { mutate: patchMutate } = usePatchEntityMutation(entityType, {
     onError: (error?: Error) => {
-      toast({
-        title: 'Error!',
+      toast.error('Oops!', {
         description:
           error?.message ??
           'An unexpected error occurred while updating the order',
-        variant: 'destructive',
       });
     },
   });

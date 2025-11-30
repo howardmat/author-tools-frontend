@@ -5,7 +5,7 @@ import { UserCircleIcon } from '@heroicons/react/20/solid';
 import { usePostFileMutation } from '@/http';
 import { FormField } from '../ui/form';
 import { Input } from '../ui/input';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import styles from './avatar-upload.module.css';
 import EditOverlay from '../common/edit-overlay';
 
@@ -16,7 +16,6 @@ interface IAvatarUploadProps {
 }
 
 export default function AvatarUpload({ name }: IAvatarUploadProps) {
-  const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const form = useFormContext();
   const [fileId, setFileId] = useState<string | undefined>(
@@ -31,10 +30,8 @@ export default function AvatarUpload({ name }: IAvatarUploadProps) {
       }
     },
     onError: (error: Error) => {
-      toast({
-        title: 'Error!',
+      toast.error('Oops!', {
         description: error?.message ?? 'An unexpected error occurred',
-        variant: 'destructive',
       });
     },
   });

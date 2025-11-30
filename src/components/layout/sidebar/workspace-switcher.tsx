@@ -31,7 +31,7 @@ import {
   usePutWorkspaceMutation,
 } from '@/http';
 import styles from './workspace-switcher.module.css';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 import { DEFAULT_WORKSPACE_ID } from '@/lib/constants';
 import { useWorkspaceContext } from '@/store/workspace/use-workspace-context';
@@ -63,26 +63,20 @@ export default function WorkspaceSwitcher() {
   const { mutate: postMutate, isPending: postPending } =
     usePostWorkspaceMutation({
       onSuccess: () => {
-        toast({
-          title: 'Awesome!',
+        toast.success('Awesome!', {
           description: 'The workspace was created',
-          variant: 'success',
         });
       },
       onError: (error?: Error) => {
-        toast({
-          title: 'Error!',
+        toast.error('Oops!', {
           description: error?.message ?? 'An unexpected error occurred',
-          variant: 'destructive',
         });
       },
     });
   const { mutate: putMutate, isPending: putPending } = usePutWorkspaceMutation({
     onSuccess: (workspace) => {
-      toast({
-        title: 'Awesome!',
+      toast.success('Awesome!', {
         description: 'The workspace was updated',
-        variant: 'success',
       });
 
       if (workspace.id === activeWorkspace.id) {
@@ -91,20 +85,16 @@ export default function WorkspaceSwitcher() {
       }
     },
     onError: (error?: Error) => {
-      toast({
-        title: 'Error!',
+      toast.error('Oops!', {
         description: error?.message ?? 'An unexpected error occurred',
-        variant: 'destructive',
       });
     },
   });
   const { mutate: deleteMutate, isPending: deletePending } =
     useDeleteWorkspaceMutation({
       onSuccess: (deletedId) => {
-        toast({
-          title: 'Awesome!',
+        toast.success('Awesome!', {
           description: 'The workspace was deleted',
-          variant: 'success',
         });
 
         if (deletedId === activeWorkspace.id && data) {
@@ -116,10 +106,8 @@ export default function WorkspaceSwitcher() {
         }
       },
       onError: (error?: Error) => {
-        toast({
-          title: 'Error!',
+        toast.error('Oops!', {
           description: error?.message ?? 'An unexpected error occurred',
-          variant: 'destructive',
         });
       },
     });

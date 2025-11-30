@@ -1,6 +1,6 @@
 import { SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { useEffect } from 'react';
 import { BreadcrumbActionTypes, SetBreadcrumbTrailAction } from '@/actions';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
@@ -27,7 +27,6 @@ export default function AddEntityPage({
   breadcrumbTitle,
 }: IAddEntityPageProps) {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { dispatch } = useBreadcrumbContext();
 
   breadcrumbTitle = breadcrumbTitle || title;
@@ -47,18 +46,14 @@ export default function AddEntityPage({
 
   const { mutate, isPending } = usePostEntityMutation(entityType, {
     onSuccess: (entity) => {
-      toast({
-        title: 'Awesome!',
+      toast.success('Awesome!',{
         description: `Your ${entityName} is ready to be edited.`,
-        variant: 'success',
       });
       navigate(`${entityBaseUrl}/${entity.id}/edit`);
     },
     onError: (error?: Error) => {
-      toast({
-        title: 'Error!',
+      toast.error('Oops!', {
         description: error?.message ?? 'An unexpected error occurred',
-        variant: 'destructive',
       });
     },
   });
