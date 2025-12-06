@@ -1,5 +1,4 @@
-import { useForm } from 'react-hook-form';
-import { Form } from '../ui/form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import AvatarUpload from './avatar-upload';
@@ -51,7 +50,7 @@ export default function HeaderDetailForm({
   }
 
   return (
-    <Form {...form}>
+    <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className='my-4 lg:flex lg:content-stretch gap-8 h-full'>
           <AvatarUpload name='imageFileId' />
@@ -62,6 +61,6 @@ export default function HeaderDetailForm({
           />
         </div>
       </form>
-    </Form>
+    </FormProvider>
   );
 }

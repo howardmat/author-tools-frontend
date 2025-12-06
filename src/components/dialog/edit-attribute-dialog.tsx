@@ -9,23 +9,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../ui/form';
 import { PlusCircleIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { Input } from '../ui/input';
 import { z } from 'zod';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IAttribute } from '@/types';
-import { PropsWithChildren, useRef } from 'react';
+import { PropsWithChildren, useRef, useState } from 'react';
 import { newId } from '@/lib/utils';
 import ConfirmAlert, { IConfirmAlert } from '../common/confirm-alert';
+import { Field, FieldError, FieldLabel } from '../ui/field';
 
 interface IEditAttributeDialogProps extends PropsWithChildren {
   addMode?: boolean;
@@ -62,7 +55,7 @@ export default function EditAttributeDialog({
     },
   });
 
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState<boolean>(false);
 
   const alertRef = useRef<IConfirmAlert>(null);
   const handleDeleteClick = (id: string) => {
@@ -79,20 +72,22 @@ export default function EditAttributeDialog({
     }
   };
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+  function onSubmit(data: z.infer<typeof FormSchema>) {
     if (attribute) onSave({ ...attribute, ...data });
     else onSave({ ...data, id: newId() });
 
-    if (closeButtonRef.current) closeButtonRef.current.click();
+    setOpen(false);
   };
 
   const handleOpenChange = (open: boolean) => {
-    if (open) return;
+    setOpen(open);
 
-    form.reset({
-      label: attribute?.label || '',
-      value: attribute?.value || '',
-    });
+    if (!open){
+      form.reset({
+        label: attribute?.label || '',
+        value: attribute?.value || '',
+      });
+    }
   };
 
   const title = addMode ? 'Add a new attribute' : 'Edit the attribute';
@@ -111,7 +106,7 @@ export default function EditAttributeDialog({
   );
 
   return (
-    <Dialog onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{buttonContent}</DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
@@ -119,69 +114,75 @@ export default function EditAttributeDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <div>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
-              <div className='grid gap-4 py-4'>
-                <div className='grid grid-cols-1 items-center gap-4'>
-                  <FormField
-                    control={form.control}
-                    name='label'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Label</FormLabel>
-                        <FormControl>
-                          <Input placeholder='Eg. Age' {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+            <div className='grid gap-4 py-4'>
+              <div className='grid grid-cols-1 items-center gap-4'>
+                <Controller
+                  control={form.control}
+                  name='label'
+                  render={({ field, fieldState }) => (
+                    <Field>
+                      <FieldLabel htmlFor="form-label">Label</FieldLabel>
+                      <Input 
+                        {...field}
+                        id="form-label"
+                        aria-invalid={fieldState.invalid}
+                        placeholder='Eg. Age'
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </div>
+              <div className='grid grid-cols-1 items-center gap-4'>
+                <Controller
+                  control={form.control}
+                  name='value'
+                  render={({ field, fieldState }) => (
+                    <Field>
+                      <FieldLabel htmlFor="form-value">Value</FieldLabel>
+                      <Input 
+                        {...field}
+                        id="form-value" 
+                        aria-invalid={fieldState.invalid}
+                        placeholder='Eg. 23' />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                    </Field>
+                  )}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <div className='flex flex-1 justify-between gap-2'>
+                <div>
+                  {!addMode && (
+                    <Button
+                      type='button'
+                      variant='destructive'
+                      onClick={() => handleDeleteClick(attribute?.id || '')}
+                    >
+                      <TrashIcon />
+                    </Button>
+                  )}
                 </div>
-                <div className='grid grid-cols-1 items-center gap-4'>
-                  <FormField
-                    control={form.control}
-                    name='value'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Value</FormLabel>
-                        <FormControl>
-                          <Input placeholder='Eg. 23' {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <div className='flex gap-2'>
+                  <Button type='submit'>Save</Button>
+                  <DialogClose asChild>
+                    <Button
+                      type='button'
+                      variant='secondary'
+                    >
+                      Cancel
+                    </Button>
+                  </DialogClose>
                 </div>
               </div>
-              <DialogFooter>
-                <div className='flex flex-1 justify-between gap-2'>
-                  <div>
-                    {!addMode && (
-                      <Button
-                        type='button'
-                        variant='destructive'
-                        onClick={() => handleDeleteClick(attribute?.id || '')}
-                      >
-                        <TrashIcon />
-                      </Button>
-                    )}
-                  </div>
-                  <div className='flex gap-2'>
-                    <Button type='submit'>Save</Button>
-                    <DialogClose asChild>
-                      <Button
-                        ref={closeButtonRef}
-                        type='button'
-                        variant='secondary'
-                      >
-                        Cancel
-                      </Button>
-                    </DialogClose>
-                  </div>
-                </div>
-              </DialogFooter>
-            </form>
-          </Form>
+            </DialogFooter>
+          </form>
           <ConfirmAlert ref={alertRef} />
         </div>
       </DialogContent>
