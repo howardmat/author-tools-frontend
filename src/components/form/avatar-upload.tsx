@@ -1,8 +1,7 @@
 import { useRef, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { LoaderCircle } from 'lucide-react';
 import { UserCircleIcon } from '@heroicons/react/20/solid';
-import { FormField } from '../ui/form';
 import { Input } from '../ui/input';
 import { toast } from 'sonner';
 import styles from './avatar-upload.module.css';
@@ -83,7 +82,7 @@ export default function AvatarUpload({ name }: IAvatarUploadProps) {
         onChange={handleChange}
         ref={fileInputRef}
       />
-      <FormField
+      <Controller
         control={form.control}
         name={name}
         render={({ field }) => <Input className='hidden' {...field} />}

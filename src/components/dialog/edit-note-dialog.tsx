@@ -9,19 +9,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../ui/form';
 import { z } from 'zod';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PropsWithChildren, useRef } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import { Textarea } from '../ui/textarea';
+import { Field, FieldError, FieldLabel } from '../ui/field';
 
 interface IEditNoteDialogProps extends PropsWithChildren {
   currentNoteContent?: string | null;
@@ -42,23 +35,24 @@ function EditNoteDialog({
     },
   });
 
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState<boolean>(false);
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     onSave(data.noteContent);
     form.resetField('noteContent', { defaultValue: data.noteContent });
 
-    if (closeButtonRef.current) closeButtonRef.current.click();
+    setOpen(false);
   };
 
   const handleOpenChange = (open: boolean) => {
-    if (open) return;
+    setOpen(open);
 
-    form.reset(undefined, { keepDefaultValues: true });
+    if (!open)
+      form.reset(undefined, { keepDefaultValues: true });
   };
 
   return (
-    <Dialog onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger ref={ref} asChild>
         {children}
       </DialogTrigger>
@@ -70,44 +64,45 @@ function EditNoteDialog({
           </DialogDescription>
         </DialogHeader>
         <div>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className='space-y-6'
-            >
-              <div className='grid gap-4 py-4'>
-                <div className='grid grid-cols-1 items-center gap-4'>
-                  <FormField
-                    control={form.control}
-                    name='noteContent'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Content</FormLabel>
-                        <FormControl>
-                          <Textarea {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className='space-y-6'
+          >
+            <div className='grid gap-4 py-4'>
+              <div className='grid grid-cols-1 items-center gap-4'>
+                <Controller
+                  control={form.control}
+                  name='noteContent'
+                  render={({ field, fieldState }) => (
+                    <Field>
+                      <FieldLabel htmlFor="form-content">Content</FieldLabel>
+                      <Textarea 
+                        {...field}
+                        id="form-content"
+                        aria-invalid={fieldState.invalid}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
               </div>
-              <DialogFooter>
-                <div className='flex gap-2'>
-                  <Button type='submit'>Save</Button>
-                  <DialogClose asChild>
-                    <Button
-                      ref={closeButtonRef}
-                      type='button'
-                      variant='secondary'
-                    >
-                      Cancel
-                    </Button>
-                  </DialogClose>
-                </div>
-              </DialogFooter>
-            </form>
-          </Form>
+            </div>
+            <DialogFooter>
+              <div className='flex gap-2'>
+                <Button type='submit'>Save</Button>
+                <DialogClose asChild>
+                  <Button
+                    type='button'
+                    variant='secondary'
+                  >
+                    Cancel
+                  </Button>
+                </DialogClose>
+              </div>
+            </DialogFooter>
+          </form>
         </div>
       </DialogContent>
     </Dialog>

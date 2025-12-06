@@ -7,22 +7,16 @@ import {
 import PageHeading from '@/components/common/page-heading';
 import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import { useEffect } from 'react';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { THEMES } from '@/lib/constants';
 import { useUserSettingsContext } from '@/store/user-settings/use-user-settings-context';
 import useBodyClass from '@/hooks/use-body-class';
 import { toast } from 'sonner';
+import { FieldError } from '@/components/ui/field';
+import { Label } from '@/components/ui/label';
 import { usePostUserSettingMutation, usePutUserSettingMutation } from '@/hooks/use-usersetting-query';
 
 const FormSchema = z.object({
@@ -132,61 +126,42 @@ export default function SettingsPage() {
             Theme
           </h4>
           <div className='leading-7 [&:not(:first-child)]:mt-6 ml-2'>
-            <Form {...form}>
-              <form className='w-2/3 space-y-6'>
-                <FormField
-                  control={form.control}
-                  name='theme'
-                  render={({ field }) => (
-                    <FormItem className='space-y-3'>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={handleThemeChange}
-                          defaultValue={field.value}
-                          className='flex flex-col space-y-1'
-                        >
-                          <FormItem className='flex items-center space-x-3 space-y-0'>
-                            <FormControl>
-                              <RadioGroupItem value={THEMES.LIGHT} />
-                            </FormControl>
-                            <FormLabel className='font-normal'>Light</FormLabel>
-                          </FormItem>
-                          <FormItem className='flex items-center space-x-3 space-y-0'>
-                            <FormControl>
-                              <RadioGroupItem value={THEMES.DARK} />
-                            </FormControl>
-                            <FormLabel className='font-normal'>Dark</FormLabel>
-                          </FormItem>
-                          <FormItem className='flex items-center space-x-3 space-y-0'>
-                            <FormControl>
-                              <RadioGroupItem value={THEMES.DARK_ORANGE} />
-                            </FormControl>
-                            <FormLabel className='font-normal'>
-                              Orange
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className='flex items-center space-x-3 space-y-0'>
-                            <FormControl>
-                              <RadioGroupItem value={THEMES.DARK_BLUE} />
-                            </FormControl>
-                            <FormLabel className='font-normal'>Blue</FormLabel>
-                          </FormItem>
-                          <FormItem className='flex items-center space-x-3 space-y-0'>
-                            <FormControl>
-                              <RadioGroupItem value={THEMES.DARK_VIOLET} />
-                            </FormControl>
-                            <FormLabel className='font-normal'>
-                              Violet
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </form>
-            </Form>
+            <form className='w-2/3 space-y-6'>
+              <Controller
+                control={form.control}
+                name='theme'
+                render={({ field, fieldState }) => (
+                  <RadioGroup
+                    onValueChange={handleThemeChange}
+                    defaultValue={field.value}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem id="option-light" value={THEMES.LIGHT} />
+                      <Label htmlFor="option-light">Light</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem id="option-dark" value={THEMES.DARK} />
+                      <Label htmlFor="option-dark">Dark</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem id="option-dark-orange" value={THEMES.DARK_ORANGE} />
+                      <Label htmlFor="option-dark-orange">Orange</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem id="option-dark-blue" value={THEMES.DARK_BLUE} />
+                      <Label htmlFor="option-dark-blue">Blue</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem id="option-dark-violet" value={THEMES.DARK_VIOLET} />
+                      <Label htmlFor="option-dark-violet">Violet</Label>
+                    </div>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </RadioGroup>
+                )}
+              />
+            </form>
           </div>
         </div>
       </div>

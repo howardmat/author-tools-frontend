@@ -11,21 +11,12 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MouseEvent, PropsWithChildren, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import { MouseEvent, PropsWithChildren, useRef, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../ui/form';
 import { TrashIcon } from '@heroicons/react/20/solid';
 import { IWorkspace } from '@/types';
 import ConfirmAlert, { IConfirmAlert } from '../common/confirm-alert';
-import ComboBox from '../ui/combobox';
 import {
   Activity,
   Anvil,
@@ -40,6 +31,9 @@ import {
 } from 'lucide-react';
 import { getWorkspaceIcon } from '@/lib/tsx-utils';
 import { Checkbox } from '../ui/checkbox';
+import { Field, FieldError, FieldLabel } from '../ui/field';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Label } from '../ui/label';
 
 const FormSchema = z.object({
   name: z.string().min(1, 'A name is required'),
@@ -69,7 +63,7 @@ function EditWorkspaceDialog({
     },
   });
 
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState<boolean>(false);
 
   const alertRef = useRef<IConfirmAlert>(null);
   const handleDeleteClick = (id: string) => {
@@ -90,18 +84,20 @@ function EditWorkspaceDialog({
     if (workspace) onSave({ ...workspace, ...data });
     else onSave({ ...data, id: '' });
 
-    if (closeButtonRef.current) closeButtonRef.current.click();
+    setOpen(false);
   };
 
   const handleOpenChange = (open: boolean) => {
-    if (open) return;
+    setOpen(open);
 
-    form.reset({
-      name: workspace?.name || '',
-      description: workspace?.description || '',
-      icon: workspace?.icon || '',
-      isDefault: workspace?.isDefault || false,
-    });
+    if (!open){
+      form.reset({
+        name: workspace?.name || '',
+        description: workspace?.description || '',
+        icon: workspace?.icon || '',
+        isDefault: workspace?.isDefault || false,
+      });
+    }
   };
 
   const title = addMode ? 'Add a new workspace' : 'Edit the workspace';
@@ -109,41 +105,6 @@ function EditWorkspaceDialog({
     (addMode
       ? 'Create your new workspace here.'
       : 'Update your workspace here.') + " Click save when you're done.";
-
-  const iconOptions = [
-    { code: 'activity', value: 'activity', displayValue: <Activity /> },
-    {
-      code: 'anvil',
-      value: 'anvil',
-      displayValue: <Anvil />,
-    },
-    {
-      code: 'aperture',
-      value: 'aperture',
-      displayValue: <Aperture />,
-    },
-    { code: 'atom', value: 'atom', displayValue: <Atom /> },
-    {
-      code: 'biohazard',
-      value: 'biohazard',
-      displayValue: <Biohazard />,
-    },
-    {
-      code: 'bird',
-      value: 'bird',
-      displayValue: <Bird />,
-    },
-    {
-      code: 'component',
-      value: 'component',
-      displayValue: <Component />,
-    },
-    {
-      code: 'webhook',
-      value: 'webhook',
-      displayValue: <Webhook />,
-    },
-  ];
 
   const triggerContent = addMode ? (
     <div
@@ -176,7 +137,7 @@ function EditWorkspaceDialog({
   );
 
   return (
-    <Dialog onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger ref={ref} asChild>
         {triggerContent}
       </DialogTrigger>
@@ -186,60 +147,91 @@ function EditWorkspaceDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <div>
-          <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
               <div className='grid gap-4 py-4'>
                 <div className='grid grid-cols-1 items-center gap-4'>
-                  <FormField
+                  <Controller
                     control={form.control}
                     name='name'
                     defaultValue={workspace?.name || ''}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder='' {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                    render={({ field, fieldState }) => (
+                      <Field>
+                        <FieldLabel htmlFor="form-name">Name</FieldLabel>
+                        <Input
+                          {...field} 
+                          placeholder=''
+                          id="form-name"
+                          aria-invalid={fieldState.invalid} 
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
                     )}
                   />
                 </div>
                 <div className='grid grid-cols-1 items-center gap-4'>
-                  <FormField
+                  <Controller
                     control={form.control}
                     name='description'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Description</FormLabel>
-                        <FormControl>
-                          <Input placeholder='' {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                    render={({ field, fieldState }) => (
+                      <Field>
+                        <FieldLabel htmlFor="form-description">Description</FieldLabel>
+                        <Input 
+                          {...field}
+                          placeholder=''  
+                          id="form-description"
+                          aria-invalid={fieldState.invalid}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
                     )}
                   />
                 </div>
                 <div className='grid grid-cols-1 items-center gap-4'>
-                  <ComboBox
+                  <Controller
+                    control={form.control}
                     name='icon'
-                    label='Icon'
-                    placeholder='Select an icon'
-                    options={iconOptions}
+                    render={({ field, fieldState }) => (
+                      <Field>
+                        <FieldLabel htmlFor="form-icon">Icon</FieldLabel>
+                        <Select value={field.value} onValueChange={field.onChange}>
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Icon" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="activity"><Activity /></SelectItem>
+                            <SelectItem value="anvil"><Anvil /></SelectItem>
+                            <SelectItem value="aperture"><Aperture /></SelectItem>
+                            <SelectItem value="atom"><Atom /></SelectItem>
+                            <SelectItem value="biohazard"><Biohazard /></SelectItem>
+                            <SelectItem value="bird"><Bird /></SelectItem>
+                            <SelectItem value="component"><Component /></SelectItem>
+                            <SelectItem value="webhook"><Webhook /></SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
                   />
                 </div>
                 <div className='grid grid-cols-1 items-center gap-4'>
-                  <FormField
+                  <Controller
                     control={form.control}
                     name='isDefault'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Default Workspace</FormLabel>
-                        <FormControl>
-                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                    render={({ field, fieldState }) => (
+                      <div className="flex items-center gap-3">
+                        <Checkbox 
+                          id="form-isDefault"
+                          checked={field.value} 
+                          onCheckedChange={field.onChange}
+                          aria-invalid={fieldState.invalid}  />
+                        <Label htmlFor="form-isDefault">Default Workspace</Label>
+                      </div>
                     )}
                   />
                 </div>
@@ -261,7 +253,6 @@ function EditWorkspaceDialog({
                     <Button type='submit'>Save</Button>
                     <DialogClose asChild>
                       <Button
-                        ref={closeButtonRef}
                         type='button'
                         variant='secondary'
                       >
@@ -272,7 +263,6 @@ function EditWorkspaceDialog({
                 </div>
               </DialogFooter>
             </form>
-          </Form>
           <ConfirmAlert ref={alertRef} />
         </div>
       </DialogContent>
