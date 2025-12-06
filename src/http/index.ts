@@ -1,5 +1,3 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useAuth } from '@clerk/clerk-react';
 import {
   IEntity,
   IDeleteEntityParams,
@@ -7,7 +5,6 @@ import {
   IPostEntityParams,
   IPutEntityParams,
   IPatchEntityParams,
-  IUseMutationCallbacksWithParams,
   IUserSetting,
   IGetUserSettingParams,
   IPostUserSettingParams,
@@ -19,9 +16,9 @@ import {
   IPostWorkspaceParams,
   IPutWorkspaceParams,
   IDeleteWorkspaceParams,
+  IGetWorkspaceParams,
 } from '@/types';
-import { queryClient } from '@/http/query-client';
-import { API_ENDPOINTS, JWT_TEMPLATE, QUERY_KEYS } from '../lib/constants';
+import { API_ENDPOINTS } from '../lib/constants';
 
 /* Common Entities */
 export async function getEntities({
@@ -165,19 +162,7 @@ const getEntityEndpointByQueryType = (type: EntityQueryType) => {
 };
 
 /* User Settings */
-export function useGetUserSettingQuery() {
-  const { getToken, userId } = useAuth();
-
-  return useQuery({
-    queryKey: [QUERY_KEYS.USER_SETTINGS, userId],
-    queryFn: async ({ signal }) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await getUserSetting({ signal, token });
-    },
-  });
-}
-
-async function getUserSetting({
+export async function getUserSetting({
   signal,
   token,
 }: IGetUserSettingParams): Promise<IUserSetting> {
@@ -196,28 +181,7 @@ async function getUserSetting({
   return (await response.json()) as IUserSetting;
 }
 
-export function usePostUserSettingMutation({
-  onSuccess,
-  onError,
-}: IUseMutationCallbacksWithParams<IUserSetting>) {
-  const { getToken } = useAuth();
-
-  return useMutation({
-    mutationFn: async (userSetting: IUserSetting) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await postUserSetting({ userSetting, token });
-    },
-    onError: (error) => {
-      if (onError) onError(error);
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER_SETTINGS] });
-      if (onSuccess) onSuccess(data);
-    },
-  });
-}
-
-async function postUserSetting({
+export async function postUserSetting({
   userSetting,
   token,
 }: IPostUserSettingParams): Promise<IUserSetting> {
@@ -240,53 +204,7 @@ async function postUserSetting({
   return await response.json();
 }
 
-export function usePutUserSettingMutation({
-  onSuccess,
-  onError,
-}: IUseMutationCallbacksWithParams<IUserSetting>) {
-  const { getToken, userId } = useAuth();
-
-  return useMutation({
-    mutationFn: async ({
-      userSetting,
-      id,
-    }: {
-      userSetting: IUserSetting;
-      id: string;
-    }) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await putUserSetting({ id, userSetting, token });
-    },
-    onMutate: async (data: IPutUserSettingParams) => {
-      const userSetting = data.userSetting;
-
-      await queryClient.cancelQueries({
-        queryKey: [QUERY_KEYS.USER_SETTINGS, userId],
-      });
-      const previousData = queryClient.getQueryData([
-        QUERY_KEYS.USER_SETTINGS,
-        userId,
-      ]);
-      queryClient.setQueryData([QUERY_KEYS.USER_SETTINGS, userId], userSetting);
-
-      return { previousData };
-    },
-    onError: (error, _variables, context) => {
-      queryClient.setQueryData([QUERY_KEYS.USER_SETTINGS, userId], context);
-
-      if (onError) onError(error);
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.USER_SETTINGS],
-      });
-
-      if (onSuccess) onSuccess(data);
-    },
-  });
-}
-
-async function putUserSetting({
+export async function putUserSetting({
   id,
   userSetting,
   token,
@@ -311,19 +229,7 @@ async function putUserSetting({
 }
 
 /* Workspaces */
-export function useGetWorkspacesQuery() {
-  const { getToken, userId } = useAuth();
-
-  return useQuery({
-    queryKey: [QUERY_KEYS.WORKSPACES, userId],
-    queryFn: async ({ signal }) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await getWorkspaces({ signal, token });
-    },
-  });
-}
-
-async function getWorkspaces({
+export async function getWorkspaces({
   signal,
   token,
 }: IGetWorkspacesParams): Promise<IWorkspace[]> {
@@ -340,28 +246,25 @@ async function getWorkspaces({
   return (await response.json()) as IWorkspace[];
 }
 
-export function usePostWorkspaceMutation({
-  onSuccess,
-  onError,
-}: IUseMutationCallbacksWithParams<IWorkspace>) {
-  const { getToken } = useAuth();
-
-  return useMutation({
-    mutationFn: async (workspace: IWorkspace) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await postWorkspace({ workspace, token });
-    },
-    onError: (error) => {
-      if (onError) onError(error);
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.WORKSPACES] });
-      if (onSuccess) onSuccess(data);
-    },
+export async function getWorkspace({
+  id,
+  signal,
+  token,
+}: IGetWorkspaceParams): Promise<IWorkspace> {
+  const response = await fetch(API_ENDPOINTS.WORKSPACE + `/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+    signal: signal,
   });
+
+  if (!response.ok) {
+    const error = new Error('An error occurred while fetching the workspaces');
+    throw error;
+  }
+
+  return (await response.json()) as IWorkspace;
 }
 
-async function postWorkspace({
+export async function postWorkspace({
   workspace,
   token,
 }: IPostWorkspaceParams): Promise<IWorkspace> {
@@ -382,56 +285,7 @@ async function postWorkspace({
   return await response.json();
 }
 
-export function usePutWorkspaceMutation({
-  onSuccess,
-  onError,
-}: IUseMutationCallbacksWithParams<IWorkspace>) {
-  const { getToken } = useAuth();
-
-  return useMutation({
-    mutationFn: async ({
-      workspace,
-      id,
-    }: {
-      workspace: IWorkspace;
-      id: string;
-    }) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await putWorkspace({ id, workspace, token });
-    },
-    onMutate: async (data: IPutWorkspaceParams) => {
-      const workspace = data.workspace;
-
-      await queryClient.cancelQueries({
-        queryKey: [QUERY_KEYS.WORKSPACES, workspace.id],
-      });
-      const previousData = queryClient.getQueryData([
-        QUERY_KEYS.WORKSPACES,
-        workspace.id,
-      ]);
-      queryClient.setQueryData(
-        [QUERY_KEYS.WORKSPACES, workspace.id],
-        workspace
-      );
-
-      return { previousData };
-    },
-    onError: (error, variables, context) => {
-      queryClient.setQueryData([QUERY_KEYS.WORKSPACES, variables.id], context);
-
-      if (onError) onError(error);
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: [QUERY_KEYS.WORKSPACES],
-      });
-
-      if (onSuccess) onSuccess(data);
-    },
-  });
-}
-
-async function putWorkspace({
+export async function putWorkspace({
   id,
   workspace,
   token,
@@ -453,28 +307,7 @@ async function putWorkspace({
   return await response.json();
 }
 
-export function useDeleteWorkspaceMutation({
-  onSuccess,
-  onError,
-}: IUseMutationCallbacksWithParams<string>) {
-  const { getToken } = useAuth();
-
-  return useMutation({
-    mutationFn: async (id: string) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      await deleteWorkspace({ id, token });
-    },
-    onError: (error) => {
-      if (onError) onError(error);
-    },
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.WORKSPACES] });
-      if (onSuccess) onSuccess(variables);
-    },
-  });
-}
-
-async function deleteWorkspace({ id, token }: IDeleteWorkspaceParams) {
+export async function deleteWorkspace({ id, token }: IDeleteWorkspaceParams) {
   const response = await fetch(API_ENDPOINTS.WORKSPACE + `/${id}`, {
     method: 'DELETE',
     headers: {
@@ -503,39 +336,8 @@ async function deleteWorkspace({ id, token }: IDeleteWorkspaceParams) {
   }
 }
 
-export function invalidateEntityQueries(workspaceId: string) {
-  queryClient.invalidateQueries({
-    queryKey: [QUERY_KEYS.CHARACTERS, workspaceId],
-  });
-  queryClient.invalidateQueries({
-    queryKey: [QUERY_KEYS.CREATURES, workspaceId],
-  });
-  queryClient.invalidateQueries({
-    queryKey: [QUERY_KEYS.LOCATIONS, workspaceId],
-  });
-}
-
 /* Files */
-export function usePostFileMutation({
-  onSuccess,
-  onError,
-}: {
-  onSuccess: (fileId: string | undefined) => void;
-  onError: (error: Error) => void;
-}) {
-  const { getToken } = useAuth();
-
-  return useMutation({
-    mutationFn: async (formData: FormData) => {
-      const token = (await getToken({ template: JWT_TEMPLATE })) || '';
-      return await postFile({ formData, token });
-    },
-    onSuccess: onSuccess,
-    onError: onError,
-  });
-}
-
-async function postFile({
+export async function postFile({
   formData,
   token,
 }: {

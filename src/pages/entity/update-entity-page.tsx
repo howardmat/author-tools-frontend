@@ -14,6 +14,8 @@ import {
   useGetEntityQuery,
   usePutEntityMutation,
 } from '@/hooks/use-entity-query';
+import { useGetActiveWorkspace, useSetActiveWorkspace } from '@/hooks/use-workspace';
+import { useGetWorkspaceQuery } from '@/hooks/use-workspace-query';
 
 interface IUpdateEntityPageProps {
   entityType: EntityQueryType;
@@ -32,6 +34,9 @@ export default function UpdateEntityPage({
 }: IUpdateEntityPageProps) {
   const [entityState, setEntityState] = useState<IEntity | null>(null);
   const { dispatch } = useBreadcrumbContext();
+
+  const activeWorkspace = useGetActiveWorkspace();
+  const setActiveWorkspace = useSetActiveWorkspace();
 
   breadcrumbTitle = breadcrumbTitle || title;
   entityName = entityName || title;
@@ -52,12 +57,17 @@ export default function UpdateEntityPage({
   const entityId = params['id'] || '';
 
   const { data, isPending } = useGetEntityQuery(entityType, entityId);
+  const { data: workspaceData } = useGetWorkspaceQuery(data?.workspaceId || '');
 
   useEffect(() => {
     if (data) {
       setEntityState(data);
+
+      if (data.workspaceId !== activeWorkspace.id && workspaceData) {
+        setActiveWorkspace(workspaceData);
+      }
     }
-  }, [data]);
+  }, [data, activeWorkspace.id, workspaceData, setActiveWorkspace]);
 
   const { mutate, isPending: isPutPending } = usePutEntityMutation(entityType, {
     onSuccess: (entity) => {

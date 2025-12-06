@@ -12,12 +12,12 @@ import {
 } from '@/components/ui/sidebar';
 import AppBreadcrumb from './app-breadcrumb';
 import BreadcrumbContextProvider from '@/store/breadcrumb/breadcrumb-context-provider';
-import { useGetUserSettingQuery } from '@/http';
 import { SetUserSettingsAction, UserSettingsActionTypes } from '@/actions';
 import { useUserSettingsContext } from '@/store/user-settings/use-user-settings-context';
 import useBodyClass from '@/hooks/use-body-class';
 import { THEMES } from '@/lib/constants';
 import WorkspaceContextProvider from '@/store/workspace/workspace-context-provider';
+import { useGetUserSettingQuery } from '@/hooks/use-usersetting-query';
 
 export default function AuthenticatedLayout() {
   const { userId, isLoaded } = useAuth();
