@@ -2,12 +2,12 @@ import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { LoaderCircle } from 'lucide-react';
 import { UserCircleIcon } from '@heroicons/react/20/solid';
-import { usePostFileMutation } from '@/http';
 import { FormField } from '../ui/form';
 import { Input } from '../ui/input';
 import { toast } from 'sonner';
 import styles from './avatar-upload.module.css';
 import EditOverlay from '../common/edit-overlay';
+import { usePostFileMutation } from '@/hooks/use-file-query';
 
 const API_URL = import.meta.env.VITE_API_URL;
 

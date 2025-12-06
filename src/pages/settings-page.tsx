@@ -22,8 +22,8 @@ import { z } from 'zod';
 import { THEMES } from '@/lib/constants';
 import { useUserSettingsContext } from '@/store/user-settings/use-user-settings-context';
 import useBodyClass from '@/hooks/use-body-class';
-import { usePostUserSettingMutation, usePutUserSettingMutation } from '@/http';
 import { toast } from 'sonner';
+import { usePostUserSettingMutation, usePutUserSettingMutation } from '@/hooks/use-usersetting-query';
 
 const FormSchema = z.object({
   theme: z.enum(

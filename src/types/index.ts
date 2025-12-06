@@ -103,6 +103,10 @@ export interface IPutUserSettingParams extends IAuthenticatedParams {
   userSetting: IUserSetting;
 }
 
+export interface IGetWorkspaceParams extends IAuthenticatedParams {
+  id: string;
+  signal: AbortSignal;
+}
 export interface IGetWorkspacesParams extends IAuthenticatedParams {
   signal: AbortSignal;
 }

@@ -13,51 +13,22 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { useBreadcrumbContext } from '@/store/breadcrumb/use-breadcrumb-context';
 import { IWorkspace } from '@/types';
-import {
-  BreadcrumbActionTypes,
-  SetActiveWorkspaceAction,
-  SetBreadcrumbWorkspaceAction,
-  WorkspaceActionTypes,
-} from '@/actions';
 import EditWorkspaceDialog from '@/components/dialog/edit-workspace-dialog';
 import { getWorkspaceIcon } from '@/lib/tsx-utils';
-import {
-  invalidateEntityQueries,
-  useDeleteWorkspaceMutation,
-  useGetWorkspacesQuery,
-  usePostWorkspaceMutation,
-  usePutWorkspaceMutation,
-} from '@/http';
 import styles from './workspace-switcher.module.css';
 import { toast } from 'sonner';
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 import { DEFAULT_WORKSPACE_ID } from '@/lib/constants';
-import { useWorkspaceContext } from '@/store/workspace/use-workspace-context';
+import { useDeleteWorkspaceMutation, useGetWorkspacesQuery, usePostWorkspaceMutation, usePutWorkspaceMutation } from '@/hooks/use-workspace-query';
+import { useGetActiveWorkspace, useSetActiveWorkspace } from '@/hooks/use-workspace';
 
 export default function WorkspaceSwitcher() {
   const { isMobile } = useSidebar();
-  const { state: workspaceState, dispatch: workspaceDispatch } =
-    useWorkspaceContext();
-  const { dispatch: breadcrumbDispatch } = useBreadcrumbContext();
   const dropdownContentRef = useRef(null);
 
-  const activeWorkspace = workspaceState.workspace;
-
-  const setActiveWorkspace = (workspace: IWorkspace) => {
-    const previousWorkspaceId = activeWorkspace.id;
-
-    const setActiveWorkspaceAction: SetActiveWorkspaceAction = {
-      type: WorkspaceActionTypes.SET_ACTIVE_WORKSPACE,
-      payload: {
-        ...workspace,
-      },
-    };
-    workspaceDispatch(setActiveWorkspaceAction);
-
-    invalidateEntityQueries(previousWorkspaceId);
-  };
+  const activeWorkspace = useGetActiveWorkspace();
+  const setActiveWorkspace = useSetActiveWorkspace();
 
   const { data, isPending } = useGetWorkspacesQuery();
   const { mutate: postMutate, isPending: postPending } =
@@ -81,7 +52,6 @@ export default function WorkspaceSwitcher() {
 
       if (workspace.id === activeWorkspace.id) {
         setActiveWorkspace(workspace);
-        setBreadcrumbWorkspace(workspace.name);
       }
     },
     onError: (error?: Error) => {
@@ -101,7 +71,6 @@ export default function WorkspaceSwitcher() {
           const nextWorkspace = data.find((w) => w.id !== deletedId);
           if (nextWorkspace) {
             setActiveWorkspace(nextWorkspace);
-            setBreadcrumbWorkspace(nextWorkspace.name);
           }
         }
       },
@@ -119,16 +88,7 @@ export default function WorkspaceSwitcher() {
     event.stopPropagation();
     if (workspace.id !== activeWorkspace.id) {
       setActiveWorkspace(workspace);
-      setBreadcrumbWorkspace(workspace.name);
     }
-  };
-
-  const setBreadcrumbWorkspace = (name: string) => {
-    const setBreadcrumbWorkspaceAction: SetBreadcrumbWorkspaceAction = {
-      type: BreadcrumbActionTypes.SET_BREADCRUMB_WORKSPACE,
-      payload: name,
-    };
-    breadcrumbDispatch(setBreadcrumbWorkspaceAction);
   };
 
   useEffect(() => {
@@ -137,7 +97,6 @@ export default function WorkspaceSwitcher() {
       const workspaceToSet = defaultWorkspace ?? data[0];
       
       setActiveWorkspace(workspaceToSet);
-      setBreadcrumbWorkspace(workspaceToSet.name);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
