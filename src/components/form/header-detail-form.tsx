@@ -49,11 +49,18 @@ export default function HeaderDetailForm({
     form.handleSubmit(onSubmit)();
   }
 
+  function handleAvatarChange() {
+    if (form.getValues('name').trim() !== '')
+      form.handleSubmit(onSubmit)();
+  }
+
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className='my-4 lg:flex lg:content-stretch gap-8 h-full'>
-          <AvatarUpload name='imageFileId' />
+          <AvatarUpload 
+            name='imageFileId'
+            onChange={handleAvatarChange} />
           <EditNameHeader
             name='name'
             onNameSave={handleNameSave}

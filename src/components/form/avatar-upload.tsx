@@ -12,9 +12,10 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 interface IAvatarUploadProps {
   name: string;
+  onChange?: () => void;
 }
 
-export default function AvatarUpload({ name }: IAvatarUploadProps) {
+export default function AvatarUpload({ name, onChange }: IAvatarUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const form = useFormContext();
   const [fileId, setFileId] = useState<string | undefined>(
@@ -26,6 +27,8 @@ export default function AvatarUpload({ name }: IAvatarUploadProps) {
       if (fileId) {
         setFileId(fileId);
         form.setValue(name, fileId);
+        
+        if (onChange) onChange();
       }
     },
     onError: (error: Error) => {
