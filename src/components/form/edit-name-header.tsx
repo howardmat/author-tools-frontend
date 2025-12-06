@@ -1,11 +1,11 @@
 import { ReactElement, useEffect, useState } from 'react';
 import EditOverlay from '../common/edit-overlay';
-import { useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { LoaderCircle } from 'lucide-react';
 import loaderStyles from './loading-styles.module.css';
-import { FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
+import { Field, FieldError } from '../ui/field';
 
 interface IEditNameHeaderProps {
   name: string;
@@ -47,21 +47,22 @@ export default function EditNameHeader({
   if (isEditing) {
     content = (
       <div className='relative w-full mt-3 lg:mt-0'>
-        <FormField
+        <Controller
           control={form.control}
           name={name}
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input
-                  {...field}
-                  type='text'
-                  className='py-8 font-bold'
-                  placeholder='Type a name and click save'
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field>
+              <Input
+                {...field}
+                type='text'
+                className='py-8 font-bold'
+                placeholder='Type a name and click save'
+                aria-invalid={fieldState.invalid}
+              />
+              {fieldState.invalid && (
+                <FieldError errors={[fieldState.error]} />
+              )}
+            </Field>
           )}
         />
         <div className='flex justify-center gap-1 mt-4 lg:absolute lg:right-2 lg:bottom-2'>

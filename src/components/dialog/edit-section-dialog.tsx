@@ -11,22 +11,16 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PropsWithChildren, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import { PropsWithChildren, useRef, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../ui/form';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { PlusCircleIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { IDetailSection } from '@/types';
 import { newId } from '@/lib/utils';
 import ConfirmAlert, { IConfirmAlert } from '../common/confirm-alert';
+import { Field, FieldError, FieldLabel } from '../ui/field';
+import { Label } from '../ui/label';
 
 const FormSchema = z.object({
   title: z.string().min(1, 'Title is a required field'),
@@ -65,7 +59,7 @@ export default function EditSectionDialog({
     },
   });
 
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState<boolean>(false);
 
   const alertRef = useRef<IConfirmAlert>(null);
   const handleDeleteClick = (id: string) => {
@@ -87,16 +81,18 @@ export default function EditSectionDialog({
     if (section) onSave({ ...section, ...data });
     else onSave({ ...data, id: newId(), noteContent: '', attributes: [] });
 
-    if (closeButtonRef.current) closeButtonRef.current.click();
+    setOpen(false);
   };
 
   const handleOpenChange = (open: boolean) => {
-    if (open) return;
+    setOpen(open);
 
-    form.reset({
-      title: section?.title || '',
-      type: section?.type || 'attribute',
-    });
+    if (!open){
+      form.reset({
+        title: section?.title || '',
+        type: section?.type || 'attribute',
+      });
+    }
   };
 
   const title = addMode ? 'Add a new section' : 'Edit the section';
@@ -114,7 +110,7 @@ export default function EditSectionDialog({
   );
 
   return (
-    <Dialog onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{triggerContent}</DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
@@ -122,95 +118,89 @@ export default function EditSectionDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <div>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
-              <div className='grid gap-4 py-4'>
-                <div className='grid grid-cols-1 items-center gap-4'>
-                  <FormField
-                    control={form.control}
-                    name='title'
-                    defaultValue={section?.title || ''}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Title</FormLabel>
-                        <FormControl>
-                          <Input placeholder='' {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+            <div className='grid gap-4 py-4'>
+              <div className='grid grid-cols-1 items-center gap-4'>
+                <Controller
+                  control={form.control}
+                  name='title'
+                  defaultValue={section?.title || ''}
+                  render={({ field, fieldState }) => (
+                    <Field>
+                      <FieldLabel htmlFor="form-title">Title</FieldLabel>
+                      <Input 
+                        id="form-title"
+                        {...field}
+                        placeholder='' 
+                        aria-invalid={fieldState.invalid}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </div>
+              <div className='grid grid-cols-1 items-center gap-4'>
+                <Controller
+                  control={form.control}
+                  name='type'
+                  render={({ field, fieldState }) => (
+                    <Field className='space-y-3'>
+                      <FieldLabel htmlFor="form-type">Pick a type...</FieldLabel>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className='flex flex-col space-y-1'
+                      >
+                        {(addMode || section?.type === 'attribute') && (
+                          <div className='flex items-center space-x-3 space-y-0'>
+                            <RadioGroupItem id='attribute'value='attribute' />
+                            <Label htmlFor='attribute' className='font-normal'>Attribute List</Label>
+                          </div>
+                        )}
+                        {(addMode || section?.type === 'note') && (
+                          <div className='flex items-center space-x-3 space-y-0'>
+                            <RadioGroupItem id='note' value='note' />
+                            <Label htmlFor='note' className='font-normal'>Open Text / Note area</Label>
+                          </div>
+                        )}
+                      </RadioGroup>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <div className='flex flex-1 justify-between gap-2'>
+                <div>
+                  {!addMode && (
+                    <Button
+                      type='button'
+                      variant='destructive'
+                      onClick={() => handleDeleteClick(section?.id || '')}
+                    >
+                      <TrashIcon />
+                    </Button>
+                  )}
                 </div>
-                <div className='grid grid-cols-1 items-center gap-4'>
-                  <FormField
-                    control={form.control}
-                    name='type'
-                    render={({ field }) => (
-                      <FormItem className='space-y-3'>
-                        <FormLabel>Pick a type...</FormLabel>
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className='flex flex-col space-y-1'
-                          >
-                            {(addMode || section?.type === 'attribute') && (
-                              <FormItem className='flex items-center space-x-3 space-y-0'>
-                                <FormControl>
-                                  <RadioGroupItem value='attribute' />
-                                </FormControl>
-                                <FormLabel className='font-normal'>
-                                  Attribute List
-                                </FormLabel>
-                              </FormItem>
-                            )}
-                            {(addMode || section?.type === 'note') && (
-                              <FormItem className='flex items-center space-x-3 space-y-0'>
-                                <FormControl>
-                                  <RadioGroupItem value='note' />
-                                </FormControl>
-                                <FormLabel className='font-normal'>
-                                  Open Text / Note area
-                                </FormLabel>
-                              </FormItem>
-                            )}
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <div className='flex gap-2'>
+                  <Button type='submit'>Save</Button>
+                  <DialogClose asChild>
+                    <Button
+                      type='button'
+                      variant='secondary'
+                    >
+                      Cancel
+                    </Button>
+                  </DialogClose>
                 </div>
               </div>
-              <DialogFooter>
-                <div className='flex flex-1 justify-between gap-2'>
-                  <div>
-                    {!addMode && (
-                      <Button
-                        type='button'
-                        variant='destructive'
-                        onClick={() => handleDeleteClick(section?.id || '')}
-                      >
-                        <TrashIcon />
-                      </Button>
-                    )}
-                  </div>
-                  <div className='flex gap-2'>
-                    <Button type='submit'>Save</Button>
-                    <DialogClose asChild>
-                      <Button
-                        ref={closeButtonRef}
-                        type='button'
-                        variant='secondary'
-                      >
-                        Cancel
-                      </Button>
-                    </DialogClose>
-                  </div>
-                </div>
-              </DialogFooter>
-            </form>
-          </Form>
+            </DialogFooter>
+          </form>
           <ConfirmAlert ref={alertRef} />
         </div>
       </DialogContent>
