@@ -1,4 +1,4 @@
-import { useEffect, MouseEvent, useRef } from 'react';
+import { MouseEvent, useRef } from 'react';
 import { ChevronsUpDown, LoaderCircle } from 'lucide-react';
 import {
   DropdownMenu,
@@ -19,9 +19,16 @@ import { getWorkspaceIcon } from '@/lib/tsx-utils';
 import styles from './workspace-switcher.module.css';
 import { toast } from 'sonner';
 import { DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
-import { DEFAULT_WORKSPACE_ID } from '@/lib/constants';
-import { useDeleteWorkspaceMutation, useGetWorkspacesQuery, usePostWorkspaceMutation, usePutWorkspaceMutation } from '@/hooks/use-workspace-query';
-import { useGetActiveWorkspace, useSetActiveWorkspace } from '@/hooks/use-workspace';
+import {
+  useDeleteWorkspaceMutation,
+  useGetWorkspacesQuery,
+  usePostWorkspaceMutation,
+  usePutWorkspaceMutation,
+} from '@/hooks/use-workspace-query';
+import {
+  useGetActiveWorkspace,
+  useSetActiveWorkspace,
+} from '@/hooks/use-workspace';
 
 export default function WorkspaceSwitcher() {
   const { isMobile } = useSidebar();
@@ -90,16 +97,6 @@ export default function WorkspaceSwitcher() {
       setActiveWorkspace(workspace);
     }
   };
-
-  useEffect(() => {
-    if (data?.length && activeWorkspace.id === DEFAULT_WORKSPACE_ID) {
-      const defaultWorkspace = data.find((w) => w.isDefault === true);
-      const workspaceToSet = defaultWorkspace ?? data[0];
-      
-      setActiveWorkspace(workspaceToSet);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
 
   const onWorkspaceAdd = (workspace: IWorkspace) => {
     postMutate(workspace);

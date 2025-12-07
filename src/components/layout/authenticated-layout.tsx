@@ -53,8 +53,8 @@ export default function AuthenticatedLayout() {
 
   return (
     <>
-      <WorkspaceContextProvider>
-        <BreadcrumbContextProvider>
+      <BreadcrumbContextProvider>
+        <WorkspaceContextProvider>
           <SidebarProvider>
             <SidebarMenu />
             <SidebarInset>
@@ -70,8 +70,8 @@ export default function AuthenticatedLayout() {
               </div>
             </SidebarInset>
           </SidebarProvider>
-        </BreadcrumbContextProvider>
-      </WorkspaceContextProvider>
+        </WorkspaceContextProvider>
+      </BreadcrumbContextProvider>
       <Toaster richColors />
     </>
   );

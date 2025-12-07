@@ -11,7 +11,7 @@ export const initialState: State = {
     id: DEFAULT_WORKSPACE_ID,
     name: 'Default Workspace',
     icon: 'arrow-right',
-    isDefault: false
+    isDefault: false,
   },
 };
 
