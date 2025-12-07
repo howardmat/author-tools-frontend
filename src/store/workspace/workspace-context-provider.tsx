@@ -61,6 +61,7 @@ const WorkspaceContextProvider = ({ children }: PropsWithChildren) => {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess, workspaces]);
 
   return (
