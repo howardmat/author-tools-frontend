@@ -17,7 +17,11 @@ import useBodyClass from '@/hooks/use-body-class';
 import { toast } from 'sonner';
 import { FieldError } from '@/components/ui/field';
 import { Label } from '@/components/ui/label';
-import { usePostUserSettingMutation, usePutUserSettingMutation } from '@/hooks/use-usersetting-query';
+import {
+  usePostUserSettingMutation,
+  usePutUserSettingMutation,
+} from '@/hooks/use-usersetting-query';
+import { IUserSetting } from '@/types';
 
 const FormSchema = z.object({
   theme: z.enum(
@@ -70,10 +74,19 @@ export default function SettingsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userSettingsState.userSetting.theme]);
 
-  const onSuccessHandler = () => {
+  const onSuccessHandler = (data: IUserSetting) => {
     toast.success('Awesome!', {
       description: 'Your settings have been saved',
     });
+
+    const setUserSettingsThemeAction: SetUserSettingsAction = {
+      type: UserSettingsActionTypes.SET_USERSETTINGS,
+      payload: {
+        ...userSettingsState.userSetting,
+        id: data.id,
+      },
+    };
+    userSettingsDispatch(setUserSettingsThemeAction);
   };
   const onErrorHandler = (error?: Error) => {
     toast.error('Oops!', {
@@ -135,25 +148,34 @@ export default function SettingsPage() {
                     onValueChange={handleThemeChange}
                     defaultValue={field.value}
                   >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem id="option-light" value={THEMES.LIGHT} />
-                      <Label htmlFor="option-light">Light</Label>
+                    <div className='flex items-center space-x-2'>
+                      <RadioGroupItem id='option-light' value={THEMES.LIGHT} />
+                      <Label htmlFor='option-light'>Light</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem id="option-dark" value={THEMES.DARK} />
-                      <Label htmlFor="option-dark">Dark</Label>
+                    <div className='flex items-center space-x-2'>
+                      <RadioGroupItem id='option-dark' value={THEMES.DARK} />
+                      <Label htmlFor='option-dark'>Dark</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem id="option-dark-orange" value={THEMES.DARK_ORANGE} />
-                      <Label htmlFor="option-dark-orange">Orange</Label>
+                    <div className='flex items-center space-x-2'>
+                      <RadioGroupItem
+                        id='option-dark-orange'
+                        value={THEMES.DARK_ORANGE}
+                      />
+                      <Label htmlFor='option-dark-orange'>Orange</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem id="option-dark-blue" value={THEMES.DARK_BLUE} />
-                      <Label htmlFor="option-dark-blue">Blue</Label>
+                    <div className='flex items-center space-x-2'>
+                      <RadioGroupItem
+                        id='option-dark-blue'
+                        value={THEMES.DARK_BLUE}
+                      />
+                      <Label htmlFor='option-dark-blue'>Blue</Label>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem id="option-dark-violet" value={THEMES.DARK_VIOLET} />
-                      <Label htmlFor="option-dark-violet">Violet</Label>
+                    <div className='flex items-center space-x-2'>
+                      <RadioGroupItem
+                        id='option-dark-violet'
+                        value={THEMES.DARK_VIOLET}
+                      />
+                      <Label htmlFor='option-dark-violet'>Violet</Label>
                     </div>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
