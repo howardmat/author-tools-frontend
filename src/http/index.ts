@@ -318,12 +318,9 @@ export async function deleteWorkspace({ id, token }: IDeleteWorkspaceParams) {
   if (!response.ok) {
     const error = new Error('An error occurred while deleting the workspace');
 
-    if (response.status === 400) {
+    if (response.status === 409) {
       const responseJson = await response.json();
-      switch (responseJson.error) {
-        case 'WORKSPACE_ASSOCIATED_DATA_EXISTS':
-          error.message = "This workspace has data saved and can't be deleted";
-          break;
+      switch (responseJson.detail) {
         case 'WORKSPACE_IS_LAST':
           error.message = "This is the only workspace and can't be deleted";
           break;
@@ -357,5 +354,6 @@ export async function postFile({
     throw error;
   }
 
-  return (await response.text()) as string;
+  const responseJson = await response.json();
+  return responseJson.fileId as string;
 }
